@@ -95,6 +95,7 @@ const LINE_Y = 115;
 const GRAVITY = 1400;
 const DROP_Y = 62;
 const DROP_COOLDOWN = 0.5;
+const OVER_TIME = 1.5;           // 超過紅線多久算輸（秒）
 const MAX_SPAWN_LEVEL = 3;       // 只會隨機掉落前 4 隻狗
 const BOARD_SIZE = 20;           // 排行榜顯示前幾名
 const FRUITS = [
@@ -247,10 +248,12 @@ function unlockHidden(x, y) {
 
 function checkOver(dt) {
   for (const b of bodies) {
-    if (b.age > 1 && b.y - b.r < LINE_Y && Math.abs(b.vy) < 60) {
+    // 剛投下的狗狗有 1 秒緩衝；之後只要超過紅線，累積 1.5 秒就結束
+    // （暫時掉回線下只會慢慢扣回計時，不會整個歸零，避免堆疊抖動讓計時一直重來）
+    if (b.age > 1 && b.y - b.r < LINE_Y) {
       b.overT += dt;
-      if (b.overT > 2) { endGame(); return; }
-    } else b.overT = 0;
+      if (b.overT > OVER_TIME) { endGame(); return; }
+    } else b.overT = Math.max(0, b.overT - dt * 0.5);
   }
 }
 
