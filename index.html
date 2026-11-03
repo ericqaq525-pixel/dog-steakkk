@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>合成狗狗</title>
 <style>
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { margin: 0; height: 100%; background: #fbe9c6; font-family: -apple-system, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif; overflow: hidden; user-select: none; -webkit-user-select: none; color: #7a4a1c; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+  html, body { touch-action: manipulation; -webkit-text-size-adjust: 100%; margin: 0; height: 100%; background: #fbe9c6; font-family: -apple-system, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif; overflow: hidden; user-select: none; -webkit-user-select: none; color: #7a4a1c; }
   #wrap { position: relative; height: 100%; display: flex; flex-direction: column; align-items: center; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
   #hud { width: 100%; max-width: 480px; display: flex; justify-content: space-between; align-items: center; gap: 6px; padding: 8px 10px 4px; }
   .box { background: #fff7e6; border-radius: 12px; padding: 5px 8px; box-shadow: 0 2px 0 #e2c48f; min-width: 62px; text-align: center; }
@@ -107,7 +107,7 @@
     <div class="tabs"><button data-t="solo" class="on">單人分數</button><button data-t="rank">排位戰績</button></div>
     <ol class="board" id="board1"></ol>
     <div class="note" id="note1"></div>
-    <div class="ver">v5</div>
+    <div class="ver">v5.1</div>
   </div></div>
 
   <div class="modal" id="over"><div class="card">
@@ -944,6 +944,16 @@ async function finishMatch(res, why) {
     catch (e) { console.warn(e); $('resRecord').textContent += '（戰績上傳失敗）'; }
   }
 }
+
+// 防止手機點兩下放大、兩指縮放（iOS Safari 不理會 user-scalable=no）
+let lastTouchEnd = 0;
+document.addEventListener('touchend', e => {
+  const now = Date.now();
+  if (now - lastTouchEnd < 350 && !(e.target && e.target.tagName === 'INPUT')) e.preventDefault();
+  lastTouchEnd = now;
+}, { passive: false });
+document.addEventListener('dblclick', e => e.preventDefault(), { passive: false });
+['gesturestart', 'gesturechange', 'gestureend'].forEach(t => document.addEventListener(t, e => e.preventDefault(), { passive: false }));
 
 $('next').src = FRUITS[0].src;
 resize(); requestAnimationFrame(loop);
