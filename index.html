@@ -127,7 +127,7 @@
     <div class="tabs"><button data-t="day" class="on">今日</button><button data-t="all">總榜</button><button data-t="rank">🥩 排位</button></div>
     <ol class="board" id="board1"></ol>
     <div class="note" id="note1"></div>
-    <div class="ver">v7</div>
+    <div class="ver">v7.1　<button id="diagBtn" style="font:inherit;font-size:12px;margin:0;background:none;border:none;color:#b85e0c;text-decoration:underline;cursor:pointer;opacity:1">🔧 連線檢查</button></div>
   </div></div>
 
   <div class="modal" id="over"><div class="card">
@@ -188,6 +188,13 @@
     </div>
     <div class="note" id="loginMsg"></div>
     <button class="main gray" id="cancelLogin">返回</button>
+  </div></div>
+
+  <div class="modal" id="diag"><div class="card">
+    <h2>🔧 連線檢查</h2>
+    <div class="note">會實際測試排位和友誼賽用到的每一步。有 ❌ 的話，把這個畫面截圖給 Claude。</div>
+    <pre id="diagOut" style="text-align:left;white-space:pre-wrap;font-size:13px;background:#fff;border-radius:10px;padding:8px;min-height:60px;user-select:text;-webkit-user-select:text"></pre>
+    <div class="btns"><button class="main" id="diagRun">開始檢查</button><button class="main gray" id="diagBack">返回</button></div>
   </div></div>
 
   <div class="modal" id="result"><div class="card">
@@ -623,7 +630,7 @@ function setMode(m) {
   $('bestBox').style.display = m === 'match' ? 'none' : '';
   resize();
 }
-function hideAll() { ['start', 'over', 'result', 'matching', 'friend', 'boardModal', 'login'].forEach(id => show(id, false)); }
+function hideAll() { ['start', 'over', 'result', 'matching', 'friend', 'boardModal', 'login', 'diag'].forEach(id => show(id, false)); }
 function goHome() {
   hideAll(); running = false; AI = null; setMode('solo'); renderMyRank(); show('start', true); setPresence(null); refreshOnline();
 }
@@ -666,7 +673,9 @@ const firebaseConfig = {
   messagingSenderId: "741734243486",
   appId: "1:741734243486:web:62dbac94d9e9c4f51a2f8f"
 };
+const VERSION = 'v7.1';
 const FB_VERSIONS = ['13.1.0', '11.0.2'];
+let fbVer = '';
 let fs = null, fdb = null, fbReady, am = null, auth = null, authUser = null, authKnown = false;
 const fbPromise = new Promise(r => fbReady = r);
 async function loadFirebase() {
@@ -674,7 +683,7 @@ async function loadFirebase() {
     try {
       const base = `https://www.gstatic.com/firebasejs/${v}/`;
       const [appMod, fsMod, authMod] = await Promise.all([import(base + 'firebase-app.js'), import(base + 'firebase-firestore.js'), import(base + 'firebase-auth.js')]);
-      return { appMod, fsMod, authMod };
+      fbVer = v; return { appMod, fsMod, authMod };
     } catch (e) { console.warn('Firebase ' + v + ' 載入失敗', e); }
   }
   return null;
@@ -924,7 +933,7 @@ async function startMatchmaking() {
   if (!ok || !fdb) { $('matchInfo').textContent = '連不上伺服器，2 分鐘後會改打電腦，或按「直接打電腦」。'; my.poll = setInterval(() => { if (Date.now() - my.startedAt > AI_WAIT_SECONDS * 1000) startAIMatch(); }, 1000); return; }
   my.myRef = fs.doc(fdb, 'queue', pid);
   try {
-    await fs.setDoc(my.myRef, { name: playerName, t: fs.serverTimestamp(), room: null });
+    await fs.setDoc(my.myRef, { name: playerName, t: fs.serverTimestamp(), room: null, v: VERSION });
   } catch (e) { console.warn(e); $('matchInfo').textContent = (e.code === 'permission-denied' ? '被資料庫拒絕了（請確認 Firestore 安全規則已發布）' : '配對失敗') + '［' + errCode(e) + '］'; return; }
   if (mm !== my) { fs.deleteDoc(my.myRef).catch(() => {}); return; }
   my.unsub = fs.onSnapshot(my.myRef, snap => {
@@ -943,12 +952,15 @@ async function findOpponent() {
   if (waited >= AI_WAIT_SECONDS) { startAIMatch(); return; }
   my.busy = true;
   try {
-    const snap = await fs.getDocs(fs.query(fs.collection(fdb, 'queue'), fs.where('room', '==', null), fs.limit(50)));
+    // 只抓最近 5 分鐘有動作的排隊資料（舊資料再多也不會擠掉）
+    const snap = await fs.getDocs(fs.query(fs.collection(fdb, 'queue'), fs.where('t', '>=', fs.Timestamp.fromMillis(Date.now() - 300000)), fs.limit(200)));
     // 用伺服器時間判斷誰還在線上（不看各自手機的時鐘，避免時間沒對準就配不到）
     const meDoc = snap.docs.find(d => d.id === pid);
     const myT = meDoc ? tms(meDoc.data().t) : 0;
-    const others = myT ? snap.docs.filter(d => d.id !== pid && Math.abs(myT - tms(d.data().t)) < 20000) : [];
-    $('matchInfo').textContent = `正在尋找對手…（${waited} 秒）\n同時在排隊的其他玩家：${others.length} 位`;
+    const live = myT ? snap.docs.filter(d => d.id !== pid && !d.data().room && Math.abs(myT - tms(d.data().t)) < 20000) : [];
+    const others = live.filter(d => d.data().v === VERSION), oldVer = live.length - others.length;
+    $('matchInfo').textContent = `正在尋找對手…（${waited} 秒）\n同時在排隊的其他玩家：${others.length} 位` +
+      (oldVer ? `\n⚠ 有 ${oldVer} 位玩家版本不同，請對方重新整理網頁` : '') + (myT ? '' : '\n（還讀不到自己的排隊資料，稍等一下）') + `\n${VERSION}・ID ${pid.slice(-4)}`;
     // 不挑積分，誰在等就跟誰打；id 比較小的一方負責開房，避免兩邊同時開
     const opp = others.find(d => pid < d.id);
     if (opp && mm === my) {
@@ -1000,7 +1012,7 @@ $('hostRoom').addEventListener('click', async () => {
     try { const s = await fs.getDoc(r); if (!s.exists() || Date.now() - tms(s.data().t) > 600000) { code = c; ref = r; } } catch (e) { console.warn(e); $('friendMsg').textContent = '讀取房間失敗［' + errCode(e) + '］'; }
   }
   if (!code) { $('friendMsg').textContent = '建立房間失敗，請再試一次。'; return; }
-  try { await fs.setDoc(ref, { host: pid, name: playerName, t: fs.serverTimestamp(), room: null }); }
+  try { await fs.setDoc(ref, { host: pid, name: playerName, t: fs.serverTimestamp(), room: null, v: VERSION }); }
   catch (e) { console.warn(e); $('friendMsg').textContent = (e.code === 'permission-denied' ? '被資料庫拒絕了（請確認 Firestore 安全規則已發布）' : '建立房間失敗') + '［' + errCode(e) + '］'; return; }
   const my = fr = { ref, code, done: false, unsub: null, beat: null };
   $('friendMenu').style.display = 'none'; $('friendWait').style.display = ''; $('roomCode').textContent = code; $('friendMsg').textContent = '等待朋友加入…';
@@ -1025,6 +1037,7 @@ $('joinRoomBtn').addEventListener('click', async () => {
       const v = s.data();
       if (v.host === pid) throw new Error('self');
       if (v.room) throw new Error('used');
+      if (v.v !== VERSION) { const e = new Error('ver'); e.other = v.v || '舊版'; throw e; }
       tx.set(roomRef, { p: [v.host, pid], names: { [v.host]: String(v.name).slice(0, 12), [pid]: playerName }, kind: 'friend', at: fs.serverTimestamp() });
       tx.update(ref, { room: roomRef.id });
     });
@@ -1035,6 +1048,7 @@ $('joinRoomBtn').addEventListener('click', async () => {
     $('friendMsg').textContent = m === 'none' ? '找不到這個房間，請確認房號。'
       : m === 'self' ? '這是你自己開的房間！同一支手機（同一個瀏覽器）算同一個人，請用另一台裝置或另一個帳號加入。'
       : m === 'used' ? '這個房間已經開打了，請朋友重開一間。'
+      : m === 'ver' ? `版本不一樣！房主是 ${e.other}、你是 ${VERSION}，請兩邊都重新整理網頁（網址後面加 ?v=${Date.now() % 1000} 可以強制更新）。`
       : (e.code === 'permission-denied' ? '被資料庫拒絕了（請確認 Firestore 安全規則已發布）' : '加入失敗') + '［' + errCode(e) + '］';
   }
 });
@@ -1200,6 +1214,55 @@ async function writeRecord(s, w, l) {
     await fs.setDoc(fs.doc(fdb, LADDER, pid), { name: playerName, stars: Math.max(0, s), wins: w, losses: l, at: fs.serverTimestamp() });
     myStars = Math.max(0, s); myWins = w; myLosses = l; renderMyRank(); return true;
   } catch (e) { console.warn(e); return false; }
+}
+
+// ====== 連線檢查 ======
+$('diagBtn').addEventListener('click', () => { hideAll(); show('diag', true); $('diagOut').textContent = ''; });
+$('diagBack').addEventListener('click', goHome);
+$('diagRun').addEventListener('click', runDiag);
+async function runDiag() {
+  const out = [];
+  const log = (ok, msg) => { out.push((ok === null ? '・ ' : ok ? '✅ ' : '❌ ') + msg); $('diagOut').textContent = out.join('\n'); };
+  const step = async (name, fn) => { try { const r = await fn(); log(true, name + (r ? '：' + r : '')); return true; } catch (e) { console.warn(e); log(false, name + '［' + errCode(e) + '］' + (e && e.message && e.code ? ' ' + String(e.message).slice(0, 80) : '')); return false; } };
+  $('diagRun').disabled = true;
+  log(null, '遊戲版本 ' + VERSION + '・' + new Date().toLocaleString('zh-TW', { hour12: false }));
+  const ok = await fbPromise;
+  if (!ok) { log(false, 'Firebase 程式載入失敗（網路或被瀏覽器擋住）'); $('diagRun').disabled = false; return; }
+  log(true, 'Firebase 程式載入（' + fbVer + '）');
+  if (!authUser) await step('遊客登入', async () => { const c = await am.signInAnonymously(auth); authUser = c.user; pid = c.user.uid; });
+  if (!authUser) { log(false, '沒有登入，無法繼續檢查（請到 Authentication 開啟「匿名」）'); $('diagRun').disabled = false; return; }
+  log(true, '登入身分：' + (authUser.isAnonymous ? '遊客' : '帳號') + '・ID ' + pid.slice(-4));
+  const qRef = fs.doc(fdb, 'queue', pid);
+  const nm = playerName || '測試';
+  await step('寫入排隊資料', () => fs.setDoc(qRef, { name: nm, t: fs.serverTimestamp(), room: null, v: VERSION }));
+  await step('伺服器時間對照', async () => { const s = await fs.getDoc(qRef); const d = Math.round((Date.now() - tms(s.data().t)) / 1000); return '手機時間和伺服器差 ' + d + ' 秒'; });
+  await step('讀取排隊名單', async () => {
+    const s = await fs.getDocs(fs.query(fs.collection(fdb, 'queue'), fs.where('t', '>=', fs.Timestamp.fromMillis(Date.now() - 300000)), fs.limit(200)));
+    return '最近 5 分鐘有 ' + s.docs.length + ' 筆（含自己）';
+  });
+  let roomRef = null;
+  await step('建立對戰房間（交易）', async () => {
+    roomRef = fs.doc(fs.collection(fdb, 'rooms'));
+    await fs.runTransaction(fdb, async tx => {
+      const a = await tx.get(qRef);
+      if (!a.exists()) throw new Error('讀不到自己的排隊資料');
+      tx.set(roomRef, { p: [pid, 'selftest'], names: { [pid]: nm }, kind: 'test', at: fs.serverTimestamp() });
+      tx.update(qRef, { room: roomRef.id });
+    });
+  });
+  if (roomRef) {
+    await step('讀取對戰房間', async () => { const s = await fs.getDoc(roomRef); if (!s.exists()) throw new Error('房間不存在'); });
+    await step('寫入對戰畫面', () => fs.setDoc(fs.doc(fdb, 'rooms', roomRef.id, 'players', pid), { sent: 0, score: 0, alive: true, b: [], t: Date.now(), done: false }));
+  }
+  await step('刪除排隊資料', () => fs.deleteDoc(qRef));
+  const lRef = fs.doc(fdb, 'lobby', 'test' + pid.slice(0, 8));
+  await step('建立友誼賽房號', () => fs.setDoc(lRef, { host: pid, name: nm, t: fs.serverTimestamp(), room: null, v: VERSION }));
+  await step('讀取友誼賽房號', async () => { const s = await fs.getDoc(lRef); if (!s.exists()) throw new Error('讀不到'); });
+  await step('刪除友誼賽房號', () => fs.deleteDoc(lRef));
+  await step('讀取牛排段位', async () => { const s = await fs.getDoc(fs.doc(fdb, LADDER, pid)); return s.exists() ? tierOf(s.data().stars | 0).name : '還沒打過排位'; });
+  await step('讀取今日排行', async () => { const s = await fs.getDocs(fs.query(fs.collection(fdb, 'daily', todayKey(), 'scores'), fs.limit(1))); return s.docs.length ? '有資料' : '今天還沒人上榜'; });
+  log(null, '檢查結束');
+  $('diagRun').disabled = false;
 }
 
 // 防止手機點兩下放大、兩指縮放（iOS Safari 不理會 user-scalable=no）
