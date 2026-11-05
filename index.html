@@ -127,7 +127,7 @@
     <div class="tabs"><button data-t="day" class="on">今日</button><button data-t="all">總榜</button><button data-t="rank">🥩 排位</button></div>
     <ol class="board" id="board1"></ol>
     <div class="note" id="note1"></div>
-    <div class="ver">v7.1　<button id="diagBtn" style="font:inherit;font-size:12px;margin:0;background:none;border:none;color:#b85e0c;text-decoration:underline;cursor:pointer;opacity:1">🔧 連線檢查</button></div>
+    <div class="ver">v7.2　<button id="diagBtn" style="font:inherit;font-size:12px;margin:0;background:none;border:none;color:#b85e0c;text-decoration:underline;cursor:pointer;opacity:1">🔧 連線檢查</button></div>
   </div></div>
 
   <div class="modal" id="over"><div class="card">
@@ -673,7 +673,7 @@ const firebaseConfig = {
   messagingSenderId: "741734243486",
   appId: "1:741734243486:web:62dbac94d9e9c4f51a2f8f"
 };
-const VERSION = 'v7.1';
+const VERSION = 'v7.2';
 const FB_VERSIONS = ['13.1.0', '11.0.2'];
 let fbVer = '';
 let fs = null, fdb = null, fbReady, am = null, auth = null, authUser = null, authKnown = false;
@@ -964,15 +964,18 @@ async function findOpponent() {
     // 不挑積分，誰在等就跟誰打；id 比較小的一方負責開房，避免兩邊同時開
     const opp = others.find(d => pid < d.id);
     if (opp && mm === my) {
+      // 不用交易：先把自己移出排隊，開房後通知對方；對方沒在時限內進房就回來重新排
+      my.done = true; stopMatchmaking(true);
       const roomRef = fs.doc(fs.collection(fdb, 'rooms'));
-      const oppRef = fs.doc(fdb, 'queue', opp.id);
-      await fs.runTransaction(fdb, async tx => {
-        const a = await tx.get(my.myRef), b = await tx.get(oppRef);
-        if (!a.exists() || a.data().room || !b.exists() || b.data().room) throw new Error('taken');
-        tx.set(roomRef, { p: [pid, opp.id], names: { [pid]: playerName, [opp.id]: String(b.data().name).slice(0, 12) }, kind: 'ranked', at: fs.serverTimestamp() });
-        tx.update(my.myRef, { room: roomRef.id });
-        tx.update(oppRef, { room: roomRef.id });
-      });
+      try {
+        await fs.setDoc(roomRef, { p: [pid, opp.id], names: { [pid]: playerName, [opp.id]: String(opp.data().name).slice(0, 12) }, kind: 'ranked', at: fs.serverTimestamp() });
+        await fs.updateDoc(fs.doc(fdb, 'queue', opp.id), { room: roomRef.id });
+      } catch (e) {
+        console.warn(e); $('matchInfo').textContent = '開房失敗［' + errCode(e) + '］，重新排隊中…';
+        await sleep(1500); startMatchmaking(); return;
+      }
+      joinRoom(roomRef.id, 'ranked');
+      return;
     }
   } catch (e) { if (e.message !== 'taken') { console.warn(e); $('matchInfo').textContent += '\n（錯誤：' + errCode(e) + '）'; } }
   my.busy = false;
@@ -1031,16 +1034,14 @@ $('joinRoomBtn').addEventListener('click', async () => {
   const ref = fs.doc(fdb, 'lobby', code);
   const roomRef = fs.doc(fs.collection(fdb, 'rooms'));
   try {
-    await fs.runTransaction(fdb, async tx => {
-      const s = await tx.get(ref);
-      if (!s.exists()) throw new Error('none');
-      const v = s.data();
-      if (v.host === pid) throw new Error('self');
-      if (v.room) throw new Error('used');
-      if (v.v !== VERSION) { const e = new Error('ver'); e.other = v.v || '舊版'; throw e; }
-      tx.set(roomRef, { p: [v.host, pid], names: { [v.host]: String(v.name).slice(0, 12), [pid]: playerName }, kind: 'friend', at: fs.serverTimestamp() });
-      tx.update(ref, { room: roomRef.id });
-    });
+    const s = await fs.getDoc(ref);
+    if (!s.exists()) throw new Error('none');
+    const v = s.data();
+    if (v.host === pid) throw new Error('self');
+    if (v.room) throw new Error('used');
+    if (v.v !== VERSION) { const e = new Error('ver'); e.other = v.v || '舊版'; throw e; }
+    await fs.setDoc(roomRef, { p: [v.host, pid], names: { [v.host]: String(v.name).slice(0, 12), [pid]: playerName }, kind: 'friend', at: fs.serverTimestamp() });
+    await fs.updateDoc(ref, { room: roomRef.id });
     joinRoom(roomRef.id, 'friend');
   } catch (e) {
     console.warn(e);
@@ -1107,6 +1108,7 @@ async function joinRoom(roomId, kind) {
   const m = match;
   m.unsub = fs.onSnapshot(fs.doc(fdb, 'rooms', roomId, 'players', oppId), snap => {
     if (match !== m || !snap.exists()) return;
+    m.oppJoined = true;
     const v = snap.data();
     m.oppSeenAt = Date.now();
     m.opp = { score: +v.score || 0, alive: v.alive !== false, done: !!v.done, sent: +v.sent || 0 };
@@ -1116,7 +1118,17 @@ async function joinRoom(roomId, kind) {
     $('oppScore').textContent = m.opp.score;
     if (!m.opp.alive) finishMatch('win', '對手的狗狗爆出紅線了！');
     else if (m.timeUp && m.opp.done) judgeByScore();
-  });
+  }, err => { console.warn(err); $('matchInfo').textContent = '讀取對手失敗［' + errCode(err) + '］'; });
+  // 等對手也進房（最多 12 秒），沒來就回去重排
+  $('matchInfo').textContent = '找到對手了！等待對手連線…';
+  for (let i = 0; i < 24 && !m.oppJoined && match === m; i++) await sleep(500);
+  if (match !== m) return;
+  if (!m.oppJoined) {
+    if (m.unsub) m.unsub(); match = null;
+    if (kind === 'ranked') { $('matchInfo').textContent = '對手沒有回應，重新排隊中…'; await sleep(1200); startMatchmaking(); }
+    else { openFriend(); $('friendMsg').textContent = '朋友沒有連進來，請重新開房再試一次。'; }
+    return;
+  }
   countdownAndStart();
 }
 
@@ -1241,15 +1253,12 @@ async function runDiag() {
     return '最近 5 分鐘有 ' + s.docs.length + ' 筆（含自己）';
   });
   let roomRef = null;
-  await step('建立對戰房間（交易）', async () => {
-    roomRef = fs.doc(fs.collection(fdb, 'rooms'));
-    await fs.runTransaction(fdb, async tx => {
-      const a = await tx.get(qRef);
-      if (!a.exists()) throw new Error('讀不到自己的排隊資料');
-      tx.set(roomRef, { p: [pid, 'selftest'], names: { [pid]: nm }, kind: 'test', at: fs.serverTimestamp() });
-      tx.update(qRef, { room: roomRef.id });
-    });
+  await step('建立對戰房間', async () => {
+    const r = fs.doc(fs.collection(fdb, 'rooms'));
+    await fs.setDoc(r, { p: [pid, 'selftest'], names: { [pid]: nm }, kind: 'test', at: fs.serverTimestamp() });
+    roomRef = r;
   });
+  await step('通知對手進房（更新排隊資料）', () => fs.updateDoc(qRef, { room: roomRef ? roomRef.id : 'x' }));
   if (roomRef) {
     await step('讀取對戰房間', async () => { const s = await fs.getDoc(roomRef); if (!s.exists()) throw new Error('房間不存在'); });
     await step('寫入對戰畫面', () => fs.setDoc(fs.doc(fdb, 'rooms', roomRef.id, 'players', pid), { sent: 0, score: 0, alive: true, b: [], t: Date.now(), done: false }));
