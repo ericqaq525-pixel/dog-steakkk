@@ -54,6 +54,7 @@
   .rk { width: 26px; text-align: center; font-weight: 800; }
   .nm { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .sc { font-weight: 800; white-space: nowrap; }
+  .lvb { font-size: 11px; font-weight: 700; color: #b85e0c; background: #fff1d6; border-radius: 999px; padding: 0 6px; margin-left: 5px; vertical-align: 1px; }
   .wr { font-size: 12px; opacity: .8; white-space: nowrap; }
   .note { font-size: 13px; opacity: .75; margin-top: 6px; }
   .myrank { font-size: 14px; margin: 6px 0 0; }
@@ -77,6 +78,55 @@
   @keyframes spark { 0% { transform: translate(-50%,-50%); opacity: 1; } 100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))); opacity: 0; } }
   .promo { font-size: 20px; font-weight: 900; color: #d6453b; animation: pulse .8s ease 3; }
   @keyframes pulse { 50% { transform: scale(1.15); } }
+  .lvline { font-size: 14px; margin: 8px 0 2px; line-height: 1.6; }
+  .lvline .mini.big { width: 28px; height: 28px; }
+  .xpbar { display: inline-block; vertical-align: middle; width: 90px; height: 9px; border-radius: 5px; background: #f0d9ad; overflow: hidden; }
+  .xpbar.wide { display: block; width: 100%; margin: 4px 0 2px; }
+  .xpbar i { display: block; height: 100%; background: linear-gradient(90deg, #f08a24, #ffd84a); }
+  .ttl { color: #b85e0c; font-size: 13px; font-weight: 700; }
+  .pills { display: flex; gap: 6px; justify-content: center; margin: 6px 0 2px; flex-wrap: wrap; }
+  .pills button { position: relative; border: 2px solid #e2c48f; background: #fff; color: #7a4a1c; font: inherit; font-size: 14px; font-weight: 700; padding: 5px 10px; border-radius: 999px; cursor: pointer; }
+  .pills button.dot::after { content: ''; position: absolute; top: -3px; right: -3px; width: 10px; height: 10px; border-radius: 50%; background: #e8322f; border: 2px solid #fff7e6; }
+  .pf-head { display: flex; gap: 12px; align-items: center; text-align: left; margin: 6px 0; }
+  .pf-head img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 4px solid #f08a24; }
+  .pf-name { font-size: 20px; font-weight: 900; }
+  .pf-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 8px 0; }
+  .pf-grid div { background: #fdebc8; border-radius: 10px; padding: 6px 2px; font-size: 12px; }
+  .pf-grid b { display: block; font-size: 18px; }
+  .pick { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .pick button { width: 44px; height: 44px; border-radius: 50%; border: 3px solid #e2c48f; padding: 0; background: #f0d9ad; overflow: hidden; cursor: pointer; font-size: 16px; }
+  .pick button img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .pick button.on { border-color: #f08a24; box-shadow: 0 0 0 2px #ffd84a; }
+  .tlist { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .tlist button, .sitem { border: 2px solid #e2c48f; background: #fff; color: #7a4a1c; font: inherit; font-size: 13px; padding: 5px 10px; border-radius: 12px; cursor: pointer; }
+  .tlist button small, .sitem small { display: block; font-size: 11px; opacity: .7; }
+  .tlist button.on, .sitem.on { border-color: #f08a24; background: #fff1d6; font-weight: 800; }
+  .tlist button:disabled { opacity: .5; }
+  .chk { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin: 10px 0 4px; }
+  .chk div { background: #fdebc8; border-radius: 8px; padding: 4px 0; font-size: 12px; }
+  .chk div b { display: block; font-size: 18px; }
+  .chk div.done { background: #cdeccf; }
+  .chk div.now { outline: 3px solid #f08a24; }
+  .task { display: flex; align-items: center; gap: 8px; text-align: left; background: #fdebc8; border-radius: 12px; padding: 8px 10px; margin: 6px 0; }
+  .task .tt { flex: 1; font-size: 14px; font-weight: 700; }
+  .task small { font-weight: 400; font-size: 11px; opacity: .8; }
+  .task button.main { margin: 0; padding: 6px 12px; font-size: 14px; }
+  .task.got { opacity: .6; }
+  .gotx { font-size: 13px; color: #2e7d32; font-weight: 800; }
+  .shop { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .sitem { padding: 6px 2px; }
+  .sw { display: block; height: 34px; line-height: 34px; font-size: 20px; border-radius: 8px; margin-bottom: 3px; background: #f0d9ad; }
+  #oppMeta { font-size: 12px; margin-top: 2px; }
+  #lvHud { width: 100%; max-width: 480px; display: flex; align-items: center; gap: 8px; padding: 0 12px 4px; font-size: 13px; }
+  #lvHud b { white-space: nowrap; }
+  .hudbar { flex: 1; height: 12px; border-radius: 6px; background: #f0d9ad; overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,.15); }
+  .hudbar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #f08a24, #ffd84a); transition: width .25s; }
+  #lvHud.flash .hudbar i { background: linear-gradient(90deg, #ffd84a, #fff6a8); }
+  #lvHud.flash { animation: pulse .5s ease 3; }
+  #lvHudTxt { white-space: nowrap; min-width: 84px; text-align: right; font-variant-numeric: tabular-nums; }
+  .ptabs { gap: 4px; }
+  .ptabs button { font-size: 13px; padding: 4px 8px; white-space: nowrap; }
+  .task button.main:disabled { opacity: .55; }
   .ver { font-size: 11px; opacity: .45; margin-top: 10px; }
   #toast { white-space: nowrap; position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%) scale(.6); background: #fff7e6; font-size: 22px; font-weight: 800; text-align: center; padding: 16px 22px; border-radius: 18px; box-shadow: 0 6px 0 #d7b072; opacity: 0; pointer-events: none; z-index: 4; }
   #toast img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-top: 8px; border: 4px solid #fff6a8; }
@@ -94,13 +144,15 @@
     <div class="box" id="bestBox"><div class="lbl">我的最高</div><div class="val" id="best">0</div></div>
     <button class="box" id="trophy"><div class="lbl">排行榜</div><div class="val">🏆</div></button>
   </div>
+  <div id="lvHud"><b id="lvHudLv">Lv.1</b><span class="hudbar"><i id="lvHudFill"></i></span><span id="lvHudTxt">0 / 300</span></div>
   <div id="vsbar">
     <div class="box" id="miniWrap"><canvas id="mini"></canvas></div>
     <div class="box" style="flex:1;min-width:0">
       <div class="lbl" id="matchKind">排位賽</div>
       <div class="oppname" id="oppName">—</div>
+      <div id="oppMeta"></div>
       <div style="font-size:13px">對手分數 <b id="oppScore">0</b></div>
-      <div id="syncInfo" style="font-size:11px;white-space:pre-line;line-height:1.3"></div>
+
     </div>
     <div class="box" style="flex:0 0 92px">
       <div class="lbl" style="text-align:center">剩餘時間</div>
@@ -118,6 +170,8 @@
     <h2>🐶 合成狗狗</h2>
     <div class="dogs" id="startDogs"></div>
     <input id="nameIn" maxlength="12" placeholder="輸入你的名字" autocomplete="off">
+    <div class="lvline" id="lvLine"></div>
+    <div class="pills"><button data-open="me">👤 檔案</button><button data-open="check">📅 簽到</button><button data-open="task">🎯 任務</button><button data-open="shop">🛒 商店</button></div>
     <div class="myrank" id="myRank"></div>
     <div class="acct" id="acct"></div>
     <div class="online" id="online"></div>
@@ -131,7 +185,7 @@
     <div class="tabs"><button data-t="day" class="on">今日</button><button data-t="all">總榜</button><button data-t="rank">🥩 排位</button></div>
     <ol class="board" id="board1"></ol>
     <div class="note" id="note1"></div>
-    <div class="ver">v7.4　<button id="diagBtn" style="font:inherit;font-size:12px;margin:0;background:none;border:none;color:#b85e0c;text-decoration:underline;cursor:pointer;opacity:1">🔧 連線檢查</button></div>
+    <div class="ver">v8.2　<button id="diagBtn" style="font:inherit;font-size:12px;margin:0;background:none;border:none;color:#b85e0c;text-decoration:underline;cursor:pointer;opacity:1">🔧 連線檢查</button></div>
   </div></div>
 
   <div class="modal" id="over"><div class="card">
@@ -139,6 +193,7 @@
     <div><b id="pname"></b> 本局 <b id="final" style="font-size:22px">0</b> 分</div>
     <div id="biggest" style="margin-top:4px"></div>
     <div id="rankMsg" class="note"></div>
+    <div id="xpMsg" style="font-weight:800;color:#b85e0c;margin-top:4px"></div>
     <div class="btns">
       <button class="main" id="again">再玩一次</button>
       <button class="main gray" id="home1">回主畫面</button>
@@ -201,12 +256,19 @@
     <div class="btns"><button class="main" id="diagRun">開始檢查</button><button class="main gray" id="diagBack">返回</button></div>
   </div></div>
 
+  <div class="modal" id="prof"><div class="card">
+    <div class="tabs ptabs"><button data-p="me" class="on">👤 檔案</button><button data-p="check">📅 簽到</button><button data-p="task">🎯 任務</button><button data-p="shop">🛒 商店</button></div>
+    <div id="profBody"></div>
+    <button class="main gray" id="profBack">返回</button>
+  </div></div>
+
   <div class="modal" id="result"><div class="card">
     <div class="big-result" id="resTitle">勝利！</div>
     <div id="resWhy" style="font-size:14px"></div>
     <div style="margin:10px 0">你 <b id="resMe">0</b> 分 ： <span id="resOppName">對手</span> <b id="resOpp">0</b> 分</div>
     <div id="starFx"></div>
     <div id="resRecord" style="font-weight:800"></div>
+    <div id="resXp" style="font-weight:800;color:#b85e0c;margin-top:4px"></div>
     <div class="btns">
       <button class="main vs" id="againMatch">再來一場</button>
       <button class="main gray" id="home2">回主畫面</button>
@@ -344,6 +406,7 @@ class World {
     this.score += n;
     if (this.isPlayer) {
       $('score').textContent = this.score;
+      if (running) gainXP(n, true);   // 合成拿到的分數＝經驗值，即時累積
       if (mode === 'solo' && this.score > best) { best = this.score; $('best').textContent = best; store('dog-best', best); }
     }
   }
@@ -423,6 +486,7 @@ class World {
         }
       }
     } else { this.addScore(500); burst(this.particles, x, y, '#ffd84a', 40); }
+    if (this.isPlayer && running) onPlayerMerge(Math.min(lv + 1, HIDDEN));
     if (this.attackEnabled) this.attack(lv + 1);
   }
   attack(newLevel) {
@@ -525,11 +589,12 @@ let AI = null;               // 電腦對手
 let mode = 'solo', running = false, paused = false;
 
 // ====== 畫圖 ======
-function drawDog(c, b, level, x, y, ang, s = 1, alpha = 1, detail = true) {
+function drawDog(c, b, level, x, y, ang, s = 1, alpha = 1, detail = true, mine = false) {
   const f = FRUITS[level], r = f.r * s;
   c.save(); c.globalAlpha = alpha; c.translate(x, y); c.rotate(ang);
   if (detail && level === HIDDEN) { c.shadowColor = '#fff6a8'; c.shadowBlur = 25 + 10 * Math.sin(performance.now() / 200); }
-  c.beginPath(); c.arc(0, 0, r, 0, Math.PI * 2); c.fillStyle = (b && b.overT > 0) ? '#e8322f' : f.c; c.fill();
+  else if (mine && prof.frame === 'f-gold') { c.shadowColor = '#ffd84a'; c.shadowBlur = 10; }
+  c.beginPath(); c.arc(0, 0, r, 0, Math.PI * 2); c.fillStyle = (b && b.overT > 0) ? '#e8322f' : mine ? frameColor(b, f.c) : f.c; c.fill();
   c.shadowBlur = 0;
   const bw = Math.max(2.5, r * 0.07);
   c.save(); c.beginPath(); c.arc(0, 0, r - bw, 0, Math.PI * 2); c.clip();
@@ -538,9 +603,9 @@ function drawDog(c, b, level, x, y, ang, s = 1, alpha = 1, detail = true) {
   if (b && b.garbage > 0) { c.globalAlpha = Math.min(1, b.garbage) * 0.5; c.fillStyle = '#c62828'; c.beginPath(); c.arc(0, 0, r, 0, Math.PI * 2); c.fill(); }
   c.restore();
 }
-function drawBg(c, danger) {
+function drawBg(c, danger, th) {
   const g = c.createLinearGradient(0, 0, 0, H);
-  g.addColorStop(0, '#ffe7b8'); g.addColorStop(1, '#f6c97f');
+  g.addColorStop(0, th ? th.c1 : '#ffe7b8'); g.addColorStop(1, th ? th.c2 : '#f6c97f');
   c.fillStyle = g; c.fillRect(0, 0, W, H);
   c.setLineDash([10, 8]); c.lineWidth = danger ? 4 : 2;
   c.strokeStyle = danger ? `rgba(230,40,40,${0.5 + 0.5 * Math.sin(performance.now() / 80)})` : 'rgba(200,60,40,.45)';
@@ -548,7 +613,7 @@ function drawBg(c, danger) {
 }
 function render() {
   ctx.setTransform(scale * dpr, 0, 0, scale * dpr, 0, 0);
-  drawBg(ctx, P.dangerT > 0);
+  drawBg(ctx, P.dangerT > 0, curTheme());
   if (P.dangerT > 0 && running) {
     ctx.fillStyle = '#e8322f'; ctx.font = 'bold 18px sans-serif'; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
     ctx.fillText('⚠ ' + Math.max(0, OVER_TIME - P.dangerT).toFixed(1), W - 8, LINE_Y - 4);
@@ -557,7 +622,7 @@ function render() {
     const r = FRUITS[P.cur].r, x = Math.max(r, Math.min(W - r, P.aimX));
     ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.moveTo(x, DROP_Y + r); ctx.lineTo(x, H); ctx.stroke();
-    drawDog(ctx, null, P.cur, x, DROP_Y, 0, 1, P.cooldown > 0 ? 0.45 : 1);
+    drawDog(ctx, null, P.cur, x, DROP_Y, 0, 1, P.cooldown > 0 ? 0.45 : 1, true, true);
     if (P.autoDrop && P.idleT > 1.5) {
       const k = Math.min(1, P.idleT / AUTO_DROP);
       ctx.strokeStyle = '#e8322f'; ctx.lineWidth = 4;
@@ -566,7 +631,7 @@ function render() {
       ctx.fillText('快投！' + Math.max(0, AUTO_DROP - P.idleT).toFixed(1), x, DROP_Y - r - 8);
     }
   }
-  for (const b of P.bodies) drawDog(ctx, b, b.level, b.x, b.y, b.a, 1 + b.pop * 0.15);
+  for (const b of P.bodies) drawDog(ctx, b, b.level, b.x, b.y, b.a, 1 + b.pop * 0.15, 1, true, true);
   for (const p of P.particles) { ctx.globalAlpha = Math.max(0, p.life / 0.9); ctx.fillStyle = p.c; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill(); }
   ctx.globalAlpha = 1;
   if (mode === 'match') renderMini();
@@ -635,11 +700,12 @@ function setMode(m) {
   $('bestBox').style.display = m === 'match' ? 'none' : '';
   resize();
 }
-function hideAll() { ['start', 'over', 'result', 'matching', 'friend', 'boardModal', 'login', 'diag'].forEach(id => show(id, false)); }
+function hideAll() { ['start', 'over', 'result', 'matching', 'friend', 'boardModal', 'login', 'diag', 'prof'].forEach(id => show(id, false)); }
 function goHome() {
-  hideAll(); running = false; AI = null; setMode('solo'); renderMyRank(); show('start', true); setPresence(null); refreshOnline();
+  hideAll(); running = false; AI = null; setMode('solo'); renderMyRank(); show('start', true); setPresence(null); refreshOnline(); renderLvLine();
 }
 function startSolo() {
+  gameMerges = 0;
   hideAll(); setMode('solo'); AI = null; P.reset(); P.attackEnabled = false;
   P.onOver = soloOver; $('score').textContent = 0; $('next').src = FRUITS[P.nxt].src; running = true;
   setPresence('solo');
@@ -667,6 +733,8 @@ function soloOver() {
   $('rankMsg').textContent = '';
   show('over', true);
   submitScore(playerName, P.score, P.biggest);
+  gameMerges = 0;
+  $('xpMsg').textContent = '本局經驗 +' + onSoloEnd(P.score) + `（Lv.${prof.lv}）`;
 }
 
 // ====== Firebase ======
@@ -678,7 +746,7 @@ const firebaseConfig = {
   messagingSenderId: "741734243486",
   appId: "1:741734243486:web:62dbac94d9e9c4f51a2f8f"
 };
-const VERSION = 'v7.4';
+const VERSION = 'v8.2';
 const FB_VERSIONS = ['13.1.0', '11.0.2'];
 let fbVer = '';
 let fs = null, fdb = null, fbReady, am = null, auth = null, authUser = null, authKnown = false;
@@ -711,6 +779,7 @@ function renderBoards() {
       if ((boardTab !== 'rank' && myIds.has(e.id)) || (boardTab === 'rank' && e.id === pid)) li.className = 'me';
       const rk = document.createElement('span'); rk.className = 'rk'; rk.textContent = i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1;
       const nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = e.name;
+      if (e.lv) { const lb = document.createElement('span'); lb.className = 'lvb'; lb.textContent = 'Lv.' + e.lv; nm.appendChild(lb); }
       const sc = document.createElement('span'); sc.className = 'sc';
       if (boardTab !== 'rank') {
         const im = document.createElement('img'); im.className = 'mini'; im.src = FRUITS[Math.max(0, Math.min(HIDDEN, e.level | 0))].src;
@@ -740,19 +809,19 @@ renderBoards();
   am.onAuthStateChanged(auth, u => {
     authUser = u; authKnown = true; pid = u ? u.uid : null;
     if (u && u.displayName && !$('nameIn').value) { $('nameIn').value = u.displayName; playerName = u.displayName; }
-    renderAcct(); loadRecord(); renderBoards();
+    renderAcct(); loadRecord(); renderBoards(); if (u) pullProfile();
   });
   fbReady(true);
   fs.onSnapshot(fs.query(fs.collection(fdb, 'scores'), fs.orderBy('score', 'desc'), fs.limit(BOARD_SIZE)), snap => {
     soloEntries = snap.docs.map(d => {
       const v = d.data() || {};
-      return { id: d.id, name: String(v.name || '匿名').slice(0, 12), score: Math.max(0, Math.floor(+v.score || 0)), level: +v.level || 0 };
+      return { id: d.id, name: String(v.name || '匿名').slice(0, 12), score: Math.max(0, Math.floor(+v.score || 0)), level: +v.level || 0, lv: v.lv | 0 };
     });
     clearTimeout(timer); boardNote = '';
     renderBoards(); updateRankMsg();
   }, err => { clearTimeout(timer); console.warn(err); boardNote = '排行榜連線失敗（' + (err.code || '未知錯誤') + '）。'; renderBoards(); });
   fs.onSnapshot(fs.query(fs.collection(fdb, LADDER), fs.orderBy('stars', 'desc'), fs.limit(BOARD_SIZE)), snap => {
-    rankEntries = snap.docs.map(d => { const v = d.data() || {}; return { id: d.id, name: String(v.name || '匿名').slice(0, 12), stars: v.stars | 0, wins: v.wins | 0, losses: v.losses | 0 }; });
+    rankEntries = snap.docs.map(d => { const v = d.data() || {}; return { id: d.id, name: String(v.name || '匿名').slice(0, 12), stars: v.stars | 0, wins: v.wins | 0, losses: v.losses | 0, lv: v.lv | 0 }; });
     renderBoards();
   }, err => console.warn(err));
   subscribeDaily();
@@ -768,7 +837,7 @@ function subscribeDaily() {
   if (dayUnsub) dayUnsub();
   dayKeySub = todayKey(); dayEntries = []; renderBoards();
   dayUnsub = fs.onSnapshot(fs.query(fs.collection(fdb, 'daily', dayKeySub, 'scores'), fs.orderBy('score', 'desc'), fs.limit(BOARD_SIZE)), snap => {
-    dayEntries = snap.docs.map(d => { const v = d.data() || {}; return { id: d.id, name: String(v.name || '匿名').slice(0, 12), score: Math.max(0, Math.floor(+v.score || 0)), level: +v.level || 0 }; });
+    dayEntries = snap.docs.map(d => { const v = d.data() || {}; return { id: d.id, name: String(v.name || '匿名').slice(0, 12), score: Math.max(0, Math.floor(+v.score || 0)), level: +v.level || 0, lv: v.lv | 0 }; });
     renderBoards(); updateRankMsg();
   }, err => console.warn(err));
 }
@@ -809,7 +878,7 @@ async function loadRecord() {
     const me = await fs.getDoc(fs.doc(fdb, LADDER, pid));
     if (me.exists()) { const v = me.data(); myWins = v.wins | 0; myLosses = v.losses | 0; myStars = v.stars | 0; }
   } catch (e) { console.warn(e); }
-  renderMyRank();
+  renderMyRank(); checkTitles(); saveProf();
 }
 let logoutArmed = false;
 function renderAcct() {
@@ -913,7 +982,7 @@ async function submitScore(name, sc, level) {
   if (!fdb) { $('rankMsg').textContent = '排行榜還沒連上，這局分數沒有上傳。'; return; }
   $('rankMsg').textContent = '上傳分數中…';
   try {
-    const body = { name: name.slice(0, 12), score: Math.min(100000, Math.floor(sc)), level: Math.floor(level), at: fs.serverTimestamp() };
+    const body = { name: name.slice(0, 12), score: Math.min(100000, Math.floor(sc)), level: Math.floor(level), lv: prof.lv, at: fs.serverTimestamp() };
     const ref = fs.doc(fs.collection(fdb, 'scores'));
     await Promise.all([fs.setDoc(ref, body), fs.setDoc(fs.doc(fdb, 'daily', todayKey(), 'scores', ref.id), body)]);
     myIds.add(ref.id); lastSubmit = ref.id;
@@ -1073,6 +1142,7 @@ async function countdownAndStart() {
   $('score').textContent = 0; $('oppScore').textContent = 0; $('incoming').textContent = ''; $('timer').textContent = '3:00';
   $('matchKind').textContent = match.kind === 'friend' ? '友誼賽' : (match.isAI ? '排位賽・電腦對手' : '排位賽');
   $('oppName').textContent = match.oppName;
+  $('oppMeta').innerHTML = match.isAI ? '🤖 電腦陪練' : (match.oppMeta || '');
   for (const n of ['3', '2', '1', '開始！']) { $('count').textContent = n; show('count', true); await sleep(700); }
   show('count', false);
   if (!match) return;
@@ -1109,13 +1179,14 @@ async function joinRoom(roomId, kind) {
   const oppId = room.p.find(x => x !== pid);
   match = newMatch(kind, (room.names && room.names[oppId]) || '對手');
   match.myRef = fs.doc(fdb, 'rooms', roomId, 'players', pid);
+  loadOppInfo(match, oppId);
   try { await fs.setDoc(match.myRef, { sent: 0, score: 0, alive: true, b: [], t: Date.now(), done: false }); } catch (e) { console.warn(e); }
   const m = match;
-  m.unsub = fs.onSnapshot(fs.doc(fdb, 'rooms', roomId, 'players', oppId), snap => {
-    if (match !== m || !snap.exists()) return;
-    m.oppJoined = true; m.oppUpdates = (m.oppUpdates || 0) + 1;
-    const v = snap.data();
-    m.oppSeenAt = Date.now();
+  m.oppRef = fs.doc(fdb, 'rooms', roomId, 'players', oppId);
+  m.applyOpp = v => {
+    if (match !== m) return;
+    m.oppJoined = true;
+    if (v.t !== m.lastOppT) { m.lastOppT = v.t; m.oppSeenAt = Date.now(); }   // 對手每次上傳 t 都會變，有變才算對手還活著
     m.opp = { score: +v.score || 0, alive: v.alive !== false, done: !!v.done, sent: +v.sent || 0 };
     const add = m.opp.sent - m.received;
     if (add > 0) { m.received = m.opp.sent; if (m.startAt) P.receive(add); else m.preload = (m.preload || 0) + add; }
@@ -1123,7 +1194,14 @@ async function joinRoom(roomId, kind) {
     $('oppScore').textContent = m.opp.score;
     if (!m.opp.alive) finishMatch('win', '對手的狗狗爆出紅線了！');
     else if (m.timeUp && m.opp.done) judgeByScore();
-  }, err => { console.warn(err); $('matchInfo').textContent = '讀取對手失敗［' + errCode(err) + '］'; });
+  };
+  const listen = () => {
+    m.unsub = fs.onSnapshot(m.oppRef, snap => { if (snap.exists()) m.applyOpp(snap.data()); }, err => {
+      console.warn('對手監聽中斷，重新連線', err);   // 監聽斷掉就自動重接
+      setTimeout(() => { if (match === m && !m.finished) listen(); }, 2000);
+    });
+  };
+  listen();
   // 等對手也進房（最多 12 秒），沒來就回去重排
   $('matchInfo').textContent = '找到對手了！等待對手連線…';
   for (let i = 0; i < 24 && !m.oppJoined && match === m; i++) await sleep(500);
@@ -1155,9 +1233,20 @@ function matchTick() {
     if (m.opp.done) judgeByScore();
   }
   if (m.timeUp && now - m.timeUpAt > 8000) judgeByScore();
-  if (Date.now() - m.oppSeenAt > 20000) finishMatch('win', '對手斷線了');
+  const nowMs = Date.now(), oppStale = nowMs - m.oppSeenAt;
+  // 對手 8 秒沒動靜：直接去伺服器問一次（監聽可能卡住了）
+  if (oppStale > 8000 && !m.probing && nowMs - (m.lastProbe || 0) > 4000) {
+    m.probing = true; m.lastProbe = nowMs;
+    (fs.getDocFromServer || fs.getDoc)(m.oppRef).then(s => { if (s.exists()) m.applyOpp(s.data()); m.lastServerOk = Date.now(); })
+      .catch(e => console.warn(e)).finally(() => { m.probing = false; });
+  }
+  if (oppStale > 25000) {
+    // 自己最近也傳不上去／連不到伺服器 → 是連線問題，不算誰贏
+    const myOk = (m.lastAck && nowMs - m.lastAck < 8000) || (m.lastServerOk && nowMs - m.lastServerOk < 8000);
+    if (myOk) finishMatch('win', '對手斷線了');
+    else finishMatch('void', '連線不穩定，這場不計分');
+  }
   flushMatch(false);
-  syncStatus();
 }
 
 function flushMatch(force) {
@@ -1167,21 +1256,14 @@ function flushMatch(force) {
   // 上一次上傳卡住超過 4 秒就不等了，直接再送（避免一次卡住後整場都不同步）
   if (m.writing && now - m.writeStart < 4000) return;
   if (!force && now - m.lastWrite < SYNC_MS) return;
+  const pack = P.pack(), sig = [m.sent, P.score, P.gameOver, m.timeUp, pack.map(n => n >> 2).join(',')].join('|');
+  if (!force && sig === m.lastSig && now - m.lastWrite < 4000) return;   // 畫面沒變就少傳（最多 4 秒一次心跳）
+  m.lastSig = sig;
   m.writing = true; m.writeStart = now; m.lastWrite = now;
-  fs.setDoc(m.myRef, { sent: m.sent, score: Math.min(100000, P.score), alive: !P.gameOver, b: P.pack(), t: now, done: m.timeUp || P.gameOver })
+  fs.setDoc(m.myRef, { sent: m.sent, score: Math.min(100000, P.score), alive: !P.gameOver, b: pack, t: now, done: m.timeUp || P.gameOver })
     .then(() => { m.lastAck = Date.now(); m.lastErr = ''; })
     .catch(e => { console.warn(e); m.lastErr = errCode(e); })
     .finally(() => { m.writing = false; });
-}
-function syncStatus() {
-  const m = match;
-  if (!m || m.isAI) { $('syncInfo').textContent = ''; return; }
-  const now = Date.now();
-  const oppAgo = Math.round((now - m.oppSeenAt) / 1000), myAgo = m.lastAck ? Math.round((now - m.lastAck) / 1000) : null;
-  let t = '📡 對手 ' + (m.oppUpdates > 1 ? oppAgo + ' 秒前' : '尚未') + '更新・我 ' + (myAgo === null ? '尚未上傳' : myAgo + ' 秒前上傳');
-  if (m.lastErr) t += '\n⚠ 上傳失敗［' + m.lastErr + '］';
-  $('syncInfo').textContent = t;
-  $('syncInfo').style.color = (m.lastErr || oppAgo > 6 || (myAgo !== null && myAgo > 6)) ? '#c62828' : '#2e7d32';
 }
 
 function myTopOut() {
@@ -1203,11 +1285,11 @@ async function finishMatch(res, why) {
   m.finished = true; running = false;
   if (m.unsub) m.unsub();
   const oppScore = m.isAI ? AI.score : m.opp.score;
-  $('resTitle').textContent = res === 'win' ? '🏆 勝利！' : res === 'draw' ? '🤝 平手' : '💥 敗北';
+  $('resTitle').textContent = res === 'win' ? '🏆 勝利！' : res === 'draw' ? '🤝 平手' : res === 'void' ? '📶 不計分' : '💥 敗北';
   $('resWhy').textContent = why;
   $('resMe').textContent = P.score; $('resOpp').textContent = oppScore; $('resOppName').textContent = m.oppName;
   $('againMatch').textContent = m.kind === 'friend' ? '再開一間' : '再排一場';
-  show('result', true); setPresence(null);
+  show('result', true); setPresence(null); $('resXp').textContent = '';
   const fx = $('starFx'); fx.className = ''; fx.innerHTML = '';
   match = null;
   if (m.kind === 'ranked' && !m.isAI) {
@@ -1217,7 +1299,10 @@ async function finishMatch(res, why) {
     let ok = charged;
     if (charged) {
       if (res === 'win') ok = await writeRecord(b.s + 1, b.w + 1, b.l);
-      else if (res === 'draw') ok = await writeRecord(b.s, b.w, b.l);
+      else if (res === 'draw' || res === 'void') {   // 不計分：把開賽時先扣的星星和敗場還回來（連線恢復前會一直重試）
+        ok = await writeRecord(b.s, b.w, b.l);
+        for (let i = 0; i < 12 && !ok; i++) { await sleep(5000); ok = await writeRecord(b.s, b.w, b.l); }
+      }
     }
     const before = tierOf(b.s), after = tierOf(myStars);
     if (ok && res === 'win') starEffect(true, before, after);
@@ -1225,6 +1310,7 @@ async function finishMatch(res, why) {
     $('resRecord').innerHTML = (ok ? '' : '（段位上傳失敗）<br>') + tierHTML(myStars) + `<br><span style="font-size:12px;font-weight:400">${myWins} 勝 ${myLosses} 敗・勝率 ${winRate(myWins, myLosses)}%</span>`;
   } else if (m.isAI) $('resRecord').textContent = '和電腦對戰不計星，找真人才能上分！';
   else $('resRecord').textContent = '友誼賽不計入排位';
+  const gx = onMatchEnd(m, res); $('resXp').textContent = gx ? '經驗 +' + gx + `（Lv.${prof.lv}）` : '';
 }
 function starEffect(win, before, after) {
   const fx = $('starFx'); fx.className = 'on ' + (win ? 'win' : 'lose');
@@ -1241,10 +1327,294 @@ function starEffect(win, before, after) {
 async function writeRecord(s, w, l) {
   if (!fdb || !pid) return false;
   try {
-    await fs.setDoc(fs.doc(fdb, LADDER, pid), { name: playerName, stars: Math.max(0, s), wins: w, losses: l, at: fs.serverTimestamp() });
+    await fs.setDoc(fs.doc(fdb, LADDER, pid), { name: playerName, stars: Math.max(0, s), wins: w, losses: l, lv: prof.lv, at: fs.serverTimestamp() });
     myStars = Math.max(0, s); myWins = w; myLosses = l; renderMyRank(); return true;
   } catch (e) { console.warn(e); return false; }
 }
+
+// 對手的段位、等級、頭像
+async function loadOppInfo(m, oppId) {
+  try {
+    const [l, p] = await Promise.all([fs.getDoc(fs.doc(fdb, LADDER, oppId)), fs.getDoc(fs.doc(fdb, 'profiles', oppId))]);
+    const stars = l.exists() ? (l.data().stars | 0) : 0, pv = p.exists() ? p.data() : {};
+    const lv = Math.max(1, pv.lv | 0), av = Math.max(0, Math.min(HIDDEN, pv.avatar | 0));
+    m.oppMeta = tierHTML(stars) + `<br><img class="mini" src="${FRUITS[av].src}"> Lv.${lv}` + (pv.title ? ` <span class="ttl">「${esc(String(pv.title).slice(0, 10))}」</span>` : '');
+    if (match === m) { $('oppMeta').innerHTML = m.oppMeta; $('matchInfo').innerHTML = '找到對手了！<br><b>' + esc(m.oppName) + '</b><br>' + m.oppMeta; }
+  } catch (e) { console.warn(e); }
+}
+
+// ====== 個人檔案・等級・簽到・每日任務・商店 ======
+const esc = t => String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const THEMES = {
+  default: { name: '奶茶', icon: '🧋', price: 0, c1: '#ffe7b8', c2: '#f6c97f' },
+  grass: { name: '草地', icon: '🌿', price: 150, c1: '#e3f6c8', c2: '#9fd27a' },
+  beach: { name: '海灘', icon: '🏖️', price: 150, c1: '#c4ecff', c2: '#f3dcab' },
+  sakura: { name: '櫻花', icon: '🌸', price: 200, c1: '#ffe6f0', c2: '#f4b1c9' },
+  night: { name: '夜空', icon: '🌙', price: 250, c1: '#34467a', c2: '#141b36' },
+  steak: { name: '牛排', icon: '🥩', price: 300, c1: '#f6cfa6', c2: '#b45f37' },
+};
+const FRAMES = {
+  'f-default': { name: '原色框', icon: '⭕', price: 0 },
+  'f-heart': { name: '愛心框', icon: '💗', price: 150 },
+  'f-gold': { name: '金框', icon: '✨', price: 250 },
+  'f-rainbow': { name: '彩虹框', icon: '🌈', price: 350 },
+};
+const TITLES = [
+  { t: '新手飼主', how: '一開始就有', ok: p => true },
+  { t: '狗狗朋友', how: '升到 Lv.5', ok: p => p.lv >= 5 },
+  { t: '合成達人', how: '升到 Lv.10', ok: p => p.lv >= 10 },
+  { t: '狗狗大師', how: '升到 Lv.20', ok: p => p.lv >= 20 },
+  { t: '勤勞簽到王', how: '連續簽到 7 天', ok: p => p.checkin.best >= 7 },
+  { t: '隱藏版獵人', how: '合成出隱藏版', ok: p => p.stats.hidden >= 1 },
+  { t: '高分玩家', how: '單人一場 3000 分', ok: p => p.stats.best >= 3000 },
+  { t: '牛排愛好者', how: '排位到黃金牛排', ok: p => myStars >= 6 },
+  { t: '對戰狂熱', how: '打 30 場對戰', ok: p => p.stats.matches >= 30 },
+];
+const CHECK_REWARD = [10, 15, 20, 25, 30, 40, 80];   // 連續簽到第 1～7 天的骨頭
+const MISSIONS = [
+  { id: 'g3', text: '玩 3 場單人', key: 'games', n: 3, bone: 30, xp: 200 },
+  { id: 'g6', text: '玩 6 場單人', key: 'games', n: 6, bone: 50, xp: 350 },
+  { id: 's800', text: '單人一場拿到 800 分', key: 'best', n: 800, bone: 40, xp: 250 },
+  { id: 's2000', text: '單人一場拿到 2000 分', key: 'best', n: 2000, bone: 70, xp: 450 },
+  { id: 'm40', text: '合成 40 次', key: 'merges', n: 40, bone: 30, xp: 200 },
+  { id: 'm100', text: '合成 100 次', key: 'merges', n: 100, bone: 60, xp: 400 },
+  { id: 'd6', text: '合成出第 6 隻狗狗', key: 'bigdog', n: 5, bone: 40, xp: 250, dog: 5 },
+  { id: 'd8', text: '合成出第 8 隻狗狗', key: 'bigdog', n: 7, bone: 70, xp: 450, dog: 7 },
+  { id: 'vs1', text: '打 1 場對戰（排位、友誼、電腦都算）', key: 'vs', n: 1, bone: 30, xp: 200 },
+  { id: 'rw1', text: '排位賽贏 1 場', key: 'rankwin', n: 1, bone: 60, xp: 400 },
+];
+const PROF_KEY = 'dog-prof';
+function defProf() {
+  return {
+    lv: 1, xp: 0, tx: 0, bone: 0, title: '新手飼主', titles: ['新手飼主'], avatar: 0, theme: 'default', frame: 'f-default', owned: ['default', 'f-default'],
+    stats: { games: 0, best: 0, merges: 0, maxDog: 0, hidden: 0, matches: 0, wins: 0 },
+    daily: { day: '', prog: {}, claimed: [] }, checkin: { last: '', streak: 0, best: 0, total: 0 }
+  };
+}
+function normProf(p) {
+  const d = defProf(); p = p || {};
+  const o = Object.assign(d, p);
+  o.stats = Object.assign(defProf().stats, p.stats || {});
+  o.daily = Object.assign(defProf().daily, p.daily || {}); o.daily.prog = Object.assign({}, o.daily.prog || {}); o.daily.claimed = Array.isArray(o.daily.claimed) ? o.daily.claimed : [];
+  o.checkin = Object.assign(defProf().checkin, p.checkin || {});
+  if (!Array.isArray(o.owned)) o.owned = ['default', 'f-default'];
+  if (!Array.isArray(o.titles)) o.titles = ['新手飼主'];
+  ['lv', 'xp', 'tx', 'bone', 'avatar'].forEach(k => o[k] = Math.max(k === 'lv' ? 1 : 0, Math.floor(+o[k] || 0)));
+  if (!THEMES[o.theme]) o.theme = 'default';
+  if (!FRAMES[o.frame]) o.frame = 'f-default';
+  return o;
+}
+let prof;
+try { prof = normProf(JSON.parse(store(PROF_KEY) || 'null')); } catch (e) { prof = defProf(); }
+const xpNeed = lv => 300 + 200 * (lv - 1);   // Lv.1→2 要 300 分，之後每級多 200
+
+let cloudTimer = null;
+function saveProf() {
+  store(PROF_KEY, JSON.stringify(prof));
+  renderLvLine();
+  clearTimeout(cloudTimer); cloudTimer = setTimeout(pushProfile, 4000);
+}
+function profDoc() {
+  return {
+    name: (playerName || '玩家').slice(0, 12), lv: prof.lv, xp: prof.xp, tx: prof.tx, bone: prof.bone, title: prof.title, titles: prof.titles.slice(0, 20),
+    avatar: prof.avatar, theme: prof.theme, frame: prof.frame, owned: prof.owned.slice(0, 30), stats: prof.stats, daily: prof.daily, checkin: prof.checkin, at: fs.serverTimestamp()
+  };
+}
+async function pushProfile() {
+  if (!fdb || !pid) return;
+  try { await fs.setDoc(fs.doc(fdb, 'profiles', pid), profDoc()); } catch (e) { console.warn('個人檔案上傳失敗', e); }
+}
+async function pullProfile() {   // 登入後：雲端進度比較多就用雲端的（換手機也能接著玩）
+  if (!fdb || !pid) return;
+  try {
+    const s = await fs.getDoc(fs.doc(fdb, 'profiles', pid));
+    if (s.exists() && (+s.data().tx || 0) > prof.tx) { prof = normProf(s.data()); store(PROF_KEY, JSON.stringify(prof)); renderLvLine(); }
+    else pushProfile();
+  } catch (e) { console.warn(e); }
+}
+
+function gainXP(n, live) {
+  if (n <= 0) return;
+  prof.xp += n; prof.tx += n;
+  let up = 0;
+  while (prof.xp >= xpNeed(prof.lv)) { prof.xp -= xpNeed(prof.lv); prof.lv++; up++; }
+  if (up) {
+    prof.bone += 30 * up;
+    setTimeout(() => toast('⬆️ 升到 Lv.' + prof.lv + '！<br><span style="font-size:16px">🦴 +' + 30 * up + '</span>'), 300);
+    const hud = $('lvHud'); hud.classList.remove('flash'); void hud.offsetWidth; hud.classList.add('flash');
+    if (running) for (let k = 0; k < 3; k++) burst(P.particles, 80 + k * 100, 100, '#ffd84a', 20);
+    checkTitles();
+  }
+  renderLvHud();
+  if (live) { if (up) saveProf(); return; }   // 遊戲中只在升級時存檔，其他時候等結算再存
+  checkTitles(); saveProf();
+}
+function renderLvHud() {
+  const need = xpNeed(prof.lv);
+  $('lvHudLv').textContent = 'Lv.' + prof.lv;
+  $('lvHudFill').style.width = Math.min(100, prof.xp / need * 100) + '%';
+  $('lvHudTxt').textContent = prof.xp + ' / ' + need;
+}
+function checkTitles() {
+  for (const T of TITLES) if (!prof.titles.includes(T.t) && T.ok(prof)) {
+    prof.titles.push(T.t);
+    setTimeout(() => toast('🏅 獲得稱號<br>「' + T.t + '」'), 1600);
+  }
+}
+function ensureDaily() { if (prof.daily.day !== todayKey()) prof.daily = { day: todayKey(), prog: {}, claimed: [] }; }
+function prog(key, v, isMax) {
+  ensureDaily();
+  const cur = prof.daily.prog[key] || 0;
+  prof.daily.prog[key] = isMax ? Math.max(cur, v) : cur + v;
+}
+function hashStr(s) { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+function todayMissions() {   // 每天固定 3 個任務（大家都一樣），同一種條件不重複
+  const day = todayKey(); let h = hashStr(day); const out = [], keys = new Set();
+  const pool = MISSIONS.slice();
+  while (out.length < 3 && pool.length) {
+    h = Math.imul(h ^ (h >>> 13), 1103515245) + 12345 >>> 0;
+    const m = pool.splice(h % pool.length, 1)[0];
+    if (!keys.has(m.key)) { out.push(m); keys.add(m.key); }
+  }
+  return out;
+}
+function canCheckIn() { return prof.checkin.last !== todayKey(); }
+function claimableMissions() { ensureDaily(); return todayMissions().filter(m => (prof.daily.prog[m.key] || 0) >= m.n && !prof.daily.claimed.includes(m.id)).length; }
+
+// 遊戲中的紀錄
+let gameMerges = 0;
+function onPlayerMerge(newLevel) {
+  prof.stats.merges++; gameMerges++;
+  prog('merges', 1);
+  if (newLevel > prof.stats.maxDog) prof.stats.maxDog = newLevel;
+  prog('bigdog', newLevel, true);
+  if (newLevel === HIDDEN) prof.stats.hidden++;
+}
+function onSoloEnd(score) {
+  prof.stats.games++; prof.stats.best = Math.max(prof.stats.best, score);
+  prog('games', 1); prog('best', score, true);
+  saveProf();
+  return score;   // 這局的分數已經即時算進經驗了
+}
+function onMatchEnd(m, res) {
+  prof.stats.matches++; prog('vs', 1);
+  if (m.kind === 'ranked' && !m.isAI && res === 'win') { prof.stats.wins++; prog('rankwin', 1); }
+  const bonus = res === 'void' ? 0 : m.isAI ? (res === 'win' ? 150 : 50) : (res === 'win' ? 300 : 100);   // 對戰結算再加額外經驗
+  gainXP(bonus);
+  return P.score + bonus;
+}
+
+// 外觀
+function curTheme() { return THEMES[prof.theme] || THEMES.default; }
+function frameColor(b, fallback) {
+  switch (prof.frame) {
+    case 'f-heart': return '#ff6f9f';
+    case 'f-gold': return '#f2b705';
+    case 'f-rainbow': return `hsl(${(performance.now() / 8 + (b ? b.id * 47 : 0)) % 360},90%,58%)`;
+    default: return fallback;
+  }
+}
+
+// 主畫面等級列
+function renderLvLine() {
+  const el = $('lvLine'); if (!el) return;
+  const need = xpNeed(prof.lv), pct = Math.round(prof.xp / need * 100);
+  el.innerHTML = `<img class="mini big" src="${FRUITS[Math.min(prof.avatar, HIDDEN)].src}"> <b>Lv.${prof.lv}</b> <span class="xpbar"><i style="width:${pct}%"></i></span> <span>🦴 ${prof.bone}</span><br><span class="ttl">「${esc(prof.title)}」</span>`;
+  const dot = canCheckIn() || claimableMissions() > 0;
+  document.querySelectorAll('[data-open]').forEach(b => {
+    const t = b.dataset.open, on = (t === 'check' && canCheckIn()) || (t === 'task' && claimableMissions() > 0);
+    b.classList.toggle('dot', on);
+  });
+}
+
+// 個人檔案視窗
+let profTab = 'me';
+function openProf(tab) { hideAll(); show('prof', true); profTab = tab || 'me'; renderProf(); }
+document.querySelectorAll('[data-open]').forEach(b => b.addEventListener('click', () => openProf(b.dataset.open)));
+document.querySelector('.ptabs').addEventListener('click', e => { const t = e.target.dataset && e.target.dataset.p; if (t) { profTab = t; renderProf(); } });
+$('profBack').addEventListener('click', goHome);
+function renderProf() {
+  document.querySelectorAll('.ptabs button').forEach(b => b.classList.toggle('on', b.dataset.p === profTab));
+  ensureDaily();
+  const box = $('profBody'); let h = '';
+  if (profTab === 'me') {
+    const need = xpNeed(prof.lv), st = prof.stats;
+    h += `<div class="pf-head"><img src="${FRUITS[Math.min(prof.avatar, HIDDEN)].src}"><div><div class="pf-name">${esc(playerName || '玩家')}</div><div class="ttl">「${esc(prof.title)}」</div><div>Lv.${prof.lv}・🦴 ${prof.bone}</div></div></div>`;
+    h += `<div class="xpbar wide"><i style="width:${Math.round(prof.xp / need * 100)}%"></i></div><div class="note">經驗值 ${prof.xp} / ${need}（合成得到的分數就是經驗值，升級送 🦴30）</div>`;
+    h += `<div class="pf-grid"><div><b>${st.games}</b>單人場數</div><div><b>${st.best}</b>最高分</div><div><b>${st.merges}</b>合成次數</div><div><b>${st.matches}</b>對戰場數</div><div><b>${st.wins}</b>排位勝場</div><div><b>${prof.checkin.total}</b>簽到天數</div></div>`;
+    h += pid ? `<div style="margin:6px 0">${tierHTML(myStars)}</div>` : '<div class="note">登入後會顯示排位段位，進度也會存到雲端</div>';
+    h += '<h3>選擇頭像</h3><div class="pick">';
+    FRUITS.forEach((f, i) => {
+      const ok = i <= prof.stats.maxDog && (i !== HIDDEN || hiddenFound);
+      h += `<button data-av="${i}" class="${i === prof.avatar ? 'on' : ''}" ${ok ? '' : 'disabled'} title="${ok ? '' : '合成出這隻狗才能用'}">${ok ? `<img src="${f.src}">` : '🔒'}</button>`;
+    });
+    h += '</div><h3>選擇稱號</h3><div class="tlist">';
+    TITLES.forEach(T => {
+      const own = prof.titles.includes(T.t);
+      h += `<button data-tt="${esc(T.t)}" class="${T.t === prof.title ? 'on' : ''}" ${own ? '' : 'disabled'}>${own ? '' : '🔒 '}${esc(T.t)}${own ? '' : `<small>${esc(T.how)}</small>`}</button>`;
+    });
+    h += '</div>';
+  } else if (profTab === 'check') {
+    const c = prof.checkin, today = todayKey();
+    const yest = new Date(Date.now() + 8 * 3600000 - 86400000).toISOString().slice(0, 10);
+    const nextStreak = c.last === today ? c.streak : (c.last === yest ? c.streak + 1 : 1);
+    const pos = (nextStreak - 1) % 7;
+    h += `<div class="note">每天簽到領骨頭，連續 7 天大獎！目前連續 <b>${c.last === today || c.last === yest ? c.streak : 0}</b> 天</div><div class="chk">`;
+    CHECK_REWARD.forEach((r, i) => {
+      const done = c.last === today ? i <= pos : i < pos;
+      h += `<div class="${done ? 'done' : ''} ${i === pos && c.last !== today ? 'now' : ''}"><small>第${i + 1}天</small><b>${i === 6 ? '🎁' : '🦴'}</b>${r}</div>`;
+    });
+    h += '</div>';
+    h += canCheckIn() ? '<button class="main fr" id="doCheck">今日簽到</button>' : '<div class="note" style="margin-top:10px">✅ 今天已經簽到了，明天再來！</div>';
+  } else if (profTab === 'task') {
+    h += '<div class="note">每天 0 點換新任務，完成後記得領獎！</div>';
+    todayMissions().forEach(m => {
+      const v = Math.min(prof.daily.prog[m.key] || 0, m.n), done = v >= m.n, got = prof.daily.claimed.includes(m.id);
+      const show = m.key === 'bigdog' ? (v >= m.n ? 1 : 0) + '/1' : v + '/' + m.n;
+      h += `<div class="task ${got ? 'got' : ''}"><div class="tt">${m.dog !== undefined ? `<img class="mini" src="${FRUITS[m.dog].src}"> ` : ''}${esc(m.text)}<div class="xpbar wide"><i style="width:${Math.round((m.key === 'bigdog' ? (done ? 1 : 0) : v / m.n) * 100)}%"></i></div><small>${show}・獎勵 🦴${m.bone}・經驗 ${m.xp}</small></div>` +
+        (got ? '<span class="gotx">已領</span>' : `<button class="main ${done ? 'fr' : 'gray'}" data-claim="${m.id}" ${done ? '' : 'disabled'}>領獎</button>`) + '</div>';
+    });
+  } else if (profTab === 'shop') {
+    h += `<div class="note">用骨頭換場地背景和狗狗外框！你有 🦴 <b>${prof.bone}</b></div><h3>場地背景</h3><div class="shop">`;
+    for (const [id, T] of Object.entries(THEMES)) h += shopItem(id, T.icon, T.name, T.price, prof.theme === id, `background:linear-gradient(${T.c1},${T.c2})`);
+    h += '</div><h3>狗狗外框</h3><div class="shop">';
+    for (const [id, F] of Object.entries(FRAMES)) h += shopItem(id, F.icon, F.name, F.price, prof.frame === id, '');
+    h += '</div>';
+  }
+  box.innerHTML = h;
+}
+function shopItem(id, icon, name, price, on, style) {
+  const own = prof.owned.includes(id);
+  return `<button class="sitem ${on ? 'on' : ''}" data-shop="${id}"><span class="sw" style="${style}">${icon}</span>${esc(name)}<small>${on ? '使用中' : own ? '點擊使用' : '🦴 ' + price}</small></button>`;
+}
+$('profBody').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b || b.disabled) return;
+  if (b.dataset.av !== undefined) { prof.avatar = +b.dataset.av; saveProf(); renderProf(); }
+  else if (b.dataset.tt) { prof.title = b.dataset.tt; saveProf(); renderProf(); }
+  else if (b.id === 'doCheck') {
+    if (!canCheckIn()) return;
+    const c = prof.checkin, yest = new Date(Date.now() + 8 * 3600000 - 86400000).toISOString().slice(0, 10);
+    c.streak = c.last === yest ? c.streak + 1 : 1; c.last = todayKey(); c.total++; c.best = Math.max(c.best, c.streak);
+    const r = CHECK_REWARD[(c.streak - 1) % 7];
+    prof.bone += r; toast('📅 簽到成功！<br>🦴 +' + r + (r >= 80 ? '<br>連續 7 天大獎！' : ''));
+    gainXP(100); renderProf();
+  } else if (b.dataset.claim) {
+    const m = MISSIONS.find(x => x.id === b.dataset.claim);
+    if (!m || prof.daily.claimed.includes(m.id) || (prof.daily.prog[m.key] || 0) < m.n) return;
+    prof.daily.claimed.push(m.id); prof.bone += m.bone;
+    toast('🎯 任務完成！<br>🦴 +' + m.bone);
+    gainXP(m.xp); renderProf();
+  } else if (b.dataset.shop) {
+    const id = b.dataset.shop, item = THEMES[id] || FRAMES[id];
+    if (!prof.owned.includes(id)) {
+      if (prof.bone < item.price) { toast('🦴 骨頭不夠<br><span style="font-size:15px">還差 ' + (item.price - prof.bone) + ' 根</span>'); return; }
+      prof.bone -= item.price; prof.owned.push(id); toast('🛒 買到了！<br>' + item.icon + ' ' + item.name);
+    }
+    if (THEMES[id]) prof.theme = id; else prof.frame = id;
+    saveProf(); renderProf();
+  }
+});
+renderLvLine(); renderLvHud();
 
 // ====== 連線檢查 ======
 $('diagBtn').addEventListener('click', () => { hideAll(); show('diag', true); $('diagOut').textContent = ''; });
