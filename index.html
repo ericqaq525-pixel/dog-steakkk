@@ -98,6 +98,7 @@
       <div class="lbl" id="matchKind">排位賽</div>
       <div class="oppname" id="oppName">—</div>
       <div style="font-size:13px">對手分數 <b id="oppScore">0</b></div>
+      <div id="syncInfo" style="font-size:11px;white-space:pre-line;line-height:1.3"></div>
     </div>
     <div class="box" style="flex:0 0 92px">
       <div class="lbl" style="text-align:center">剩餘時間</div>
@@ -127,7 +128,7 @@
     <div class="tabs"><button data-t="day" class="on">今日</button><button data-t="all">總榜</button><button data-t="rank">🥩 排位</button></div>
     <ol class="board" id="board1"></ol>
     <div class="note" id="note1"></div>
-    <div class="ver">v7.2　<button id="diagBtn" style="font:inherit;font-size:12px;margin:0;background:none;border:none;color:#b85e0c;text-decoration:underline;cursor:pointer;opacity:1">🔧 連線檢查</button></div>
+    <div class="ver">v7.3　<button id="diagBtn" style="font:inherit;font-size:12px;margin:0;background:none;border:none;color:#b85e0c;text-decoration:underline;cursor:pointer;opacity:1">🔧 連線檢查</button></div>
   </div></div>
 
   <div class="modal" id="over"><div class="card">
@@ -231,7 +232,7 @@ const MATCH_SECONDS = 180;       // 對戰時間
 const GARBAGE_DELAY = 2;         // 攻擊在幾秒後落下（可被自己的攻擊抵銷）
 const AI_WAIT_SECONDS = 120;     // 排位配對幾秒沒找到人就派電腦
 const AI_THINK = 0.9;            // 電腦每隻狗的間隔（秒），越小越快
-const SYNC_MS = 1000;            // 對戰時多久同步一次畫面給對手
+const SYNC_MS = 1500;            // 對戰時多久同步一次畫面給對手
 const AUTO_DROP = 4;             // 對戰時幾秒不投放就自動投下（防掛機）
 const AWAY_LOSE_MS = 15000;      // 對戰中離開畫面多久直接判輸
 const FRUITS = [
@@ -577,6 +578,7 @@ function renderMini() {
     for (const b of AI.bodies) drawDog(mctx, b, b.level, b.x, b.y, b.a, 1, 1, false);
   } else {
     drawBg(mctx, false);
+    if (!oppView.size) { mctx.fillStyle = 'rgba(122,74,28,.6)'; mctx.font = 'bold 40px sans-serif'; mctx.textAlign = 'center'; mctx.textBaseline = 'middle'; mctx.fillText('等待', W / 2, H / 2 - 30); mctx.fillText('畫面', W / 2, H / 2 + 30); }
     for (const v of oppView.values()) {
       v.x += (v.tx - v.x) * 0.2; v.y += (v.ty - v.y) * 0.2;
       drawDog(mctx, null, v.lv, v.x, v.y, 0, 1, 1, false);
@@ -673,7 +675,7 @@ const firebaseConfig = {
   messagingSenderId: "741734243486",
   appId: "1:741734243486:web:62dbac94d9e9c4f51a2f8f"
 };
-const VERSION = 'v7.2';
+const VERSION = 'v7.3';
 const FB_VERSIONS = ['13.1.0', '11.0.2'];
 let fbVer = '';
 let fs = null, fdb = null, fbReady, am = null, auth = null, authUser = null, authKnown = false;
@@ -1108,7 +1110,7 @@ async function joinRoom(roomId, kind) {
   const m = match;
   m.unsub = fs.onSnapshot(fs.doc(fdb, 'rooms', roomId, 'players', oppId), snap => {
     if (match !== m || !snap.exists()) return;
-    m.oppJoined = true;
+    m.oppJoined = true; m.oppUpdates = (m.oppUpdates || 0) + 1;
     const v = snap.data();
     m.oppSeenAt = Date.now();
     m.opp = { score: +v.score || 0, alive: v.alive !== false, done: !!v.done, sent: +v.sent || 0 };
@@ -1152,18 +1154,31 @@ function matchTick() {
   if (m.timeUp && now - m.timeUpAt > 8000) judgeByScore();
   if (Date.now() - m.oppSeenAt > 20000) finishMatch('win', '對手斷線了');
   flushMatch(false);
+  syncStatus();
 }
 
-async function flushMatch(force) {
+function flushMatch(force) {
   const m = match;
-  if (!m || m.isAI || !m.myRef || m.writing) return;
+  if (!m || m.isAI || !m.myRef) return;
   const now = Date.now();
+  // 上一次上傳卡住超過 4 秒就不等了，直接再送（避免一次卡住後整場都不同步）
+  if (m.writing && now - m.writeStart < 4000) return;
   if (!force && now - m.lastWrite < SYNC_MS) return;
-  m.writing = true; m.lastWrite = now;
-  try {
-    await fs.setDoc(m.myRef, { sent: m.sent, score: Math.min(100000, P.score), alive: !P.gameOver, b: P.pack(), t: now, done: m.timeUp || P.gameOver });
-  } catch (e) { console.warn(e); }
-  m.writing = false;
+  m.writing = true; m.writeStart = now; m.lastWrite = now;
+  fs.setDoc(m.myRef, { sent: m.sent, score: Math.min(100000, P.score), alive: !P.gameOver, b: P.pack(), t: now, done: m.timeUp || P.gameOver })
+    .then(() => { m.lastAck = Date.now(); m.lastErr = ''; })
+    .catch(e => { console.warn(e); m.lastErr = errCode(e); })
+    .finally(() => { m.writing = false; });
+}
+function syncStatus() {
+  const m = match;
+  if (!m || m.isAI) { $('syncInfo').textContent = ''; return; }
+  const now = Date.now();
+  const oppAgo = Math.round((now - m.oppSeenAt) / 1000), myAgo = m.lastAck ? Math.round((now - m.lastAck) / 1000) : null;
+  let t = '📡 對手 ' + (m.oppUpdates > 1 ? oppAgo + ' 秒前' : '尚未') + '更新・我 ' + (myAgo === null ? '尚未上傳' : myAgo + ' 秒前上傳');
+  if (m.lastErr) t += '\n⚠ 上傳失敗［' + m.lastErr + '］';
+  $('syncInfo').textContent = t;
+  $('syncInfo').style.color = (m.lastErr || oppAgo > 6 || (myAgo !== null && myAgo > 6)) ? '#c62828' : '#2e7d32';
 }
 
 function myTopOut() {
