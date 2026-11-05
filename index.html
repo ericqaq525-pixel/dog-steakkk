@@ -60,6 +60,21 @@
   .acct { font-size: 13px; margin-top: 4px; }
   .acct button { background: none; border: none; color: #b85e0c; font: inherit; font-size: 13px; text-decoration: underline; cursor: pointer; padding: 0 4px; }
   #login input { margin-top: 8px; }
+  .online { font-size: 13px; margin-top: 6px; color: #2e7d32; font-weight: 700; min-height: 18px; }
+  .tierb { font-size: 12px; padding: 1px 7px; border-radius: 999px; white-space: nowrap; color: #fff; font-weight: 700; }
+  .stars { color: #f5b301; letter-spacing: 1px; white-space: nowrap; }
+  .stars .off { color: #d9c4a0; }
+  #starFx { height: 0; position: relative; }
+  #starFx.on { height: 96px; }
+  #starFx .big { position: absolute; left: 50%; top: 50%; font-size: 72px; transform: translate(-50%,-50%); }
+  #starFx.win .big { animation: starIn 1.4s cubic-bezier(.2,1.6,.4,1) forwards; text-shadow: 0 0 24px #ffd84a; }
+  #starFx.lose .big { animation: starOut 1.4s ease forwards; filter: grayscale(1); }
+  #starFx .spark { position: absolute; left: 50%; top: 50%; width: 8px; height: 8px; border-radius: 50%; background: #ffd84a; animation: spark 1s ease-out forwards; }
+  @keyframes starIn { 0% { transform: translate(-50%,-50%) scale(0) rotate(-180deg); opacity: 0; } 60% { transform: translate(-50%,-50%) scale(1.3) rotate(10deg); opacity: 1; } 100% { transform: translate(-50%,-50%) scale(1) rotate(0); opacity: 1; } }
+  @keyframes starOut { 0% { transform: translate(-50%,-50%) scale(1); opacity: 1; } 40% { transform: translate(-50%,-50%) scale(1.1) rotate(-15deg); } 100% { transform: translate(-50%,10%) scale(.6) rotate(40deg); opacity: 0; } }
+  @keyframes spark { 0% { transform: translate(-50%,-50%); opacity: 1; } 100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))); opacity: 0; } }
+  .promo { font-size: 20px; font-weight: 900; color: #d6453b; animation: pulse .8s ease 3; }
+  @keyframes pulse { 50% { transform: scale(1.15); } }
   .ver { font-size: 11px; opacity: .45; margin-top: 10px; }
   #toast { white-space: nowrap; position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%) scale(.6); background: #fff7e6; font-size: 22px; font-weight: 800; text-align: center; padding: 16px 22px; border-radius: 18px; box-shadow: 0 6px 0 #d7b072; opacity: 0; pointer-events: none; z-index: 4; }
   #toast img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-top: 8px; border: 4px solid #fff6a8; }
@@ -101,17 +116,18 @@
     <input id="nameIn" maxlength="12" placeholder="輸入你的名字" autocomplete="off">
     <div class="myrank" id="myRank"></div>
     <div class="acct" id="acct"></div>
+    <div class="online" id="online"></div>
     <div class="btns">
       <button class="main" id="goSolo">單人模式</button>
       <button class="main vs" id="goRanked">⚔️ 排位賽</button>
       <button class="main fr" id="goFriend">👫 友誼賽</button>
     </div>
-    <div class="note">對戰：合成大狗狗會把狗狗砸到對手場上！限時 3 分鐘，先爆的輸，時間到比分數。排位賽 2 分鐘配不到人，會派出厲害的電腦跟你打。</div>
+    <div class="note">對戰：合成大狗狗會把狗狗砸到對手場上！限時 3 分鐘，先爆的輸，時間到比分數。排位贏一場得一顆星，從青銅牛排一路升到王者牛排！2 分鐘配不到人會派電腦陪練（不計星）。</div>
     <h3>🏆 排行榜</h3>
-    <div class="tabs"><button data-t="solo" class="on">單人分數</button><button data-t="rank">排位戰績</button></div>
+    <div class="tabs"><button data-t="day" class="on">今日</button><button data-t="all">總榜</button><button data-t="rank">🥩 排位</button></div>
     <ol class="board" id="board1"></ol>
     <div class="note" id="note1"></div>
-    <div class="ver">v6</div>
+    <div class="ver">v7</div>
   </div></div>
 
   <div class="modal" id="over"><div class="card">
@@ -124,14 +140,14 @@
       <button class="main gray" id="home1">回主畫面</button>
     </div>
     <h3>🏆 排行榜</h3>
-    <div class="tabs"><button data-t="solo" class="on">單人分數</button><button data-t="rank">排位戰績</button></div>
+    <div class="tabs"><button data-t="day" class="on">今日</button><button data-t="all">總榜</button><button data-t="rank">🥩 排位</button></div>
     <ol class="board" id="board2"></ol>
     <div class="note" id="note2"></div>
   </div></div>
 
   <div class="modal" id="matching"><div class="card">
     <h2>⚔️ 配對中…</h2>
-    <div id="matchInfo" style="font-size:15px;margin:8px 0">正在尋找對手</div>
+    <div id="matchInfo" style="font-size:15px;margin:8px 0;white-space:pre-line">正在尋找對手</div>
     <div class="note">2 分鐘內沒配到真人，會派出厲害的電腦跟你打。</div>
     <div class="btns">
       <button class="main vs" id="aiNow">直接打電腦</button>
@@ -178,6 +194,7 @@
     <div class="big-result" id="resTitle">勝利！</div>
     <div id="resWhy" style="font-size:14px"></div>
     <div style="margin:10px 0">你 <b id="resMe">0</b> 分 ： <span id="resOppName">對手</span> <b id="resOpp">0</b> 分</div>
+    <div id="starFx"></div>
     <div id="resRecord" style="font-weight:800"></div>
     <div class="btns">
       <button class="main vs" id="againMatch">再來一場</button>
@@ -187,7 +204,7 @@
 
   <div class="modal" id="boardModal"><div class="card">
     <h2>🏆 排行榜</h2>
-    <div class="tabs"><button data-t="solo" class="on">單人分數</button><button data-t="rank">排位戰績</button></div>
+    <div class="tabs"><button data-t="day" class="on">今日</button><button data-t="all">總榜</button><button data-t="rank">🥩 排位</button></div>
     <ol class="board" id="board3"></ol>
     <div class="note" id="note3"></div>
     <button class="main" id="closeBoard">繼續玩</button>
@@ -233,6 +250,8 @@ let scale = 1, dpr = window.devicePixelRatio || 1;
 function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
 function show(id, on) { $(id).classList.toggle('on', on); }
 const sleep = ms => new Promise(r => setTimeout(r, ms));
+const tms = v => v && typeof v.toMillis === 'function' ? v.toMillis() : (+v || 0);   // Firestore 時間 → 毫秒
+const errCode = e => (e && e.code ? String(e.code).replace(/^.*\//, '') : (e && e.message) || '未知');
 
 function resize() {
   const st = $('stage');
@@ -254,9 +273,24 @@ renderChain();
 
 // 玩家身分（存在這台裝置）
 let pid = null;   // 登入後 = Firebase 帳號 uid
-let myWins = 0, myLosses = 0;
+let myWins = 0, myLosses = 0, myStars = 0;
 function winRate(w, l) { return w + l ? Math.round(w / (w + l) * 100) : 0; }
-function renderMyRank() { $('myRank').textContent = pid ? `排位戰績：${myWins} 勝 ${myLosses} 敗・勝率 ${winRate(myWins, myLosses)}%` : ''; }
+// 牛排段位：每贏一場 +1 星、輸一場 -1 星，集滿就晉級
+const TIERS = [['青銅牛排', 3, '#b0703a'], ['白銀牛排', 3, '#8e9aa6'], ['黃金牛排', 4, '#d4a017'], ['白金牛排', 4, '#3fa7a0'], ['鑽石牛排', 5, '#4d7ee8'], ['大師牛排', 5, '#9b4de0'], ['王者牛排', Infinity, '#e0453a']];
+function tierOf(stars) {
+  let s = Math.max(0, stars | 0);
+  for (let i = 0; i < TIERS.length; i++) {
+    const [name, need, color] = TIERS[i];
+    if (s < need) return { i, name, need, star: s, color };
+    s -= need;
+  }
+}
+function starsHTML(t) {
+  if (t.need === Infinity) return '<span class="stars">★×' + t.star + '</span>';
+  return '<span class="stars">' + '★'.repeat(t.star) + '<span class="off">' + '☆'.repeat(t.need - t.star) + '</span></span>';
+}
+function tierHTML(stars) { const t = tierOf(stars); return '<span class="tierb" style="background:' + t.color + '">🥩 ' + t.name + '</span> ' + starsHTML(t); }
+function renderMyRank() { $('myRank').innerHTML = pid ? tierHTML(myStars) + `<br><span style="font-size:12px">${myWins} 勝 ${myLosses} 敗・勝率 ${winRate(myWins, myLosses)}%</span>` : ''; }
 renderMyRank();
 
 let best = +store('dog-best') || 0;
@@ -591,11 +625,12 @@ function setMode(m) {
 }
 function hideAll() { ['start', 'over', 'result', 'matching', 'friend', 'boardModal', 'login'].forEach(id => show(id, false)); }
 function goHome() {
-  hideAll(); running = false; AI = null; setMode('solo'); renderMyRank(); show('start', true);
+  hideAll(); running = false; AI = null; setMode('solo'); renderMyRank(); show('start', true); setPresence(null); refreshOnline();
 }
 function startSolo() {
   hideAll(); setMode('solo'); AI = null; P.reset(); P.attackEnabled = false;
   P.onOver = soloOver; $('score').textContent = 0; $('next').src = FRUITS[P.nxt].src; running = true;
+  setPresence('solo');
 }
 $('goSolo').addEventListener('click', () => { if (readName()) startSolo(); });
 $('goRanked').addEventListener('click', () => { if (readName()) needLogin(startMatchmaking); });
@@ -613,7 +648,7 @@ $('trophy').addEventListener('click', () => {
 $('closeBoard').addEventListener('click', () => { paused = false; show('boardModal', false); });
 
 function soloOver() {
-  running = false;
+  running = false; setPresence(null);
   $('pname').textContent = playerName;
   $('final').textContent = P.score;
   $('biggest').innerHTML = '最大合成：<img class="mini big" src="' + FRUITS[P.biggest].src + '">';
@@ -646,7 +681,7 @@ async function loadFirebase() {
 }
 
 // ====== 排行榜 ======
-let soloEntries = [], rankEntries = [], myIds = new Set(), boardNote = '排行榜載入中…', boardTab = 'solo';
+let soloEntries = [], dayEntries = [], rankEntries = [], myIds = new Set(), boardNote = '排行榜載入中…', boardTab = 'day';
 document.querySelectorAll('.tabs').forEach(tb => tb.addEventListener('click', e => {
   const t = e.target.dataset && e.target.dataset.t; if (!t) return;
   boardTab = t; renderBoards();
@@ -655,25 +690,27 @@ function renderBoards() {
   document.querySelectorAll('.tabs button[data-t]').forEach(b => b.classList.toggle('on', b.dataset.t === boardTab));
   ['board1', 'board2', 'board3'].forEach((id, k) => {
     const ol = $(id); ol.textContent = '';
-    const src = boardTab === 'solo' ? soloEntries : rankEntries;
+    const src = boardTab === 'all' ? soloEntries : boardTab === 'day' ? dayEntries : rankEntries;
     const list = k === 0 ? src.slice(0, 10) : src;
     list.forEach((e, i) => {
       const li = document.createElement('li');
-      if ((boardTab === 'solo' && myIds.has(e.id)) || (boardTab === 'rank' && e.id === pid)) li.className = 'me';
+      if ((boardTab !== 'rank' && myIds.has(e.id)) || (boardTab === 'rank' && e.id === pid)) li.className = 'me';
       const rk = document.createElement('span'); rk.className = 'rk'; rk.textContent = i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1;
       const nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = e.name;
       const sc = document.createElement('span'); sc.className = 'sc';
-      if (boardTab === 'solo') {
+      if (boardTab !== 'rank') {
         const im = document.createElement('img'); im.className = 'mini'; im.src = FRUITS[Math.max(0, Math.min(HIDDEN, e.level | 0))].src;
         sc.textContent = e.score; li.append(rk, im, nm, sc);
       } else {
-        sc.textContent = e.wins + '勝' + e.losses + '敗';
-        const wr = document.createElement('span'); wr.className = 'wr'; wr.textContent = winRate(e.wins, e.losses) + '%';
-        li.append(rk, nm, sc, wr);
+        const t = tierOf(e.stars);
+        const tb = document.createElement('span'); tb.className = 'tierb'; tb.style.background = t.color; tb.textContent = t.name;
+        sc.className = 'stars'; sc.textContent = '★' + e.stars;
+        const wr = document.createElement('span'); wr.className = 'wr'; wr.textContent = e.wins + '勝' + e.losses + '敗';
+        li.append(rk, nm, tb, sc, wr);
       }
       ol.appendChild(li);
     });
-    $('note' + (k + 1)).textContent = boardNote || (src.length ? '' : (boardTab === 'solo' ? '還沒有人上榜，快來搶第一！' : '還沒有人打過排位賽！'));
+    $('note' + (k + 1)).textContent = boardNote || (src.length ? '' : (boardTab === 'day' ? '今天還沒有人上榜，快來搶第一！' : boardTab === 'all' ? '還沒有人上榜，快來搶第一！' : '新賽季還沒有人打過排位賽！'));
   });
 }
 renderBoards();
@@ -700,20 +737,63 @@ renderBoards();
     clearTimeout(timer); boardNote = '';
     renderBoards(); updateRankMsg();
   }, err => { clearTimeout(timer); console.warn(err); boardNote = '排行榜連線失敗（' + (err.code || '未知錯誤') + '）。'; renderBoards(); });
-  fs.onSnapshot(fs.query(fs.collection(fdb, 'players'), fs.orderBy('wins', 'desc'), fs.limit(BOARD_SIZE)), snap => {
-    rankEntries = snap.docs.map(d => { const v = d.data() || {}; return { id: d.id, name: String(v.name || '匿名').slice(0, 12), wins: v.wins | 0, losses: v.losses | 0 }; });
+  fs.onSnapshot(fs.query(fs.collection(fdb, LADDER), fs.orderBy('stars', 'desc'), fs.limit(BOARD_SIZE)), snap => {
+    rankEntries = snap.docs.map(d => { const v = d.data() || {}; return { id: d.id, name: String(v.name || '匿名').slice(0, 12), stars: v.stars | 0, wins: v.wins | 0, losses: v.losses | 0 }; });
     renderBoards();
   }, err => console.warn(err));
+  subscribeDaily();
+  setInterval(() => { if (todayKey() !== dayKeySub) subscribeDaily(); }, 60000);
+  refreshOnline(); setInterval(refreshOnline, 30000);
 })();
+
+// ====== 今日排行（台灣時間每天 0 點換榜）======
+const LADDER = 'ladder';   // 排位新賽季的資料（舊的 players 不再使用）
+function todayKey() { return new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 10); }
+let dayKeySub = null, dayUnsub = null;
+function subscribeDaily() {
+  if (dayUnsub) dayUnsub();
+  dayKeySub = todayKey(); dayEntries = []; renderBoards();
+  dayUnsub = fs.onSnapshot(fs.query(fs.collection(fdb, 'daily', dayKeySub, 'scores'), fs.orderBy('score', 'desc'), fs.limit(BOARD_SIZE)), snap => {
+    dayEntries = snap.docs.map(d => { const v = d.data() || {}; return { id: d.id, name: String(v.name || '匿名').slice(0, 12), score: Math.max(0, Math.floor(+v.score || 0)), level: +v.level || 0 }; });
+    renderBoards(); updateRankMsg();
+  }, err => console.warn(err));
+}
+
+// ====== 線上人數 ======
+let cid = store('dog-cid');
+if (!cid || !/^[a-z0-9]{12,}$/.test(cid)) { cid = Array.from({ length: 16 }, () => 'abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random() * 36)]).join(''); store('dog-cid', cid); }
+let presKind = null, presWritten = null, presBeat = null;
+function setPresence(kind) {
+  presKind = kind;
+  if (!fdb) return;
+  if (presWritten && presWritten !== kind) { fs.deleteDoc(fs.doc(fdb, 'presence_' + presWritten, cid)).catch(() => {}); presWritten = null; }
+  clearInterval(presBeat); presBeat = null;
+  if (!kind) return;
+  const beat = () => { if (document.hidden || presKind !== kind) return; fs.setDoc(fs.doc(fdb, 'presence_' + kind, cid), { t: fs.serverTimestamp() }).then(() => { presWritten = kind; }).catch(e => console.warn(e)); };
+  beat(); presBeat = setInterval(beat, 45000);
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { if (presWritten && fdb) { fs.deleteDoc(fs.doc(fdb, 'presence_' + presWritten, cid)).catch(() => {}); presWritten = null; } }
+  else if (presKind) setPresence(presKind);
+});
+async function refreshOnline() {
+  if (!fdb || !$('start').classList.contains('on') || document.hidden) return;
+  try {
+    const since = fs.Timestamp.fromMillis(Date.now() - 100000);
+    const cnt = async k => (await fs.getCountFromServer(fs.query(fs.collection(fdb, 'presence_' + k), fs.where('t', '>=', since)))).data().count;
+    const [a, b] = await Promise.all([cnt('solo'), cnt('ranked')]);
+    $('online').textContent = `🟢 現在有 ${a} 人在玩單人、${b} 人在玩排位`;
+  } catch (e) { console.warn(e); }
+}
 
 // ====== 帳號 ======
 const ACC_DOMAIN = '@dogsteakkk.game';   // 帳號會被轉成這種假 email 給 Firebase 用
 async function loadRecord() {
-  myWins = 0; myLosses = 0; renderMyRank();
+  myWins = 0; myLosses = 0; myStars = 0; renderMyRank();
   if (!pid || !fdb) return;
   try {
-    const me = await fs.getDoc(fs.doc(fdb, 'players', pid));
-    if (me.exists()) { const v = me.data(); myWins = v.wins | 0; myLosses = v.losses | 0; }
+    const me = await fs.getDoc(fs.doc(fdb, LADDER, pid));
+    if (me.exists()) { const v = me.data(); myWins = v.wins | 0; myLosses = v.losses | 0; myStars = v.stars | 0; }
   } catch (e) { console.warn(e); }
   renderMyRank();
 }
@@ -725,7 +805,7 @@ function renderAcct() {
   const btn = (txt, fn) => { const b = document.createElement('button'); b.textContent = txt; b.onclick = fn; el.appendChild(b); };
   if (!authUser) { span.textContent = '尚未登入（對戰需要登入）'; el.appendChild(span); btn('登入 / 註冊', () => needLogin(null)); return; }
   const acc = authUser.isAnonymous ? '遊客' : '帳號 ' + String(authUser.email || '').replace(ACC_DOMAIN, '');
-  span.textContent = '👤 ' + (authUser.displayName || playerName || '玩家') + '（' + acc + '）';
+  span.textContent = '👤 ' + (authUser.displayName || playerName || '玩家') + '（' + acc + '・ID ' + authUser.uid.slice(-4) + '）';
   el.appendChild(span);
   if (authUser.isAnonymous) btn('綁定帳號', () => openLogin('reg', null, true));
   btn(logoutArmed ? (authUser.isAnonymous ? '遊客登出戰績會消失，再按一次確認' : '再按一次確認登出') : '登出', async () => {
@@ -764,7 +844,7 @@ function authErr(e) {
   if (c.includes('email-already-in-use') || c.includes('credential-already-in-use')) return '這個帳號已經有人用了，換一個吧。';
   if (c.includes('invalid-credential') || c.includes('wrong-password') || c.includes('user-not-found') || c.includes('invalid-login')) return '帳號或密碼錯誤。';
   if (c.includes('weak-password')) return '密碼至少要 6 碼。';
-  if (c.includes('operation-not-allowed') || c.includes('admin-restricted')) return '這個登入方式還沒在 Firebase 開啟。';
+  if (c.includes('operation-not-allowed') || c.includes('admin-restricted')) return '這個登入方式還沒在 Firebase 開啟（Authentication → 登入方式）。';
   if (c.includes('network')) return '網路連線失敗，請再試一次。';
   if (c.includes('too-many-requests')) return '嘗試太多次了，請稍後再試。';
   return '登入失敗（' + (c || '未知錯誤') + '）';
@@ -809,16 +889,19 @@ $('cancelLogin').addEventListener('click', goHome);
 let lastSubmit = null;
 function updateRankMsg() {
   if (!lastSubmit || !$('over').classList.contains('on')) return;
-  const i = soloEntries.findIndex(e => e.id === lastSubmit);
-  if (i >= 0) $('rankMsg').textContent = `🎉 你登上排行榜第 ${i + 1} 名！`;
-  else if (soloEntries.length >= BOARD_SIZE) $('rankMsg').textContent = `這次沒進前 ${BOARD_SIZE} 名，再接再厲！`;
+  const i = soloEntries.findIndex(e => e.id === lastSubmit), d = dayEntries.findIndex(e => e.id === lastSubmit);
+  if (i >= 0) $('rankMsg').textContent = `🎉 你登上總榜第 ${i + 1} 名！` + (d >= 0 ? `（今日第 ${d + 1} 名）` : '');
+  else if (d >= 0) $('rankMsg').textContent = `🎉 你是今日第 ${d + 1} 名！`;
+  else if (dayEntries.length >= BOARD_SIZE) $('rankMsg').textContent = `這次沒進今日前 ${BOARD_SIZE} 名，再接再厲！`;
 }
 async function submitScore(name, sc, level) {
   if (sc <= 0) return;
   if (!fdb) { $('rankMsg').textContent = '排行榜還沒連上，這局分數沒有上傳。'; return; }
   $('rankMsg').textContent = '上傳分數中…';
   try {
-    const ref = await fs.addDoc(fs.collection(fdb, 'scores'), { name: name.slice(0, 12), score: Math.min(100000, Math.floor(sc)), level: Math.floor(level), at: fs.serverTimestamp() });
+    const body = { name: name.slice(0, 12), score: Math.min(100000, Math.floor(sc)), level: Math.floor(level), at: fs.serverTimestamp() };
+    const ref = fs.doc(fs.collection(fdb, 'scores'));
+    await Promise.all([fs.setDoc(ref, body), fs.setDoc(fs.doc(fdb, 'daily', todayKey(), 'scores', ref.id), body)]);
     myIds.add(ref.id); lastSubmit = ref.id;
     $('rankMsg').textContent = '分數已上傳！';
     renderBoards(); updateRankMsg();
@@ -832,7 +915,7 @@ async function submitScore(name, sc, level) {
 let mm = null, match = null, lastKind = 'ranked';
 
 async function startMatchmaking() {
-  hideAll(); show('matching', true);
+  hideAll(); show('matching', true); setPresence('ranked');
   $('matchInfo').textContent = '正在連線…';
   mm = { startedAt: Date.now(), unsub: null, poll: null, beat: null, busy: false, done: false, myRef: null };
   const my = mm;
@@ -841,14 +924,14 @@ async function startMatchmaking() {
   if (!ok || !fdb) { $('matchInfo').textContent = '連不上伺服器，2 分鐘後會改打電腦，或按「直接打電腦」。'; my.poll = setInterval(() => { if (Date.now() - my.startedAt > AI_WAIT_SECONDS * 1000) startAIMatch(); }, 1000); return; }
   my.myRef = fs.doc(fdb, 'queue', pid);
   try {
-    await fs.setDoc(my.myRef, { name: playerName, t: Date.now(), room: null });
-  } catch (e) { console.warn(e); $('matchInfo').textContent = e.code === 'permission-denied' ? '被資料庫拒絕了（請更新 Firestore 安全規則）。' : '配對失敗，請再試一次。'; return; }
+    await fs.setDoc(my.myRef, { name: playerName, t: fs.serverTimestamp(), room: null });
+  } catch (e) { console.warn(e); $('matchInfo').textContent = (e.code === 'permission-denied' ? '被資料庫拒絕了（請確認 Firestore 安全規則已發布）' : '配對失敗') + '［' + errCode(e) + '］'; return; }
   if (mm !== my) { fs.deleteDoc(my.myRef).catch(() => {}); return; }
   my.unsub = fs.onSnapshot(my.myRef, snap => {
     const v = snap.exists() ? snap.data() : null;
     if (v && v.room && !my.done && mm === my) { my.done = true; stopMatchmaking(true); joinRoom(v.room, 'ranked'); }
   });
-  my.beat = setInterval(() => { if (!my.done) fs.updateDoc(my.myRef, { t: Date.now() }).catch(() => {}); }, 5000);
+  my.beat = setInterval(() => { if (!my.done) fs.updateDoc(my.myRef, { t: fs.serverTimestamp() }).catch(e => console.warn(e)); }, 5000);
   my.poll = setInterval(findOpponent, 2000);
   findOpponent();
 }
@@ -858,13 +941,16 @@ async function findOpponent() {
   if (!my || my.done || my.busy) return;
   const waited = Math.floor((Date.now() - my.startedAt) / 1000);
   if (waited >= AI_WAIT_SECONDS) { startAIMatch(); return; }
-  $('matchInfo').textContent = `正在尋找對手…（${waited} 秒）`;
   my.busy = true;
   try {
-    const snap = await fs.getDocs(fs.query(fs.collection(fdb, 'queue'), fs.where('room', '==', null), fs.limit(30)));
-    const now = Date.now();
+    const snap = await fs.getDocs(fs.query(fs.collection(fdb, 'queue'), fs.where('room', '==', null), fs.limit(50)));
+    // 用伺服器時間判斷誰還在線上（不看各自手機的時鐘，避免時間沒對準就配不到）
+    const meDoc = snap.docs.find(d => d.id === pid);
+    const myT = meDoc ? tms(meDoc.data().t) : 0;
+    const others = myT ? snap.docs.filter(d => d.id !== pid && Math.abs(myT - tms(d.data().t)) < 20000) : [];
+    $('matchInfo').textContent = `正在尋找對手…（${waited} 秒）\n同時在排隊的其他玩家：${others.length} 位`;
     // 不挑積分，誰在等就跟誰打；id 比較小的一方負責開房，避免兩邊同時開
-    const opp = snap.docs.find(d => d.id !== pid && now - (+d.data().t || 0) < 15000 && pid < d.id);
+    const opp = others.find(d => pid < d.id);
     if (opp && mm === my) {
       const roomRef = fs.doc(fs.collection(fdb, 'rooms'));
       const oppRef = fs.doc(fdb, 'queue', opp.id);
@@ -876,7 +962,7 @@ async function findOpponent() {
         tx.update(oppRef, { room: roomRef.id });
       });
     }
-  } catch (e) { if (e.message !== 'taken') console.warn(e); }
+  } catch (e) { if (e.message !== 'taken') { console.warn(e); $('matchInfo').textContent += '\n（錯誤：' + errCode(e) + '）'; } }
   my.busy = false;
 }
 
@@ -892,7 +978,7 @@ $('aiNow').addEventListener('click', () => startAIMatch());
 // ====== 友誼賽 ======
 let fr = null;
 function openFriend() {
-  hideAll(); show('friend', true);
+  hideAll(); show('friend', true); setPresence(null);
   $('friendMenu').style.display = ''; $('friendWait').style.display = 'none'; $('friendMsg').textContent = ''; $('codeIn').value = '';
 }
 function stopFriend() {
@@ -911,14 +997,14 @@ $('hostRoom').addEventListener('click', async () => {
   for (let i = 0; i < 5 && !code; i++) {
     const c = String(Math.floor(1000 + Math.random() * 9000));
     const r = fs.doc(fdb, 'lobby', c);
-    try { const s = await fs.getDoc(r); if (!s.exists() || Date.now() - (+s.data().t || 0) > 600000) { code = c; ref = r; } } catch (e) { console.warn(e); }
+    try { const s = await fs.getDoc(r); if (!s.exists() || Date.now() - tms(s.data().t) > 600000) { code = c; ref = r; } } catch (e) { console.warn(e); $('friendMsg').textContent = '讀取房間失敗［' + errCode(e) + '］'; }
   }
   if (!code) { $('friendMsg').textContent = '建立房間失敗，請再試一次。'; return; }
-  try { await fs.setDoc(ref, { host: pid, name: playerName, t: Date.now(), room: null }); }
-  catch (e) { console.warn(e); $('friendMsg').textContent = e.code === 'permission-denied' ? '被資料庫拒絕了（請更新 Firestore 安全規則）。' : '建立房間失敗。'; return; }
+  try { await fs.setDoc(ref, { host: pid, name: playerName, t: fs.serverTimestamp(), room: null }); }
+  catch (e) { console.warn(e); $('friendMsg').textContent = (e.code === 'permission-denied' ? '被資料庫拒絕了（請確認 Firestore 安全規則已發布）' : '建立房間失敗') + '［' + errCode(e) + '］'; return; }
   const my = fr = { ref, code, done: false, unsub: null, beat: null };
   $('friendMenu').style.display = 'none'; $('friendWait').style.display = ''; $('roomCode').textContent = code; $('friendMsg').textContent = '等待朋友加入…';
-  my.beat = setInterval(() => fs.updateDoc(ref, { t: Date.now() }).catch(() => {}), 10000);
+  my.beat = setInterval(() => fs.updateDoc(ref, { t: fs.serverTimestamp() }).catch(e => console.warn(e)), 10000);
   my.unsub = fs.onSnapshot(ref, snap => {
     const v = snap.exists() ? snap.data() : null;
     if (v && v.room && !my.done && fr === my) { my.done = true; stopFriend(); joinRoom(v.room, 'friend'); }
@@ -937,14 +1023,19 @@ $('joinRoomBtn').addEventListener('click', async () => {
       const s = await tx.get(ref);
       if (!s.exists()) throw new Error('none');
       const v = s.data();
-      if (v.room || v.host === pid || Date.now() - (+v.t || 0) > 60000) throw new Error('none');
+      if (v.host === pid) throw new Error('self');
+      if (v.room) throw new Error('used');
       tx.set(roomRef, { p: [v.host, pid], names: { [v.host]: String(v.name).slice(0, 12), [pid]: playerName }, kind: 'friend', at: fs.serverTimestamp() });
       tx.update(ref, { room: roomRef.id });
     });
     joinRoom(roomRef.id, 'friend');
   } catch (e) {
     console.warn(e);
-    $('friendMsg').textContent = e.message === 'none' ? '找不到這個房間，請確認房號。' : (e.code === 'permission-denied' ? '被資料庫拒絕了（請更新 Firestore 安全規則）。' : '加入失敗，請再試一次。');
+    const m = e && e.message;
+    $('friendMsg').textContent = m === 'none' ? '找不到這個房間，請確認房號。'
+      : m === 'self' ? '這是你自己開的房間！同一支手機（同一個瀏覽器）算同一個人，請用另一台裝置或另一個帳號加入。'
+      : m === 'used' ? '這個房間已經開打了，請朋友重開一間。'
+      : (e.code === 'permission-denied' ? '被資料庫拒絕了（請確認 Firestore 安全規則已發布）' : '加入失敗') + '［' + errCode(e) + '］';
   }
 });
 
@@ -966,7 +1057,10 @@ async function countdownAndStart() {
   show('count', false);
   if (!match) return;
   P.attackEnabled = true; P.autoDrop = true; P.onOver = () => myTopOut();
-  if (match.kind === 'ranked') match.chargeP = writeRecord(myWins, myLosses + 1);   // 先記一敗，中途跑掉就算輸
+  if (match.kind === 'ranked' && !match.isAI) {   // 先記一敗、扣一星，中途跑掉就算輸
+    match.base = { s: myStars, w: myWins, l: myLosses };
+    match.chargeP = writeRecord(Math.max(0, myStars - 1), myWins, myLosses + 1);
+  }
   $('next').src = FRUITS[P.nxt].src;
   if (AI) { AI.reset(); AI.attackEnabled = true; AI.onAttack = n => P.receive(n); AI.onOver = () => finishMatch('win', '電腦的狗狗爆出紅線了！'); P.onAttack = n => AI.receive(n); }
   else P.onAttack = n => { if (match) { match.sent += n; flushMatch(true); } };
@@ -978,7 +1072,7 @@ function startAIMatch() {
   stopMatchmaking(true);
   lastKind = 'ranked';
   AI = new World(false);
-  match = newMatch('ranked', '🤖 狗狗電腦（強）');
+  match = newMatch('ranked', '🤖 狗狗電腦（不計星）');
   match.isAI = true;
   countdownAndStart();
 }
@@ -1069,25 +1163,42 @@ async function finishMatch(res, why) {
   $('resWhy').textContent = why;
   $('resMe').textContent = P.score; $('resOpp').textContent = oppScore; $('resOppName').textContent = m.oppName;
   $('againMatch').textContent = m.kind === 'friend' ? '再開一間' : '再排一場';
-  show('result', true);
+  show('result', true); setPresence(null);
+  const fx = $('starFx'); fx.className = ''; fx.innerHTML = '';
   match = null;
-  if (m.kind === 'ranked') {
-    $('resRecord').textContent = '更新戰績中…';
-    const charged = m.chargeP ? await m.chargeP : false;   // 開賽時已先記一敗
-    let ok = true;
+  if (m.kind === 'ranked' && !m.isAI) {
+    $('resRecord').textContent = '更新段位中…';
+    const charged = m.chargeP ? await m.chargeP : false;   // 開賽時已先扣一星、記一敗
+    const b = m.base || { s: myStars, w: myWins, l: myLosses };
+    let ok = charged;
     if (charged) {
-      if (res === 'win') ok = await writeRecord(myWins + 1, myLosses - 1);
-      else if (res === 'draw') ok = await writeRecord(myWins, myLosses - 1);
-    } else if (!m.startAt) ok = true;
-    else ok = false;
-    $('resRecord').textContent = `排位戰績：${myWins} 勝 ${myLosses} 敗・勝率 ${winRate(myWins, myLosses)}%` + (ok ? '' : '（戰績上傳失敗）');
-  } else $('resRecord').textContent = '友誼賽不計入排位戰績';
+      if (res === 'win') ok = await writeRecord(b.s + 1, b.w + 1, b.l);
+      else if (res === 'draw') ok = await writeRecord(b.s, b.w, b.l);
+    }
+    const before = tierOf(b.s), after = tierOf(myStars);
+    if (ok && res === 'win') starEffect(true, before, after);
+    else if (ok && res === 'lose' && b.s > 0) starEffect(false, before, after);
+    $('resRecord').innerHTML = (ok ? '' : '（段位上傳失敗）<br>') + tierHTML(myStars) + `<br><span style="font-size:12px;font-weight:400">${myWins} 勝 ${myLosses} 敗・勝率 ${winRate(myWins, myLosses)}%</span>`;
+  } else if (m.isAI) $('resRecord').textContent = '和電腦對戰不計星，找真人才能上分！';
+  else $('resRecord').textContent = '友誼賽不計入排位';
 }
-async function writeRecord(w, l) {
+function starEffect(win, before, after) {
+  const fx = $('starFx'); fx.className = 'on ' + (win ? 'win' : 'lose');
+  let html = '<div class="big">' + (win ? '⭐' : '⭐') + '</div>';
+  if (win) for (let i = 0; i < 16; i++) { const a = i / 16 * Math.PI * 2, d = 60 + Math.random() * 30; html += `<i class="spark" style="--dx:${Math.cos(a) * d}px;--dy:${Math.sin(a) * d}px;animation-delay:.5s;background:${['#ffd84a', '#ff9a1f', '#fff'][i % 3]}"></i>`; }
+  fx.innerHTML = html;
+  const msg = document.createElement('div');
+  if (after.i > before.i) { msg.className = 'promo'; msg.textContent = '🎉 晉級！' + after.name; }
+  else if (after.i < before.i) { msg.className = 'promo'; msg.style.color = '#666'; msg.textContent = '掉到 ' + after.name + ' 了…'; }
+  else { msg.style.fontWeight = '800'; msg.textContent = win ? '獲得一顆星！' : '失去一顆星…'; msg.style.color = win ? '#d4a017' : '#888'; }
+  setTimeout(() => { if (fx.classList.contains('on')) { fx.after(msg); setTimeout(() => msg.remove(), 6000); } }, 900);
+  if (win) for (let k = 0; k < 3; k++) setTimeout(() => burst(P.particles, 60 + Math.random() * 240, 150 + Math.random() * 200, '#ffd84a', 30), k * 250);
+}
+async function writeRecord(s, w, l) {
   if (!fdb || !pid) return false;
   try {
-    await fs.setDoc(fs.doc(fdb, 'players', pid), { name: playerName, wins: w, losses: l, at: fs.serverTimestamp() });
-    myWins = w; myLosses = l; renderMyRank(); return true;
+    await fs.setDoc(fs.doc(fdb, LADDER, pid), { name: playerName, stars: Math.max(0, s), wins: w, losses: l, at: fs.serverTimestamp() });
+    myStars = Math.max(0, s); myWins = w; myLosses = l; renderMyRank(); return true;
   } catch (e) { console.warn(e); return false; }
 }
 
