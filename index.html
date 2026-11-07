@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta name="game-ver" content="v26">
+<meta name="game-ver" content="v29">
 <meta charset="UTF-8">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
@@ -401,6 +401,13 @@
   .a2sec h3 { margin: 4px 0; font-size: 15px; } .a2sec ol { margin: 2px 0 4px; padding-left: 20px; font-size: 13px; line-height: 1.6; }
   .a2warn { font-size: 12px; background: #ffe9e3; border-radius: 10px; padding: 6px 8px; margin-bottom: 8px; }
   .annCard #a2Close { display: block; margin: 8px auto 0; }
+  button.main.claimAll { display: block; width: 100%; margin: 0 0 10px; background: linear-gradient(90deg, #f08a24, #ef6b4a); box-shadow: 0 4px 0 #a8401f; animation: caPulse 1.6s ease-in-out infinite; }
+  @keyframes caPulse { 50% { transform: scale(1.03); } }
+  ol.board .nm { white-space: normal; min-width: 0; line-height: 1.3; }
+  ol.board .nm > span:not(.tchip):not(.lvb):not(.rksub) { word-break: break-all; }
+  ol.board .rksub { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 2px; font-weight: 400; }
+  ol.board .rksub .stars { font-size: 13px; } ol.board .rksub .wr { font-size: 11px; }
+  ol.board li .mini { flex: 0 0 auto; } ol.board .rk { flex: 0 0 auto; }
   .ver { font-size: 11px; opacity: .45; margin-top: 10px; }
   #toast { white-space: nowrap; position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%) scale(.6); background: #fff7e6; font-size: 22px; font-weight: 800; text-align: center; padding: 16px 22px; border-radius: 18px; box-shadow: 0 6px 0 #d7b072; opacity: 0; pointer-events: none; z-index: 4; }
   #toast img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-top: 8px; border: 4px solid #fff6a8; }
@@ -461,7 +468,7 @@
     <div class="tabs stabs"><button data-s="day" class="on">今日</button><button data-s="all">總榜</button></div>
     <ol class="board" id="board1"></ol>
     <div class="note" id="note1"></div>
-    <div class="ver">v26　<button id="diagBtn" style="font:inherit;font-size:12px;margin:0;background:none;border:none;color:#b85e0c;text-decoration:underline;cursor:pointer;opacity:1">🔧 連線檢查</button></div>
+    <div class="ver">v29　<button id="diagBtn" style="font:inherit;font-size:12px;margin:0;background:none;border:none;color:#b85e0c;text-decoration:underline;cursor:pointer;opacity:1">🔧 連線檢查</button></div>
   </div></div>
 
   <div class="modal" id="over"><div class="card">
@@ -1080,7 +1087,7 @@ const firebaseConfig = {
   appId: "1:741734243486:web:62dbac94d9e9c4f51a2f8f"
 };
 const RTDB_URL = 'https://dogsteakkk-default-rtdb.asia-southeast1.firebasedatabase.app';   // Realtime Database 的網址
-const VERSION = 'v26';
+const VERSION = 'v29';
 const FB_VERSIONS = ['13.1.0', '11.0.2'];
 let fbVer = '';
 let fs = null, fdb = null, fbReady, am = null, auth = null, authUser = null, authKnown = false;
@@ -1128,7 +1135,7 @@ function renderBoards() {
         const tb = document.createElement('span'); tb.className = 'tierb'; tb.style.background = t.color; tb.textContent = t.name;
         sc.className = 'stars'; sc.textContent = '★' + e.stars;
         const wr = document.createElement('span'); wr.className = 'wr'; wr.textContent = e.wins + '勝' + e.losses + '敗';
-        li.append(rk, avImg(e, true), nm, tb, sc, wr);
+        const sub = document.createElement('span'); sub.className = 'rksub'; sub.append(tb, sc, wr); nm.appendChild(sub); li.append(rk, avImg(e, true), nm);
       }
       ol.appendChild(li);
     });
@@ -1961,6 +1968,7 @@ function renderProf() {
   if (profTab === 'ach') h += achHTML();
   try { updDots(); } catch (e) { }
   if (profTab === 'gacha') h += gachaHTML(); else if (profTab === 'ward') h += wardHTML(); else if (profTab === 'album') h += albumHTML();
+  try { const n = claimAllCount(profTab); if (n) h = `<button class="main claimAll" data-claimall="${profTab}">🎁 一鍵領取全部獎勵（${n}）</button>` + h; } catch (e) { }
   box.innerHTML = h;
 }
 function shopItem(id, icon, name, price, on, style) {
@@ -3644,7 +3652,7 @@ function openA2hs() {
   if (isStandalone()) h += '<div class="a2sec me">✅ 你已經是從主畫面打開的了，太棒了！</div>';
   if (inApp) h += '<div class="a2warn">⚠️ 你現在是在 LINE／IG／Threads 裡面打開的，要先點右上角選「用瀏覽器開啟」（iPhone 選 Safari），才能加到主畫面。</div>';
   if (deferredInstall) h += '<div class="a2sec me"><h3>⚡ 一鍵安裝</h3><button class="main fr" id="a2Install">安裝到主畫面</button></div>';
-  h += `<div class="a2sec ${isIOS ? 'me' : ''}"><h3>🍎 iPhone／iPad（用 Safari）</h3><ol><li>點下方（iPad 在上方）的<b>分享按鈕</b> <span style="font-size:16px">⬆️</span></li><li>往下滑，點<b>「加入主畫面」</b></li><li>右上角按<b>「新增」</b>，主畫面就會出現狗狗大臉的圖示</li></ol></div>`;
+  h += `<div class="a2sec ${isIOS ? 'me' : ''}"><h3>🍎 iPhone／iPad（用 Safari）</h3><ol><li>點下方（iPad 在上方）的<b>分享按鈕</b>（方框裡有一個往上的箭頭）</li><li>往下滑，點<b>「加入主畫面」</b></li><li>右上角按<b>「新增」</b>，主畫面就會出現狗狗大臉的圖示</li></ol></div>`;
   h += `<div class="a2sec ${isAndroid ? 'me' : ''}"><h3>🤖 Android（用 Chrome）</h3><ol><li>點右上角的<b>「⋮」</b></li><li>點<b>「加到主畫面」</b>或<b>「安裝應用程式」</b></li><li>按<b>「新增／安裝」</b>就完成了</li></ol></div>`;
   h += '<div class="note">加到主畫面後，網址一樣、進度一樣，有新版本也會自動更新</div>';
   $('a2body').innerHTML = h;
@@ -3657,6 +3665,41 @@ $('a2hs').addEventListener('click', async e => {
   if (e.target.id === 'a2Install' && deferredInstall) { deferredInstall.prompt(); try { await deferredInstall.userChoice; } catch (er) { } deferredInstall = null; show('a2hs', false); }
 });
 if (isStandalone()) $('a2hsBtn').textContent = '📲 已加到主畫面';
+
+
+// ====== v28：一鍵領取 ======
+function claimAllList(tab) {
+  const L = [];
+  if (tab === 'task') {
+    todayMissions().forEach(m => { if ((prof.daily.prog[m.key] || 0) >= m.n && !prof.daily.claimed.includes(m.id)) L.push({ k: 'm', m }); });
+    if (!prof.ach.includes('comp1') && prof.lv > 1) L.push({ k: 'comp' });
+    LV_ROAD.forEach(([Lv, rw]) => { if (prof.lv >= Lv && !prof.ach.includes('lv' + Lv)) L.push({ k: 'ach', id: 'lv' + Lv, rw }); });
+  } else if (tab === 'ach') {
+    ACH.forEach(a => { if (achDone(a) && !prof.ach.includes(a.id)) L.push({ k: 'ach', id: a.id, rw: a.rw }); });
+  } else if (tab === 'album') {
+    SETS.forEach(S => { if (setDone(S) && !prof.ach.includes(S.id)) L.push({ k: 'ach', id: S.id, rw: S.rw }); });
+  }
+  return L;
+}
+function claimAllCount(tab) { return claimAllList(tab).length; }
+function claimAll(tab) {
+  ensureDaily();
+  const L = claimAllList(tab); if (!L.length) return;
+  const tot = { bone: 0, shard: 0, tk: 0 }, titles = []; let xp = 0;
+  for (const x of L) {
+    let rw = null;
+    if (x.k === 'm') { prof.daily.claimed.push(x.m.id); rw = { bone: x.m.bone }; xp += x.m.xp; }
+    else if (x.k === 'comp') { prof.ach.push('comp1'); rw = { bone: compBone(), tk: compTk() }; }
+    else { prof.ach.push(x.id); rw = x.rw; }
+    giveRw(rw);
+    tot.bone += rw.bone || 0; tot.shard += rw.shard || 0; tot.tk += rw.tk || 0; if (rw.title) titles.push(rw.title);
+  }
+  if (xp) gainXP(xp); else saveProf();
+  renderProf(); updDots();
+  toast(`🎁 一次領了 ${L.length} 個獎勵！<br><span style="font-size:15px">${[tot.bone ? '🦴 ' + tot.bone : '', tot.shard ? '💎 ' + tot.shard : '', tot.tk ? '🎫 ×' + tot.tk : '', xp ? '經驗 +' + xp : ''].filter(Boolean).join('　')}${titles.length ? '<br>新稱號：' + titles.map(t => esc(titleTag(t))).join('、') : ''}</span>`);
+  fanfare(Math.min(4, 1 + Math.floor(L.length / 3)));
+}
+$('profBody').addEventListener('click', e => { const b = e.target.closest('[data-claimall]'); if (b) claimAll(b.dataset.claimall); });
 
 // ====== 連線檢查 ======
 $('diagBtn').addEventListener('click', () => { hideAll(); show('diag', true); $('diagOut').textContent = ''; });
