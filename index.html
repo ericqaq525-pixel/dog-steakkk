@@ -124,9 +124,51 @@
   #lvHud.flash .hudbar i { background: linear-gradient(90deg, #ffd84a, #fff6a8); }
   #lvHud.flash { animation: pulse .5s ease 3; }
   #lvHudTxt { white-space: nowrap; min-width: 84px; text-align: right; font-variant-numeric: tabular-nums; }
-  .ptabs { gap: 4px; }
+  .ptabs { gap: 4px; flex-wrap: wrap; justify-content: center; }
   .ptabs button { font-size: 13px; padding: 4px 8px; white-space: nowrap; }
   .task button.main:disabled { opacity: .55; }
+  .gtop { font-size: 15px; margin: 4px 0; }
+  .gmachine { font-size: 64px; line-height: 1.1; animation: bob 2s ease-in-out infinite; }
+  @keyframes bob { 50% { transform: translateY(-6px) rotate(-3deg); } }
+  .odds { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+  .odds span { color: #fff; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+  .exch, .ward { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .exch button, .ward button { border: 2px solid #e2c48f; background: #fff; color: #7a4a1c; font: inherit; font-size: 12px; padding: 5px 2px; border-radius: 12px; cursor: pointer; }
+  .exch button span, .ward button span { display: block; font-size: 22px; }
+  .exch button small { display: block; font-size: 11px; opacity: .75; }
+  .exch button:disabled { opacity: .45; }
+  .ward button.on { border-color: #f08a24; background: #fff1d6; font-weight: 800; }
+  .gfx { background: rgba(20,10,0,.82); flex-direction: column; z-index: 8; }
+  .gfx.r5 { background: radial-gradient(circle, rgba(255,215,90,.9), rgba(60,30,0,.95)); }
+  .gfx.r4 { background: radial-gradient(circle, rgba(255,120,30,.7), rgba(30,10,0,.92)); }
+  .capsule { font-size: 110px; animation: shake .25s ease-in-out infinite; }
+  .gfx.r3 .capsule { animation-duration: .15s; filter: drop-shadow(0 0 20px #c06cff); }
+  .gfx.r4 .capsule { animation-duration: .1s; filter: drop-shadow(0 0 30px #ff7a00); }
+  .gfx.r5 .capsule { animation-duration: .08s; filter: drop-shadow(0 0 40px #fff2a8); }
+  @keyframes shake { 0%,100% { transform: rotate(-12deg) scale(1); } 50% { transform: rotate(12deg) scale(1.08); } }
+  .mythText { color: #fff; font-size: 40px; font-weight: 900; text-shadow: 0 0 20px #ffd84a, 0 4px 0 #a07400; animation: pulse .6s ease infinite; margin-top: 10px; }
+  .pulls { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; width: 100%; max-width: 420px; padding: 8px; }
+  .pulls.one { grid-template-columns: 1fr; max-width: 180px; }
+  .pcard { background: #fff7e6; border: 3px solid; border-radius: 12px; padding: 4px 2px 6px; text-align: center; opacity: 0; animation: flipIn .45s ease forwards; }
+  .pulls.one .pcard { padding: 10px; }
+  .pcard.r4 { box-shadow: 0 0 14px #ff7a00; } .pcard.r5 { box-shadow: 0 0 20px #ffd84a; background: linear-gradient(#fff9dc, #ffe9a8); }
+  .prar { color: #fff; font-size: 10px; font-weight: 800; border-radius: 6px; padding: 1px 2px; white-space: nowrap; overflow: hidden; }
+  .picon { font-size: 30px; line-height: 1.3; } .pulls.one .picon { font-size: 64px; }
+  .pname { font-size: 11px; font-weight: 800; line-height: 1.2; } .pulls.one .pname { font-size: 16px; }
+  .psub { font-size: 9px; opacity: .7; } .pulls.one .psub { font-size: 12px; }
+  @keyframes flipIn { 0% { opacity: 0; transform: rotateY(90deg) scale(.6); } 100% { opacity: 1; transform: rotateY(0) scale(1); } }
+  .avf { border: 3px solid; box-sizing: border-box; }
+  .avf-mint { border-color: #6fd6b8 !important; } .avf-pink { border-color: #ff8fb8 !important; } .avf-sky { border-color: #6ec3ff !important; }
+  .avf-duo { border-color: #f08a24 #6ec3ff #6ec3ff #f08a24 !important; }
+  .avf-glow { border-color: #ffd84a !important; box-shadow: 0 0 10px #ffd84a; }
+  .avf-rainbow { border-color: transparent !important; box-shadow: 0 0 0 3px hsl(0,90%,60%); animation: hueSpin 2s linear infinite; }
+  .avf-wagyu { border-color: #c9a227 !important; box-shadow: 0 0 0 2px #b3261e, 0 0 10px #ffd84a; }
+  @keyframes hueSpin { to { filter: hue-rotate(360deg); } }
+  .np { padding: 0 8px; border-radius: 8px; }
+  .np-cream { background: #fff3cf; } .np-mint { background: #d3f5ea; } .np-sunset { background: #ffd2a8; } .np-grape { background: #e3d1ff; }
+  .np-wagyu { background: linear-gradient(90deg, #ffe08a, #c9a227); color: #5a3a00; }
+  .np-rainbow { background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bff95, #6bc6ff, #c06bff); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.4); }
+  .oppname.np { display: inline-block; }
   .ver { font-size: 11px; opacity: .45; margin-top: 10px; }
   #toast { white-space: nowrap; position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%) scale(.6); background: #fff7e6; font-size: 22px; font-weight: 800; text-align: center; padding: 16px 22px; border-radius: 18px; box-shadow: 0 6px 0 #d7b072; opacity: 0; pointer-events: none; z-index: 4; }
   #toast img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-top: 8px; border: 4px solid #fff6a8; }
@@ -171,7 +213,7 @@
     <div class="dogs" id="startDogs"></div>
     <input id="nameIn" maxlength="12" placeholder="輸入你的名字" autocomplete="off">
     <div class="lvline" id="lvLine"></div>
-    <div class="pills"><button data-open="me">👤 檔案</button><button data-open="check">📅 簽到</button><button data-open="task">🎯 任務</button><button data-open="shop">🛒 商店</button></div>
+    <div class="pills"><button data-open="me">👤 檔案</button><button data-open="check">📅 簽到</button><button data-open="task">🎯 任務</button><button data-open="shop">🛒 商店</button><button data-open="gacha">🎰 扭蛋</button><button data-open="ward">🎒 衣櫃</button></div>
     <div class="myrank" id="myRank"></div>
     <div class="acct" id="acct"></div>
     <div class="online" id="online"></div>
@@ -185,7 +227,7 @@
     <div class="tabs"><button data-t="day" class="on">今日</button><button data-t="all">總榜</button><button data-t="rank">🥩 排位</button></div>
     <ol class="board" id="board1"></ol>
     <div class="note" id="note1"></div>
-    <div class="ver">v8.2　<button id="diagBtn" style="font:inherit;font-size:12px;margin:0;background:none;border:none;color:#b85e0c;text-decoration:underline;cursor:pointer;opacity:1">🔧 連線檢查</button></div>
+    <div class="ver">v10　<button id="diagBtn" style="font:inherit;font-size:12px;margin:0;background:none;border:none;color:#b85e0c;text-decoration:underline;cursor:pointer;opacity:1">🔧 連線檢查</button></div>
   </div></div>
 
   <div class="modal" id="over"><div class="card">
@@ -257,10 +299,12 @@
   </div></div>
 
   <div class="modal" id="prof"><div class="card">
-    <div class="tabs ptabs"><button data-p="me" class="on">👤 檔案</button><button data-p="check">📅 簽到</button><button data-p="task">🎯 任務</button><button data-p="shop">🛒 商店</button></div>
+    <div class="tabs ptabs"><button data-p="me" class="on">👤 檔案</button><button data-p="check">📅 簽到</button><button data-p="task">🎯 任務</button><button data-p="shop">🛒 商店</button><button data-p="gacha">🎰 扭蛋</button><button data-p="ward">🎒 衣櫃</button></div>
     <div id="profBody"></div>
     <button class="main gray" id="profBack">返回</button>
   </div></div>
+
+  <div class="modal" id="gachaFx"></div>
 
   <div class="modal" id="result"><div class="card">
     <div class="big-result" id="resTitle">勝利！</div>
@@ -297,7 +341,7 @@ const MATCH_SECONDS = 180;       // 對戰時間
 const GARBAGE_DELAY = 2;         // 攻擊在幾秒後落下（可被自己的攻擊抵銷）
 const AI_WAIT_SECONDS = 120;     // 排位配對幾秒沒找到人就派電腦
 const AI_THINK = 0.9;            // 電腦每隻狗的間隔（秒），越小越快
-const SYNC_MS = 1500;            // 對戰時多久同步一次畫面給對手
+const SYNC_MS = 1000;            // 對戰時多久同步一次畫面給對手
 const AUTO_DROP = 4;             // 對戰時幾秒不投放就自動投下（防掛機）
 const AWAY_LOSE_MS = 15000;      // 對戰中離開畫面多久直接判輸
 const FRUITS = [
@@ -463,14 +507,14 @@ class World {
     }
     for (const b of this.bodies) { b.vx *= 0.999; b.age += dt; if (b.pop > 0) b.pop = Math.max(0, b.pop - dt * 4); if (b.garbage > 0) b.garbage -= dt; }
     if (this.cooldown > 0) this.cooldown -= dt;
-    for (const p of this.particles) { p.vy += 600 * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt; }
+    for (const p of this.particles) { p.vy += (p.g ?? 600) * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt; }
     this.particles = this.particles.filter(p => p.life > 0);
   }
   merge(A, B) {
     A.dead = B.dead = true;
     const x = (A.x + B.x) / 2, y = (A.y + B.y) / 2, lv = A.level;
     this.addScore((lv + 1) * (lv + 2));
-    burst(this.particles, x, y, FRUITS[lv].c, 14);
+    if (this.isPlayer) fxBurst(this.particles, x, y, FRUITS[lv].c); else burst(this.particles, x, y, FRUITS[lv].c, 14);
     if (lv + 1 < FRUITS.length) {
       const nb = this.makeBody(lv + 1, x, y);
       nb.vx = (A.vx + B.vx) / 2; nb.vy = Math.min(0, (A.vy + B.vy) / 2);
@@ -593,12 +637,13 @@ function drawDog(c, b, level, x, y, ang, s = 1, alpha = 1, detail = true, mine =
   const f = FRUITS[level], r = f.r * s;
   c.save(); c.globalAlpha = alpha; c.translate(x, y); c.rotate(ang);
   if (detail && level === HIDDEN) { c.shadowColor = '#fff6a8'; c.shadowBlur = 25 + 10 * Math.sin(performance.now() / 200); }
-  else if (mine && prof.frame === 'f-gold') { c.shadowColor = '#ffd84a'; c.shadowBlur = 10; }
+  else if (mine && GLOW_FRAMES[prof.frame]) { c.shadowColor = GLOW_FRAMES[prof.frame]; c.shadowBlur = 10; }
   c.beginPath(); c.arc(0, 0, r, 0, Math.PI * 2); c.fillStyle = (b && b.overT > 0) ? '#e8322f' : mine ? frameColor(b, f.c) : f.c; c.fill();
   c.shadowBlur = 0;
   const bw = Math.max(2.5, r * 0.07);
   c.save(); c.beginPath(); c.arc(0, 0, r - bw, 0, Math.PI * 2); c.clip();
-  if (f.img.complete) c.drawImage(f.img, -r + bw, -r + bw, (r - bw) * 2, (r - bw) * 2);
+  const im = (mine && prof.flt && filteredImg(level)) || f.img;
+  if (im.complete !== false) c.drawImage(im, -r + bw, -r + bw, (r - bw) * 2, (r - bw) * 2);
   c.restore();
   if (b && b.garbage > 0) { c.globalAlpha = Math.min(1, b.garbage) * 0.5; c.fillStyle = '#c62828'; c.beginPath(); c.arc(0, 0, r, 0, Math.PI * 2); c.fill(); }
   c.restore();
@@ -607,6 +652,7 @@ function drawBg(c, danger, th) {
   const g = c.createLinearGradient(0, 0, 0, H);
   g.addColorStop(0, th ? th.c1 : '#ffe7b8'); g.addColorStop(1, th ? th.c2 : '#f6c97f');
   c.fillStyle = g; c.fillRect(0, 0, W, H);
+  if (th && th.anim) drawAnimBg(c, th.anim);
   c.setLineDash([10, 8]); c.lineWidth = danger ? 4 : 2;
   c.strokeStyle = danger ? `rgba(230,40,40,${0.5 + 0.5 * Math.sin(performance.now() / 80)})` : 'rgba(200,60,40,.45)';
   c.beginPath(); c.moveTo(0, LINE_Y); c.lineTo(W, LINE_Y); c.stroke(); c.setLineDash([]);
@@ -623,6 +669,7 @@ function render() {
     ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.moveTo(x, DROP_Y + r); ctx.lineTo(x, H); ctx.stroke();
     drawDog(ctx, null, P.cur, x, DROP_Y, 0, 1, P.cooldown > 0 ? 0.45 : 1, true, true);
+    drawHat(ctx, x, DROP_Y, r);
     if (P.autoDrop && P.idleT > 1.5) {
       const k = Math.min(1, P.idleT / AUTO_DROP);
       ctx.strokeStyle = '#e8322f'; ctx.lineWidth = 4;
@@ -631,8 +678,8 @@ function render() {
       ctx.fillText('快投！' + Math.max(0, AUTO_DROP - P.idleT).toFixed(1), x, DROP_Y - r - 8);
     }
   }
-  for (const b of P.bodies) drawDog(ctx, b, b.level, b.x, b.y, b.a, 1 + b.pop * 0.15, 1, true, true);
-  for (const p of P.particles) { ctx.globalAlpha = Math.max(0, p.life / 0.9); ctx.fillStyle = p.c; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill(); }
+  for (const b of P.bodies) { drawDog(ctx, b, b.level, b.x, b.y, b.a, 1 + b.pop * 0.15, 1, true, true); drawHat(ctx, b.x, b.y, b.r * (1 + b.pop * 0.15)); }
+  for (const p of P.particles) drawParticle(ctx, p);
   ctx.globalAlpha = 1;
   if (mode === 'match') renderMini();
 }
@@ -673,7 +720,7 @@ function loop(t) {
     P.update(dt);
     if (AI) { AI.update(dt); AI.aiPlay(dt); }
   } else {
-    for (const p of P.particles) { p.vy += 600 * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt; }
+    for (const p of P.particles) { p.vy += (p.g ?? 600) * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt; }
     P.particles = P.particles.filter(p => p.life > 0);
   }
   if (mode === 'match' && match) matchTick();
@@ -746,7 +793,8 @@ const firebaseConfig = {
   messagingSenderId: "741734243486",
   appId: "1:741734243486:web:62dbac94d9e9c4f51a2f8f"
 };
-const VERSION = 'v8.2';
+const RTDB_URL = 'https://dogsteakkk-default-rtdb.asia-southeast1.firebasedatabase.app';   // Realtime Database 的網址
+const VERSION = 'v10';
 const FB_VERSIONS = ['13.1.0', '11.0.2'];
 let fbVer = '';
 let fs = null, fdb = null, fbReady, am = null, auth = null, authUser = null, authKnown = false;
@@ -755,8 +803,8 @@ async function loadFirebase() {
   for (const v of FB_VERSIONS) {
     try {
       const base = `https://www.gstatic.com/firebasejs/${v}/`;
-      const [appMod, fsMod, authMod] = await Promise.all([import(base + 'firebase-app.js'), import(base + 'firebase-firestore.js'), import(base + 'firebase-auth.js')]);
-      fbVer = v; return { appMod, fsMod, authMod };
+      const [appMod, fsMod, authMod, dbMod] = await Promise.all([import(base + 'firebase-app.js'), import(base + 'firebase-firestore.js'), import(base + 'firebase-auth.js'), import(base + 'firebase-database.js')]);
+      fbVer = v; return { appMod, fsMod, authMod, dbMod };
     } catch (e) { console.warn('Firebase ' + v + ' 載入失敗', e); }
   }
   return null;
@@ -805,6 +853,11 @@ renderBoards();
   fs = mods.fsMod; am = mods.authMod;
   const app = mods.appMod.initializeApp(firebaseConfig);
   fdb = fs.getFirestore(app);
+  try {
+    rt = mods.dbMod; rdb = rt.getDatabase(app, RTDB_URL);
+    rt.goOffline(rdb);   // 平常不連線，排隊或對戰時才連（免費方案最多 100 人同時連線）
+    rt.onValue(rt.ref(rdb, '.info/connected'), s => { rtConnected = !!s.val(); });
+  } catch (e) { console.warn('Realtime Database 初始化失敗', e); rdb = null; }
   auth = am.getAuth(app);
   am.onAuthStateChanged(auth, u => {
     authUser = u; authKnown = true; pid = u ? u.uid : null;
@@ -826,7 +879,7 @@ renderBoards();
   }, err => console.warn(err));
   subscribeDaily();
   setInterval(() => { if (todayKey() !== dayKeySub) subscribeDaily(); }, 60000);
-  refreshOnline(); setInterval(refreshOnline, 30000);
+  refreshOnline(); setInterval(refreshOnline, 60000);
 })();
 
 // ====== 今日排行（台灣時間每天 0 點換榜）======
@@ -853,7 +906,7 @@ function setPresence(kind) {
   clearInterval(presBeat); presBeat = null;
   if (!kind) return;
   const beat = () => { if (document.hidden || presKind !== kind) return; fs.setDoc(fs.doc(fdb, 'presence_' + kind, cid), { t: fs.serverTimestamp() }).then(() => { presWritten = kind; }).catch(e => console.warn(e)); };
-  beat(); presBeat = setInterval(beat, 45000);
+  beat(); presBeat = setInterval(beat, 90000);
 }
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) { if (presWritten && fdb) { fs.deleteDoc(fs.doc(fdb, 'presence_' + presWritten, cid)).catch(() => {}); presWritten = null; } }
@@ -861,12 +914,22 @@ document.addEventListener('visibilitychange', () => {
 });
 async function refreshOnline() {
   if (!fdb || !$('start').classList.contains('on') || document.hidden) return;
+  if (!$('online').textContent) $('online').textContent = '🟢 讀取線上人數中…';
+  const since = fs.Timestamp.fromMillis(Date.now() - 200000);
+  const q = k => fs.query(fs.collection(fdb, 'presence_' + k), fs.where('t', '>=', since));
+  let a, b, err = null;
   try {
-    const since = fs.Timestamp.fromMillis(Date.now() - 100000);
-    const cnt = async k => (await fs.getCountFromServer(fs.query(fs.collection(fdb, 'presence_' + k), fs.where('t', '>=', since)))).data().count;
-    const [a, b] = await Promise.all([cnt('solo'), cnt('ranked')]);
-    $('online').textContent = `🟢 現在有 ${a} 人在玩單人、${b} 人在玩排位`;
-  } catch (e) { console.warn(e); }
+    const cnt = async k => (await fs.getCountFromServer(q(k))).data().count;
+    [a, b] = await Promise.all([cnt('solo'), cnt('ranked')]);
+  } catch (e) {
+    err = e; console.warn('線上人數：計數查詢失敗，改用一般查詢', e);
+    try {   // 備用方法：直接把名單抓下來數
+      const cnt2 = async k => (await fs.getDocs(fs.query(fs.collection(fdb, 'presence_' + k), fs.where('t', '>=', since), fs.limit(50)))).docs.length;
+      [a, b] = await Promise.all([cnt2('solo'), cnt2('ranked')]); err = null;
+    } catch (e2) { err = e2; console.warn(e2); }
+  }
+  $('online').style.color = err ? '#c62828' : '';
+  $('online').textContent = err ? '線上人數暫時讀不到［' + errCode(err) + '］' : `🟢 現在有 ${a} 人在玩單人、${b} 人在玩排位`;
 }
 
 // ====== 帳號 ======
@@ -994,29 +1057,45 @@ async function submitScore(name, sc, level) {
   }
 }
 
-// ====== 排位配對 ======
+// ====== 排位配對（Realtime Database）======
 let mm = null, match = null, lastKind = 'ranked';
+let rt = null, rdb = null, rtConnected = false;   // Realtime Database：只有排隊和對戰時才連線
+const rref = p => rt.ref(rdb, p);
+let rtUsers = 0;
+function rtOn() { if (rdb && rtUsers++ === 0) rt.goOnline(rdb); }
+function rtOff() { if (rdb && rtUsers > 0 && --rtUsers === 0) setTimeout(() => { if (rtUsers === 0) rt.goOffline(rdb); }, 3000); }
+async function rtReady() {
+  const ok = await fbPromise;
+  if (!ok || !rdb) return false;
+  return true;
+}
 
 async function startMatchmaking() {
   hideAll(); show('matching', true); setPresence('ranked');
   $('matchInfo').textContent = '正在連線…';
-  mm = { startedAt: Date.now(), unsub: null, poll: null, beat: null, busy: false, done: false, myRef: null };
-  const my = mm;
-  const ok = await fbPromise;
+  const my = mm = { startedAt: Date.now(), done: false, offs: [], poll: null, list: null };
+  if (!(await rtReady())) {
+    if (mm !== my) return;
+    $('matchInfo').textContent = '連不上對戰伺服器，2 分鐘後會改打電腦，或按「直接打電腦」。';
+    my.poll = setInterval(() => { if (Date.now() - my.startedAt > AI_WAIT_SECONDS * 1000) startAIMatch(); }, 1000);
+    return;
+  }
   if (mm !== my) return;
-  if (!ok || !fdb) { $('matchInfo').textContent = '連不上伺服器，2 分鐘後會改打電腦，或按「直接打電腦」。'; my.poll = setInterval(() => { if (Date.now() - my.startedAt > AI_WAIT_SECONDS * 1000) startAIMatch(); }, 1000); return; }
-  my.myRef = fs.doc(fdb, 'queue', pid);
+  rtOn(); my.online = true;
+  my.myRef = rref('queue/' + pid);
   try {
-    await fs.setDoc(my.myRef, { name: playerName, t: fs.serverTimestamp(), room: null, v: VERSION });
-  } catch (e) { console.warn(e); $('matchInfo').textContent = (e.code === 'permission-denied' ? '被資料庫拒絕了（請確認 Firestore 安全規則已發布）' : '配對失敗') + '［' + errCode(e) + '］'; return; }
-  if (mm !== my) { fs.deleteDoc(my.myRef).catch(() => {}); return; }
-  my.unsub = fs.onSnapshot(my.myRef, snap => {
-    const v = snap.exists() ? snap.data() : null;
-    if (v && v.room && !my.done && mm === my) { my.done = true; stopMatchmaking(true); joinRoom(v.room, 'ranked'); }
-  });
-  my.beat = setInterval(() => { if (!my.done) fs.updateDoc(my.myRef, { t: fs.serverTimestamp() }).catch(e => console.warn(e)); }, 5000);
-  my.poll = setInterval(findOpponent, 2000);
-  findOpponent();
+    await rt.onDisconnect(my.myRef).remove();   // 斷線或關掉網頁，伺服器會自動把你移出排隊
+    await rt.set(my.myRef, { name: playerName, v: VERSION, t: rt.serverTimestamp() });
+  } catch (e) { console.warn(e); $('matchInfo').textContent = '排隊失敗［' + errCode(e) + '］（請確認 Realtime Database 規則已發布）'; return; }
+  if (mm !== my) { rt.remove(my.myRef).catch(() => {}); return; }
+  // 自己的排隊資料被填上房間 → 有人找你打
+  my.offs.push(rt.onValue(rt.ref(rdb, 'queue/' + pid + '/room'), s => {
+    const room = s.val();
+    if (room && !my.done && mm === my) { my.done = true; stopMatchmaking(true); joinRoom(room, 'ranked'); }
+  }));
+  // 排隊名單（只有變動時才傳資料）
+  my.offs.push(rt.onValue(rref('queue'), s => { if (mm === my) { my.list = s.val() || {}; findOpponent(); } }, e => { console.warn(e); $('matchInfo').textContent = '讀取排隊名單失敗［' + errCode(e) + '］'; }));
+  my.poll = setInterval(findOpponent, 1000);
 }
 
 async function findOpponent() {
@@ -1024,47 +1103,38 @@ async function findOpponent() {
   if (!my || my.done || my.busy) return;
   const waited = Math.floor((Date.now() - my.startedAt) / 1000);
   if (waited >= AI_WAIT_SECONDS) { startAIMatch(); return; }
+  const list = my.list || {};
+  const live = Object.entries(list).filter(([id, v]) => id !== pid && v && v.name && !v.room);
+  const others = live.filter(([, v]) => v.v === VERSION), oldVer = live.length - others.length;
+  $('matchInfo').textContent = `正在尋找對手…（${waited} 秒）\n同時在排隊的其他玩家：${others.length} 位` +
+    (oldVer ? `\n⚠ 有 ${oldVer} 位玩家版本不同，請對方重新整理網頁` : '') + `\n${VERSION}・ID ${pid.slice(-4)}`;
+  // 不挑段位，誰在等就跟誰打；id 比較小的一方負責開房，避免兩邊同時開
+  const opp = others.find(([id]) => pid < id);
+  if (!opp) return;
   my.busy = true;
+  const [oppId, ov] = opp;
+  const roomId = rt.push(rref('rooms')).key;
   try {
-    // 只抓最近 5 分鐘有動作的排隊資料（舊資料再多也不會擠掉）
-    const snap = await fs.getDocs(fs.query(fs.collection(fdb, 'queue'), fs.where('t', '>=', fs.Timestamp.fromMillis(Date.now() - 300000)), fs.limit(200)));
-    // 用伺服器時間判斷誰還在線上（不看各自手機的時鐘，避免時間沒對準就配不到）
-    const meDoc = snap.docs.find(d => d.id === pid);
-    const myT = meDoc ? tms(meDoc.data().t) : 0;
-    const live = myT ? snap.docs.filter(d => d.id !== pid && !d.data().room && Math.abs(myT - tms(d.data().t)) < 20000) : [];
-    const others = live.filter(d => d.data().v === VERSION), oldVer = live.length - others.length;
-    $('matchInfo').textContent = `正在尋找對手…（${waited} 秒）\n同時在排隊的其他玩家：${others.length} 位` +
-      (oldVer ? `\n⚠ 有 ${oldVer} 位玩家版本不同，請對方重新整理網頁` : '') + (myT ? '' : '\n（還讀不到自己的排隊資料，稍等一下）') + `\n${VERSION}・ID ${pid.slice(-4)}`;
-    // 不挑積分，誰在等就跟誰打；id 比較小的一方負責開房，避免兩邊同時開
-    const opp = others.find(d => pid < d.id);
-    if (opp && mm === my) {
-      // 不用交易：先把自己移出排隊，開房後通知對方；對方沒在時限內進房就回來重新排
-      my.done = true; stopMatchmaking(true);
-      const roomRef = fs.doc(fs.collection(fdb, 'rooms'));
-      try {
-        await fs.setDoc(roomRef, { p: [pid, opp.id], names: { [pid]: playerName, [opp.id]: String(opp.data().name).slice(0, 12) }, kind: 'ranked', at: fs.serverTimestamp() });
-        await fs.updateDoc(fs.doc(fdb, 'queue', opp.id), { room: roomRef.id });
-      } catch (e) {
-        console.warn(e); $('matchInfo').textContent = '開房失敗［' + errCode(e) + '］，重新排隊中…';
-        await sleep(1500); startMatchmaking(); return;
-      }
-      joinRoom(roomRef.id, 'ranked');
-      return;
-    }
-  } catch (e) { if (e.message !== 'taken') { console.warn(e); $('matchInfo').textContent += '\n（錯誤：' + errCode(e) + '）'; } }
+    await rt.set(rref('rooms/' + roomId), { p: { [pid]: true, [oppId]: true }, names: { [pid]: playerName, [oppId]: String(ov.name).slice(0, 12) }, kind: 'ranked', at: rt.serverTimestamp() });
+    // 搶這位對手：用交易確保同一個人不會同時被兩個人配走
+    const r = await rt.runTransaction(rref('queue/' + oppId + '/room'), cur => cur ? undefined : roomId);
+    if (r.committed && mm === my) { my.done = true; stopMatchmaking(true); joinRoom(roomId, 'ranked'); return; }
+    rt.remove(rref('rooms/' + roomId)).catch(() => {});
+  } catch (e) { console.warn(e); $('matchInfo').textContent += '\n（錯誤：' + errCode(e) + '）'; }
   my.busy = false;
 }
 
 function stopMatchmaking(removeDoc) {
   const my = mm; if (!my) return;
-  clearInterval(my.poll); clearInterval(my.beat); if (my.unsub) my.unsub();
-  if (removeDoc && my.myRef) fs.deleteDoc(my.myRef).catch(() => {});
+  clearInterval(my.poll); my.offs.forEach(f => { try { f(); } catch (e) {} });
+  if (removeDoc && my.myRef) { rt.remove(my.myRef).catch(() => {}); rt.onDisconnect(my.myRef).cancel().catch(() => {}); }
+  if (my.online) rtOff();
   mm = null;
 }
 $('cancelMatch').addEventListener('click', () => { stopMatchmaking(true); goHome(); });
 $('aiNow').addEventListener('click', () => startAIMatch());
 
-// ====== 友誼賽 ======
+// ====== 友誼賽（Realtime Database）======
 let fr = null;
 function openFriend() {
   hideAll(); show('friend', true); setPresence(null);
@@ -1072,59 +1142,63 @@ function openFriend() {
 }
 function stopFriend() {
   if (!fr) return;
-  clearInterval(fr.beat); if (fr.unsub) fr.unsub();
-  if (fr.ref) fs.deleteDoc(fr.ref).catch(() => {});
+  if (fr.off) fr.off();
+  if (fr.ref) { rt.remove(fr.ref).catch(() => {}); rt.onDisconnect(fr.ref).cancel().catch(() => {}); }
+  if (fr.online) rtOff();
   fr = null;
 }
 $('cancelFriend').addEventListener('click', () => { stopFriend(); goHome(); });
 $('hostRoom').addEventListener('click', async () => {
   $('friendMsg').textContent = '建立中…';
-  const ok = await fbPromise;
-  if (!ok || !fdb) { $('friendMsg').textContent = '連不上伺服器，請檢查網路。'; return; }
+  if (!(await rtReady())) { $('friendMsg').textContent = '連不上對戰伺服器，請檢查網路。'; return; }
   stopFriend();
-  let code = null, ref = null;
-  for (let i = 0; i < 5 && !code; i++) {
-    const c = String(Math.floor(1000 + Math.random() * 9000));
-    const r = fs.doc(fdb, 'lobby', c);
-    try { const s = await fs.getDoc(r); if (!s.exists() || Date.now() - tms(s.data().t) > 600000) { code = c; ref = r; } } catch (e) { console.warn(e); $('friendMsg').textContent = '讀取房間失敗［' + errCode(e) + '］'; }
-  }
-  if (!code) { $('friendMsg').textContent = '建立房間失敗，請再試一次。'; return; }
-  try { await fs.setDoc(ref, { host: pid, name: playerName, t: fs.serverTimestamp(), room: null, v: VERSION }); }
-  catch (e) { console.warn(e); $('friendMsg').textContent = (e.code === 'permission-denied' ? '被資料庫拒絕了（請確認 Firestore 安全規則已發布）' : '建立房間失敗') + '［' + errCode(e) + '］'; return; }
-  const my = fr = { ref, code, done: false, unsub: null, beat: null };
+  const my = fr = { online: true }; rtOn();
+  let code = null;
+  try {
+    for (let i = 0; i < 6 && !code; i++) {
+      const c = String(Math.floor(1000 + Math.random() * 9000));
+      const s = await rt.get(rref('lobby/' + c));
+      if (!s.exists()) code = c;
+    }
+    if (!code) throw new Error('建立房間失敗');
+    my.ref = rref('lobby/' + code);
+    await rt.onDisconnect(my.ref).remove();
+    await rt.set(my.ref, { host: pid, name: playerName, v: VERSION, t: rt.serverTimestamp() });
+  } catch (e) { console.warn(e); $('friendMsg').textContent = '建立房間失敗［' + errCode(e) + '］（請確認 Realtime Database 規則已發布）'; stopFriend(); return; }
+  if (fr !== my) return;
   $('friendMenu').style.display = 'none'; $('friendWait').style.display = ''; $('roomCode').textContent = code; $('friendMsg').textContent = '等待朋友加入…';
-  my.beat = setInterval(() => fs.updateDoc(ref, { t: fs.serverTimestamp() }).catch(e => console.warn(e)), 10000);
-  my.unsub = fs.onSnapshot(ref, snap => {
-    const v = snap.exists() ? snap.data() : null;
-    if (v && v.room && !my.done && fr === my) { my.done = true; stopFriend(); joinRoom(v.room, 'friend'); }
+  my.off = rt.onValue(rref('lobby/' + code + '/room'), s => {
+    const room = s.val();
+    if (room && fr === my && !my.done) { my.done = true; stopFriend(); joinRoom(room, 'friend'); }
   });
 });
 $('joinRoomBtn').addEventListener('click', async () => {
   const code = $('codeIn').value.trim();
   if (!/^\d{4}$/.test(code)) { $('friendMsg').textContent = '請輸入 4 位數房號'; return; }
   $('friendMsg').textContent = '加入中…';
-  const ok = await fbPromise;
-  if (!ok || !fdb) { $('friendMsg').textContent = '連不上伺服器，請檢查網路。'; return; }
-  const ref = fs.doc(fdb, 'lobby', code);
-  const roomRef = fs.doc(fs.collection(fdb, 'rooms'));
+  if (!(await rtReady())) { $('friendMsg').textContent = '連不上對戰伺服器，請檢查網路。'; return; }
+  rtOn();
   try {
-    const s = await fs.getDoc(ref);
+    const s = await rt.get(rref('lobby/' + code));
     if (!s.exists()) throw new Error('none');
-    const v = s.data();
+    const v = s.val();
     if (v.host === pid) throw new Error('self');
     if (v.room) throw new Error('used');
     if (v.v !== VERSION) { const e = new Error('ver'); e.other = v.v || '舊版'; throw e; }
-    await fs.setDoc(roomRef, { p: [v.host, pid], names: { [v.host]: String(v.name).slice(0, 12), [pid]: playerName }, kind: 'friend', at: fs.serverTimestamp() });
-    await fs.updateDoc(ref, { room: roomRef.id });
-    joinRoom(roomRef.id, 'friend');
+    const roomId = rt.push(rref('rooms')).key;
+    await rt.set(rref('rooms/' + roomId), { p: { [v.host]: true, [pid]: true }, names: { [v.host]: String(v.name).slice(0, 12), [pid]: playerName }, kind: 'friend', at: rt.serverTimestamp() });
+    const r = await rt.runTransaction(rref('lobby/' + code + '/room'), cur => cur ? undefined : roomId);
+    if (!r.committed) { rt.remove(rref('rooms/' + roomId)).catch(() => {}); throw new Error('used'); }
+    rtOff();
+    joinRoom(roomId, 'friend');
   } catch (e) {
-    console.warn(e);
+    console.warn(e); rtOff();
     const m = e && e.message;
     $('friendMsg').textContent = m === 'none' ? '找不到這個房間，請確認房號。'
       : m === 'self' ? '這是你自己開的房間！同一支手機（同一個瀏覽器）算同一個人，請用另一台裝置或另一個帳號加入。'
       : m === 'used' ? '這個房間已經開打了，請朋友重開一間。'
-      : m === 'ver' ? `版本不一樣！房主是 ${e.other}、你是 ${VERSION}，請兩邊都重新整理網頁（網址後面加 ?v=${Date.now() % 1000} 可以強制更新）。`
-      : (e.code === 'permission-denied' ? '被資料庫拒絕了（請確認 Firestore 安全規則已發布）' : '加入失敗') + '［' + errCode(e) + '］';
+      : m === 'ver' ? `版本不一樣！房主是 ${e.other}、你是 ${VERSION}，請兩邊都重新整理網頁。`
+      : '加入失敗［' + errCode(e) + '］';
   }
 });
 
@@ -1170,49 +1244,56 @@ function startAIMatch() {
 async function joinRoom(roomId, kind) {
   hideAll(); show('matching', true); $('matchInfo').textContent = '找到對手了！';
   lastKind = kind; AI = null;
-  let room;
+  rtOn();
+  let room = null;
   for (let i = 0; i < 6 && !room; i++) {
-    try { const s = await fs.getDoc(fs.doc(fdb, 'rooms', roomId)); if (s.exists()) room = s.data(); } catch (e) {}
+    try { const s = await rt.get(rref('rooms/' + roomId)); if (s.exists()) room = s.val(); } catch (e) { console.warn(e); }
     if (!room) await sleep(500);
   }
-  if (!room) { $('matchInfo').textContent = '房間載入失敗，請重新配對。'; return; }
-  const oppId = room.p.find(x => x !== pid);
+  if (!room) { rtOff(); $('matchInfo').textContent = '房間載入失敗，請重新配對。'; return; }
+  const oppId = Object.keys(room.p || {}).find(x => x !== pid);
   match = newMatch(kind, (room.names && room.names[oppId]) || '對手');
-  match.myRef = fs.doc(fdb, 'rooms', roomId, 'players', pid);
-  loadOppInfo(match, oppId);
-  try { await fs.setDoc(match.myRef, { sent: 0, score: 0, alive: true, b: [], t: Date.now(), done: false }); } catch (e) { console.warn(e); }
   const m = match;
-  m.oppRef = fs.doc(fdb, 'rooms', roomId, 'players', oppId);
+  m.online = true; m.roomId = roomId;
+  m.myRef = rref('rooms/' + roomId + '/players/' + pid);
+  m.oppRef = rref('rooms/' + roomId + '/players/' + oppId);
+  loadOppInfo(m, oppId);
+  try {
+    await rt.onDisconnect(m.myRef).update({ off: true });   // 你斷線時，伺服器會立刻通知對手
+    await rt.set(m.myRef, { sent: 0, score: 0, alive: true, b: [], t: Date.now(), done: false });
+  } catch (e) { console.warn(e); }
   m.applyOpp = v => {
-    if (match !== m) return;
+    if (match !== m || !v) return;
     m.oppJoined = true;
-    if (v.t !== m.lastOppT) { m.lastOppT = v.t; m.oppSeenAt = Date.now(); }   // 對手每次上傳 t 都會變，有變才算對手還活著
+    if (v.t !== m.lastOppT) { m.lastOppT = v.t; m.oppSeenAt = Date.now(); }
     m.opp = { score: +v.score || 0, alive: v.alive !== false, done: !!v.done, sent: +v.sent || 0 };
     const add = m.opp.sent - m.received;
     if (add > 0) { m.received = m.opp.sent; if (m.startAt) P.receive(add); else m.preload = (m.preload || 0) + add; }
     applyOppPack(v.b);
     $('oppScore').textContent = m.opp.score;
     if (!m.opp.alive) finishMatch('win', '對手的狗狗爆出紅線了！');
+    else if (v.off && m.startAt) finishMatch(rtConnected ? 'win' : 'void', rtConnected ? '對手離開遊戲了' : '連線不穩定，這場不計分');
     else if (m.timeUp && m.opp.done) judgeByScore();
   };
-  const listen = () => {
-    m.unsub = fs.onSnapshot(m.oppRef, snap => { if (snap.exists()) m.applyOpp(snap.data()); }, err => {
-      console.warn('對手監聽中斷，重新連線', err);   // 監聽斷掉就自動重接
-      setTimeout(() => { if (match === m && !m.finished) listen(); }, 2000);
-    });
-  };
-  listen();
+  m.unsub = rt.onValue(m.oppRef, s => m.applyOpp(s.val()), e => console.warn(e));
   // 等對手也進房（最多 12 秒），沒來就回去重排
   $('matchInfo').textContent = '找到對手了！等待對手連線…';
   for (let i = 0; i < 24 && !m.oppJoined && match === m; i++) await sleep(500);
   if (match !== m) return;
   if (!m.oppJoined) {
-    if (m.unsub) m.unsub(); match = null;
+    cleanupRoom(m); match = null;
     if (kind === 'ranked') { $('matchInfo').textContent = '對手沒有回應，重新排隊中…'; await sleep(1200); startMatchmaking(); }
     else { openFriend(); $('friendMsg').textContent = '朋友沒有連進來，請重新開房再試一次。'; }
     return;
   }
   countdownAndStart();
+}
+function cleanupRoom(m) {
+  if (!m || m.isAI || m.cleaned) return;
+  m.cleaned = true;
+  if (m.unsub) { try { m.unsub(); } catch (e) {} }
+  if (m.myRef) { rt.onDisconnect(m.myRef).cancel().catch(() => {}); setTimeout(() => rt.remove(m.myRef).catch(() => {}), 8000); }
+  if (m.online) rtOff();
 }
 
 function matchTick() {
@@ -1233,19 +1314,8 @@ function matchTick() {
     if (m.opp.done) judgeByScore();
   }
   if (m.timeUp && now - m.timeUpAt > 8000) judgeByScore();
-  const nowMs = Date.now(), oppStale = nowMs - m.oppSeenAt;
-  // 對手 8 秒沒動靜：直接去伺服器問一次（監聽可能卡住了）
-  if (oppStale > 8000 && !m.probing && nowMs - (m.lastProbe || 0) > 4000) {
-    m.probing = true; m.lastProbe = nowMs;
-    (fs.getDocFromServer || fs.getDoc)(m.oppRef).then(s => { if (s.exists()) m.applyOpp(s.data()); m.lastServerOk = Date.now(); })
-      .catch(e => console.warn(e)).finally(() => { m.probing = false; });
-  }
-  if (oppStale > 25000) {
-    // 自己最近也傳不上去／連不到伺服器 → 是連線問題，不算誰贏
-    const myOk = (m.lastAck && nowMs - m.lastAck < 8000) || (m.lastServerOk && nowMs - m.lastServerOk < 8000);
-    if (myOk) finishMatch('win', '對手斷線了');
-    else finishMatch('void', '連線不穩定，這場不計分');
-  }
+  // 對手 20 秒沒動靜：自己有連線 → 對手斷了；自己也沒連線 → 不計分
+  if (Date.now() - m.oppSeenAt > 20000) finishMatch(rtConnected ? 'win' : 'void', rtConnected ? '對手斷線了' : '連線不穩定，這場不計分');
   flushMatch(false);
 }
 
@@ -1253,23 +1323,17 @@ function flushMatch(force) {
   const m = match;
   if (!m || m.isAI || !m.myRef) return;
   const now = Date.now();
-  // 上一次上傳卡住超過 4 秒就不等了，直接再送（避免一次卡住後整場都不同步）
-  if (m.writing && now - m.writeStart < 4000) return;
   if (!force && now - m.lastWrite < SYNC_MS) return;
   const pack = P.pack(), sig = [m.sent, P.score, P.gameOver, m.timeUp, pack.map(n => n >> 2).join(',')].join('|');
   if (!force && sig === m.lastSig && now - m.lastWrite < 4000) return;   // 畫面沒變就少傳（最多 4 秒一次心跳）
-  m.lastSig = sig;
-  m.writing = true; m.writeStart = now; m.lastWrite = now;
-  fs.setDoc(m.myRef, { sent: m.sent, score: Math.min(100000, P.score), alive: !P.gameOver, b: pack, t: now, done: m.timeUp || P.gameOver })
-    .then(() => { m.lastAck = Date.now(); m.lastErr = ''; })
-    .catch(e => { console.warn(e); m.lastErr = errCode(e); })
-    .finally(() => { m.writing = false; });
+  m.lastSig = sig; m.lastWrite = now;
+  rt.set(m.myRef, { sent: m.sent, score: Math.min(100000, P.score), alive: !P.gameOver, b: pack, t: now, done: m.timeUp || P.gameOver }).catch(e => console.warn(e));
 }
 
 function myTopOut() {
   const m = match;
   if (!m || m.finished) return;
-  if (!m.isAI && m.myRef) fs.setDoc(m.myRef, { sent: m.sent, score: Math.min(100000, P.score), alive: false, b: P.pack(), t: Date.now(), done: true }).catch(() => {});
+  if (!m.isAI && m.myRef) rt.set(m.myRef, { sent: m.sent, score: Math.min(100000, P.score), alive: false, b: P.pack(), t: Date.now(), done: true }).catch(() => {});
   finishMatch('lose', '你的狗狗爆出紅線了…');
 }
 function judgeByScore() {
@@ -1283,7 +1347,7 @@ async function finishMatch(res, why) {
   const m = match;
   if (!m || m.finished) return;
   m.finished = true; running = false;
-  if (m.unsub) m.unsub();
+  cleanupRoom(m);
   const oppScore = m.isAI ? AI.score : m.opp.score;
   $('resTitle').textContent = res === 'win' ? '🏆 勝利！' : res === 'draw' ? '🤝 平手' : res === 'void' ? '📶 不計分' : '💥 敗北';
   $('resWhy').textContent = why;
@@ -1338,7 +1402,9 @@ async function loadOppInfo(m, oppId) {
     const [l, p] = await Promise.all([fs.getDoc(fs.doc(fdb, LADDER, oppId)), fs.getDoc(fs.doc(fdb, 'profiles', oppId))]);
     const stars = l.exists() ? (l.data().stars | 0) : 0, pv = p.exists() ? p.data() : {};
     const lv = Math.max(1, pv.lv | 0), av = Math.max(0, Math.min(HIDDEN, pv.avatar | 0));
-    m.oppMeta = tierHTML(stars) + `<br><img class="mini" src="${FRUITS[av].src}"> Lv.${lv}` + (pv.title ? ` <span class="ttl">「${esc(String(pv.title).slice(0, 10))}」</span>` : '');
+    const okId = x => typeof x === 'string' && /^[a-z0-9-]{1,20}$/.test(x) ? x : '';
+    if (match === m) $('oppName').className = 'oppname ' + npClass(okId(pv.np));
+    m.oppMeta = tierHTML(stars) + `<br><img class="mini${avfClass(okId(pv.avf))}" src="${FRUITS[av].src}"> Lv.${lv}` + (pv.title ? ` <span class="ttl">「${esc(String(pv.title).slice(0, 10))}」</span>` : '');
     if (match === m) { $('oppMeta').innerHTML = m.oppMeta; $('matchInfo').innerHTML = '找到對手了！<br><b>' + esc(m.oppName) + '</b><br>' + m.oppMeta; }
   } catch (e) { console.warn(e); }
 }
@@ -1388,7 +1454,8 @@ function defProf() {
   return {
     lv: 1, xp: 0, tx: 0, bone: 0, title: '新手飼主', titles: ['新手飼主'], avatar: 0, theme: 'default', frame: 'f-default', owned: ['default', 'f-default'],
     stats: { games: 0, best: 0, merges: 0, maxDog: 0, hidden: 0, matches: 0, wins: 0 },
-    daily: { day: '', prog: {}, claimed: [] }, checkin: { last: '', streak: 0, best: 0, total: 0 }
+    daily: { day: '', prog: {}, claimed: [] }, checkin: { last: '', streak: 0, best: 0, total: 0 },
+    hat: '', fx: '', flt: '', avf: '', np: '', shards: 0, pity: { l: 0, m: 0 }, gfree: ''
   };
 }
 function normProf(p) {
@@ -1400,8 +1467,9 @@ function normProf(p) {
   if (!Array.isArray(o.owned)) o.owned = ['default', 'f-default'];
   if (!Array.isArray(o.titles)) o.titles = ['新手飼主'];
   ['lv', 'xp', 'tx', 'bone', 'avatar'].forEach(k => o[k] = Math.max(k === 'lv' ? 1 : 0, Math.floor(+o[k] || 0)));
-  if (!THEMES[o.theme]) o.theme = 'default';
-  if (!FRAMES[o.frame]) o.frame = 'f-default';
+  o.pity = Object.assign({ l: 0, m: 0 }, p.pity || {}); o.shards = Math.max(0, Math.floor(+o.shards || 0));
+  ['hat', 'fx', 'flt', 'avf', 'np', 'gfree', 'theme', 'frame'].forEach(k => { if (typeof o[k] !== 'string') o[k] = d[k] || ''; });
+  if (!o.theme) o.theme = 'default'; if (!o.frame) o.frame = 'f-default';
   return o;
 }
 let prof;
@@ -1416,8 +1484,9 @@ function saveProf() {
 }
 function profDoc() {
   return {
-    name: (playerName || '玩家').slice(0, 12), lv: prof.lv, xp: prof.xp, tx: prof.tx, bone: prof.bone, title: prof.title, titles: prof.titles.slice(0, 20),
-    avatar: prof.avatar, theme: prof.theme, frame: prof.frame, owned: prof.owned.slice(0, 30), stats: prof.stats, daily: prof.daily, checkin: prof.checkin, at: fs.serverTimestamp()
+    name: (playerName || '玩家').slice(0, 12), lv: prof.lv, xp: prof.xp, tx: prof.tx, bone: prof.bone, title: prof.title, titles: prof.titles.slice(0, 40),
+    avatar: prof.avatar, theme: prof.theme, frame: prof.frame, owned: prof.owned.slice(0, 200), stats: prof.stats, daily: prof.daily, checkin: prof.checkin,
+    hat: prof.hat, fx: prof.fx, flt: prof.flt, avf: prof.avf, np: prof.np, shards: prof.shards, pity: prof.pity, gfree: prof.gfree, at: fs.serverTimestamp()
   };
 }
 async function pushProfile() {
@@ -1507,6 +1576,7 @@ function onMatchEnd(m, res) {
 // 外觀
 function curTheme() { return THEMES[prof.theme] || THEMES.default; }
 function frameColor(b, fallback) {
+  const gc = gachaFrameColor(b); if (gc) return gc;
   switch (prof.frame) {
     case 'f-heart': return '#ff6f9f';
     case 'f-gold': return '#f2b705';
@@ -1519,10 +1589,10 @@ function frameColor(b, fallback) {
 function renderLvLine() {
   const el = $('lvLine'); if (!el) return;
   const need = xpNeed(prof.lv), pct = Math.round(prof.xp / need * 100);
-  el.innerHTML = `<img class="mini big" src="${FRUITS[Math.min(prof.avatar, HIDDEN)].src}"> <b>Lv.${prof.lv}</b> <span class="xpbar"><i style="width:${pct}%"></i></span> <span>🦴 ${prof.bone}</span><br><span class="ttl">「${esc(prof.title)}」</span>`;
+  el.innerHTML = `<img class="mini big${avfClass(prof.avf)}" src="${FRUITS[Math.min(prof.avatar, HIDDEN)].src}"> <b>Lv.${prof.lv}</b> <span class="xpbar"><i style="width:${pct}%"></i></span> <span>🦴 ${prof.bone}</span><br><span class="ttl">「${esc(prof.title)}」</span>`;
   const dot = canCheckIn() || claimableMissions() > 0;
   document.querySelectorAll('[data-open]').forEach(b => {
-    const t = b.dataset.open, on = (t === 'check' && canCheckIn()) || (t === 'task' && claimableMissions() > 0);
+    const t = b.dataset.open, on = (t === 'check' && canCheckIn()) || (t === 'task' && claimableMissions() > 0) || (t === 'gacha' && canFreePull());
     b.classList.toggle('dot', on);
   });
 }
@@ -1539,7 +1609,7 @@ function renderProf() {
   const box = $('profBody'); let h = '';
   if (profTab === 'me') {
     const need = xpNeed(prof.lv), st = prof.stats;
-    h += `<div class="pf-head"><img src="${FRUITS[Math.min(prof.avatar, HIDDEN)].src}"><div><div class="pf-name">${esc(playerName || '玩家')}</div><div class="ttl">「${esc(prof.title)}」</div><div>Lv.${prof.lv}・🦴 ${prof.bone}</div></div></div>`;
+    h += `<div class="pf-head"><img class="${avfClass(prof.avf)}" src="${FRUITS[Math.min(prof.avatar, HIDDEN)].src}"><div><div class="pf-name"><span class="${npClass(prof.np)}">${esc(playerName || '玩家')}</span></div><div class="ttl">「${esc(prof.title)}」</div><div>Lv.${prof.lv}・🦴 ${prof.bone}</div></div></div>`;
     h += `<div class="xpbar wide"><i style="width:${Math.round(prof.xp / need * 100)}%"></i></div><div class="note">經驗值 ${prof.xp} / ${need}（合成得到的分數就是經驗值，升級送 🦴30）</div>`;
     h += `<div class="pf-grid"><div><b>${st.games}</b>單人場數</div><div><b>${st.best}</b>最高分</div><div><b>${st.merges}</b>合成次數</div><div><b>${st.matches}</b>對戰場數</div><div><b>${st.wins}</b>排位勝場</div><div><b>${prof.checkin.total}</b>簽到天數</div></div>`;
     h += pid ? `<div style="margin:6px 0">${tierHTML(myStars)}</div>` : '<div class="note">登入後會顯示排位段位，進度也會存到雲端</div>';
@@ -1576,11 +1646,12 @@ function renderProf() {
     });
   } else if (profTab === 'shop') {
     h += `<div class="note">用骨頭換場地背景和狗狗外框！你有 🦴 <b>${prof.bone}</b></div><h3>場地背景</h3><div class="shop">`;
-    for (const [id, T] of Object.entries(THEMES)) h += shopItem(id, T.icon, T.name, T.price, prof.theme === id, `background:linear-gradient(${T.c1},${T.c2})`);
+    for (const [id, T] of Object.entries(THEMES)) if (!T.gacha) h += shopItem(id, T.icon, T.name, T.price, prof.theme === id, `background:linear-gradient(${T.c1},${T.c2})`);
     h += '</div><h3>狗狗外框</h3><div class="shop">';
-    for (const [id, F] of Object.entries(FRAMES)) h += shopItem(id, F.icon, F.name, F.price, prof.frame === id, '');
+    for (const [id, F] of Object.entries(FRAMES)) if (!F.gacha) h += shopItem(id, F.icon, F.name, F.price, prof.frame === id, '');
     h += '</div>';
   }
+  if (profTab === 'gacha') h += gachaHTML(); else if (profTab === 'ward') h += wardHTML();
   box.innerHTML = h;
 }
 function shopItem(id, icon, name, price, on, style) {
@@ -1616,6 +1687,325 @@ $('profBody').addEventListener('click', e => {
 });
 renderLvLine(); renderLvHud();
 
+// ====== 扭蛋機・衣櫃 ======
+const RAR = [
+  { name: '全熟', tag: '普通', p: 0.50, color: '#a1887f', shard: 1, cost: 5, icon: '🥩' },
+  { name: '七分熟', tag: '優良', p: 0.28, color: '#e07a5f', shard: 3, cost: 12, icon: '🥩' },
+  { name: '五分熟', tag: '稀有', p: 0.14, color: '#d1495b', shard: 8, cost: 25, icon: '🥩' },
+  { name: '三分熟', tag: '史詩', p: 0.06, color: '#9b2c8e', shard: 20, cost: 60, icon: '🥩' },
+  { name: '一分熟', tag: '傳說', p: 0.018, color: '#e85d04', shard: 50, cost: 150, icon: '🔥' },
+  { name: 'A5 和牛', tag: '神話', p: 0.002, color: '#c9a227', shard: 150, cost: 400, icon: '👑' },
+];
+const GACHA_COST = 50, GACHA10_COST = 450, PITY_LEG = 50, PITY_MYTH = 300;
+const CAT_NAME = { fx: '合成特效', hat: '狗狗裝扮', flt: '照片濾鏡', avf: '頭像框', np: '名牌底色', bg: '場地背景', frame: '狗狗外框', title: '稱號', bone: '骨頭', set: '全套主題' };
+const ITEMS = [
+  // 全熟
+  { id: 'bone20', r: 0, cat: 'bone', name: '骨頭 ×20', icon: '🦴', n: 20 },
+  { id: 'bone30', r: 0, cat: 'bone', name: '骨頭 ×30', icon: '🦴', n: 30 },
+  { id: 'fx-bubble', r: 0, cat: 'fx', name: '小泡泡', icon: '🫧' },
+  { id: 'fx-confetti', r: 0, cat: 'fx', name: '彩紙', icon: '🎊' },
+  { id: 'avf-mint', r: 0, cat: 'avf', name: '薄荷框', icon: '🟢' },
+  { id: 'avf-pink', r: 0, cat: 'avf', name: '粉紅框', icon: '🩷' },
+  { id: 'avf-sky', r: 0, cat: 'avf', name: '天空藍框', icon: '🔵' },
+  { id: 'np-cream', r: 0, cat: 'np', name: '奶油名牌', icon: '🏷️' },
+  { id: 'np-mint', r: 0, cat: 'np', name: '薄荷名牌', icon: '🏷️' },
+  // 七分熟
+  { id: 'fx-heart', r: 1, cat: 'fx', name: '愛心', icon: '💕' },
+  { id: 'fx-star', r: 1, cat: 'fx', name: '星星', icon: '⭐' },
+  { id: 'fx-bone', r: 1, cat: 'fx', name: '骨頭雨', icon: '🦴' },
+  { id: 'fx-petal', r: 1, cat: 'fx', name: '花瓣', icon: '🌸' },
+  { id: 'hat-bow', r: 1, cat: 'hat', name: '蝴蝶結', icon: '🎀' },
+  { id: 'hat-cap', r: 1, cat: 'hat', name: '棒球帽', icon: '🧢' },
+  { id: 'np-sunset', r: 1, cat: 'np', name: '夕陽橘名牌', icon: '🏷️' },
+  { id: 'np-grape', r: 1, cat: 'np', name: '葡萄紫名牌', icon: '🏷️' },
+  // 五分熟
+  { id: 'hat-shades', r: 2, cat: 'hat', name: '墨鏡', icon: '🕶️' },
+  { id: 'hat-tophat', r: 2, cat: 'hat', name: '紳士帽', icon: '🎩' },
+  { id: 'hat-flower', r: 2, cat: 'hat', name: '小花', icon: '🌼' },
+  { id: 'hat-pumpkin', r: 2, cat: 'hat', name: '南瓜', icon: '🎃' },
+  { id: 'flt-gray', r: 2, cat: 'flt', name: '黑白濾鏡', icon: '🖤' },
+  { id: 'flt-sepia', r: 2, cat: 'flt', name: '復古濾鏡', icon: '📜' },
+  { id: 'avf-duo', r: 2, cat: 'avf', name: '雙色框', icon: '🌓' },
+  { id: 'bg-lavender', r: 2, cat: 'bg', name: '薰衣草', icon: '💜' },
+  { id: 'bg-matcha', r: 2, cat: 'bg', name: '抹茶', icon: '🍵' },
+  // 三分熟
+  { id: 'bg-stars', r: 3, cat: 'bg', name: '星空', icon: '✨' },
+  { id: 'bg-aurora', r: 3, cat: 'bg', name: '極光', icon: '🌌' },
+  { id: 'f-fire', r: 3, cat: 'frame', name: '火焰框', icon: '🔥' },
+  { id: 'f-ice', r: 3, cat: 'frame', name: '冰晶框', icon: '❄️' },
+  { id: 'hat-halo', r: 3, cat: 'hat', name: '天使光環', icon: '😇' },
+  { id: 'flt-vivid', r: 3, cat: 'flt', name: '繽紛濾鏡', icon: '🎨' },
+  { id: 'avf-glow', r: 3, cat: 'avf', name: '發光金框', icon: '🌟' },
+  { id: 't-collector', r: 3, cat: 'title', name: '骨頭收藏家', icon: '🏅' },
+  { id: 't-photo', r: 3, cat: 'title', name: '狗狗攝影師', icon: '🏅' },
+  // 一分熟
+  { id: 'fx-firework', r: 4, cat: 'fx', name: '煙火', icon: '🎆' },
+  { id: 'fx-rainbow', r: 4, cat: 'fx', name: '彩虹爆', icon: '🌈' },
+  { id: 'hat-crown', r: 4, cat: 'hat', name: '皇冠', icon: '👑' },
+  { id: 'f-electric', r: 4, cat: 'frame', name: '電光框', icon: '⚡' },
+  { id: 'bg-lava', r: 4, cat: 'bg', name: '熔岩', icon: '🌋' },
+  { id: 'avf-rainbow', r: 4, cat: 'avf', name: '彩虹旋轉框', icon: '🌈' },
+  { id: 't-legend', r: 4, cat: 'title', name: '傳說飼主', icon: '🏅' },
+  // A5 和牛
+  { id: 'set-wagyu', r: 5, cat: 'set', name: 'A5 和牛全套', icon: '🥩', sub: ['bg-wagyu', 'f-wagyu', 'fx-wagyu', 'avf-wagyu', 'np-wagyu', 't-wagyu'] },
+  { id: 'set-god', r: 5, cat: 'set', name: '狗狗之神全套', icon: '🐶', sub: ['bg-god', 'f-god', 'fx-god', 'np-rainbow', 't-god'] },
+];
+// 全套裡面的單品（不會單獨出現在扭蛋池）
+const SUB_ITEMS = {
+  'bg-wagyu': { cat: 'bg', name: '霜降背景', icon: '🥩' }, 'f-wagyu': { cat: 'frame', name: '和牛金框', icon: '🥩' }, 'fx-wagyu': { cat: 'fx', name: '和牛特效', icon: '🥩' },
+  'avf-wagyu': { cat: 'avf', name: '和牛頭像框', icon: '🥩' }, 'np-wagyu': { cat: 'np', name: '金色名牌', icon: '🏷️' }, 't-wagyu': { cat: 'title', name: 'A5 和牛', icon: '🏅' },
+  'bg-god': { cat: 'bg', name: '神光背景', icon: '🐶' }, 'f-god': { cat: 'frame', name: '神聖外框', icon: '🐶' }, 'fx-god': { cat: 'fx', name: '星辰特效', icon: '🌠' },
+  'np-rainbow': { cat: 'np', name: '彩虹名牌', icon: '🏷️' }, 't-god': { cat: 'title', name: '狗狗之神', icon: '🏅' },
+};
+const itemInfo = id => ITEMS.find(x => x.id === id) || (SUB_ITEMS[id] && Object.assign({ id }, SUB_ITEMS[id]));
+const HAT_EMOJI = { 'hat-bow': '🎀', 'hat-cap': '🧢', 'hat-shades': '🕶️', 'hat-tophat': '🎩', 'hat-flower': '🌼', 'hat-pumpkin': '🎃', 'hat-crown': '👑' };
+
+// 背景、外框加進原本的清單（gacha:true 代表只能抽，不在商店賣）
+Object.assign(THEMES, {
+  'bg-lavender': { name: '薰衣草', icon: '💜', c1: '#f1e8ff', c2: '#c7b0ef', gacha: true },
+  'bg-matcha': { name: '抹茶', icon: '🍵', c1: '#f0f7df', c2: '#a7c777', gacha: true },
+  'bg-stars': { name: '星空', icon: '✨', c1: '#202a5c', c2: '#0b0f26', gacha: true, anim: 'stars' },
+  'bg-aurora': { name: '極光', icon: '🌌', c1: '#14304a', c2: '#081320', gacha: true, anim: 'aurora' },
+  'bg-lava': { name: '熔岩', icon: '🌋', c1: '#3a0d05', c2: '#7a1806', gacha: true, anim: 'lava' },
+  'bg-wagyu': { name: '霜降', icon: '🥩', c1: '#f6cdbf', c2: '#c4524c', gacha: true, anim: 'marble' },
+  'bg-god': { name: '神光', icon: '🐶', c1: '#fffbe6', c2: '#ffd36b', gacha: true, anim: 'rays' },
+});
+Object.assign(FRAMES, {
+  'f-fire': { name: '火焰框', icon: '🔥', gacha: true }, 'f-ice': { name: '冰晶框', icon: '❄️', gacha: true },
+  'f-electric': { name: '電光框', icon: '⚡', gacha: true }, 'f-wagyu': { name: '和牛金框', icon: '🥩', gacha: true }, 'f-god': { name: '神聖外框', icon: '🐶', gacha: true },
+});
+const GLOW_FRAMES = { 'f-gold': '#ffd84a', 'f-ice': '#bff3ff', 'f-electric': '#7df9ff', 'f-wagyu': '#ffd84a', 'f-god': '#fff6a8', 'f-fire': '#ff9a1f' };
+function gachaFrameColor(b) {
+  const t = performance.now();
+  switch (prof.frame) {
+    case 'f-fire': return `hsl(${18 + 18 * Math.sin(t / 90 + (b ? b.id : 0))},100%,${52 + 6 * Math.sin(t / 60)}%)`;
+    case 'f-ice': return '#9fe9ff';
+    case 'f-electric': return `hsl(${185 + 15 * Math.sin(t / 40)},100%,${50 + 25 * (Math.sin(t / 25 + (b ? b.id : 0)) > 0.6 ? 1 : 0)}%)`;
+    case 'f-wagyu': return Math.sin(t / 300 + (b ? b.id : 0)) > 0 ? '#c9a227' : '#b3261e';
+    case 'f-god': return `hsl(${45 + 10 * Math.sin(t / 200)},100%,${70 + 10 * Math.sin(t / 150)}%)`;
+  }
+  return null;
+}
+
+// 動態背景
+const STARS = Array.from({ length: 70 }, (_, i) => ({ x: (i * 97.3) % W, y: (i * 151.7) % H, s: 0.6 + (i % 3) * 0.6, ph: i * 1.7 }));
+let marbleCv = null;
+function drawAnimBg(c, anim) {
+  const t = performance.now() / 1000;
+  c.save();
+  if (anim === 'stars') {
+    for (const s of STARS) { c.globalAlpha = 0.35 + 0.65 * Math.abs(Math.sin(t * 1.3 + s.ph)); c.fillStyle = '#fff'; c.beginPath(); c.arc(s.x, s.y, s.s, 0, Math.PI * 2); c.fill(); }
+  } else if (anim === 'aurora') {
+    for (let k = 0; k < 3; k++) {
+      c.globalAlpha = 0.22; c.fillStyle = ['#3dffb0', '#7d5cff', '#33c3ff'][k];
+      c.beginPath(); c.moveTo(0, 0);
+      for (let x = 0; x <= W; x += 20) c.lineTo(x, 120 + k * 70 + 40 * Math.sin(x / 70 + t * (0.6 + k * 0.2) + k));
+      c.lineTo(W, 0); c.closePath(); c.fill();
+    }
+  } else if (anim === 'lava') {
+    for (let k = 0; k < 7; k++) {
+      const x = (k * 61 + 40 * Math.sin(t * 0.5 + k)) % W, y = H - 40 - ((t * 25 + k * 90) % (H + 80));
+      const g = c.createRadialGradient(x, y, 2, x, y, 40); g.addColorStop(0, 'rgba(255,170,40,.6)'); g.addColorStop(1, 'rgba(255,80,0,0)');
+      c.fillStyle = g; c.beginPath(); c.arc(x, y, 40, 0, Math.PI * 2); c.fill();
+    }
+  } else if (anim === 'marble') {
+    if (!marbleCv) {
+      marbleCv = document.createElement('canvas'); marbleCv.width = W; marbleCv.height = H;
+      const m = marbleCv.getContext('2d'); m.lineCap = 'round';
+      for (let k = 0; k < 34; k++) {   // 霜降油花：彎彎的白色細紋
+        m.strokeStyle = `rgba(255,246,240,${0.35 + (k % 3) * 0.15})`; m.lineWidth = 0.8 + (k % 5) * 0.9;
+        let x = (k * 71) % (W + 60) - 30, y = (k * 113) % H;
+        m.beginPath(); m.moveTo(x, y);
+        for (let j = 0; j < 4; j++) { const cx = x + 25 + ((k + j) % 4) * 10, cy = y + (((k * 3 + j) % 5) - 2) * 16; x += 45 + ((k + j) % 3) * 12; y += (((k + j * 2) % 5) - 2) * 10; m.quadraticCurveTo(cx, cy, x, y); }
+        m.stroke();
+      }
+    }
+    c.drawImage(marbleCv, 0, 0);
+  } else if (anim === 'rays') {
+    c.translate(W / 2, -40); c.rotate(t * 0.15);
+    for (let k = 0; k < 12; k++) { c.rotate(Math.PI / 6); c.globalAlpha = 0.18; c.fillStyle = '#fff'; c.beginPath(); c.moveTo(0, 0); c.lineTo(-30, H * 1.3); c.lineTo(30, H * 1.3); c.closePath(); c.fill(); }
+  }
+  c.restore();
+}
+
+// 照片濾鏡（先算好每隻狗的濾鏡版圖片）
+const fltCache = {};
+function filteredImg(level) {
+  const f = prof.flt; if (!f) return null;
+  const key = f + level; if (fltCache[key]) return fltCache[key];
+  const img = FRUITS[level].img; if (!img.complete || !img.naturalWidth) return null;
+  const cv = document.createElement('canvas'); cv.width = img.naturalWidth; cv.height = img.naturalHeight;
+  const x = cv.getContext('2d'); x.drawImage(img, 0, 0);
+  try {
+    const d = x.getImageData(0, 0, cv.width, cv.height), p = d.data;
+    for (let i = 0; i < p.length; i += 4) {
+      const r = p[i], g = p[i + 1], b = p[i + 2], l = 0.3 * r + 0.59 * g + 0.11 * b;
+      if (f === 'flt-gray') { p[i] = p[i + 1] = p[i + 2] = l; }
+      else if (f === 'flt-sepia') { p[i] = Math.min(255, l * 1.07 + 30); p[i + 1] = Math.min(255, l * 0.95 + 12); p[i + 2] = Math.min(255, l * 0.75); }
+      else if (f === 'flt-vivid') { p[i] = Math.max(0, Math.min(255, l + (r - l) * 1.8 + 8)); p[i + 1] = Math.max(0, Math.min(255, l + (g - l) * 1.8)); p[i + 2] = Math.max(0, Math.min(255, l + (b - l) * 1.8 + 12)); }
+    }
+    x.putImageData(d, 0, 0);
+  } catch (e) { return null; }
+  return (fltCache[key] = cv);
+}
+
+// 裝扮（畫在玩家自己的狗狗頭上）
+function drawHat(c, x, y, r) {
+  const h = prof.hat; if (!h) return;
+  c.save();
+  if (h === 'hat-halo') {
+    c.strokeStyle = '#ffe066'; c.lineWidth = Math.max(2, r * 0.1); c.shadowColor = '#fff6a8'; c.shadowBlur = 8;
+    c.beginPath(); c.ellipse(x, y - r * 1.02, r * 0.55, r * 0.16, 0, 0, Math.PI * 2); c.stroke();
+  } else {
+    const e = HAT_EMOJI[h]; if (!e) { c.restore(); return; }
+    const sz = Math.max(12, r * (h === 'hat-shades' ? 0.62 : 0.8));
+    c.font = `${sz}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.fillText(e, x + (h === 'hat-flower' ? r * 0.45 : 0), h === 'hat-shades' ? y - r * 0.18 : y - r * 0.82);
+  }
+  c.restore();
+}
+
+// 合成特效
+function fxBurst(list, x, y, color) {
+  const fx = prof.fx;
+  const add = (o, n, f) => { for (let i = 0; i < n; i++) { const a = Math.random() * Math.PI * 2, s = 80 + Math.random() * 220; list.push(Object.assign({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 80, life: 0.7 + Math.random() * 0.4, c: color, r: 2 + Math.random() * 4 }, o, f ? f(i, a) : {})); } };
+  const emo = { 'fx-heart': '💕', 'fx-star': '⭐', 'fx-bone': '🦴', 'fx-petal': '🌸' };
+  if (!fx) { add({}, 14); return; }
+  if (emo[fx]) add({ e: emo[fx], sz: 14 + Math.random() * 6 }, 9, () => ({ sz: 12 + Math.random() * 10 }));
+  else if (fx === 'fx-bubble') add({ shape: 'ring', c: '#9fdcff', g: -120 }, 12, () => ({ r: 3 + Math.random() * 6, vy: -60 - Math.random() * 120 }));
+  else if (fx === 'fx-confetti') add({ shape: 'rect' }, 18, () => ({ c: `hsl(${Math.random() * 360},90%,60%)`, rot: Math.random() * 6 }));
+  else if (fx === 'fx-firework') { add({}, 36, (i, a) => ({ c: `hsl(${Math.random() * 360},100%,62%)`, vx: Math.cos(a) * 260, vy: Math.sin(a) * 260, g: 250 })); add({ e: '🎆', sz: 22 }, 1, () => ({ vx: 0, vy: -40 })); }
+  else if (fx === 'fx-rainbow') add({}, 28, (i, a) => ({ c: `hsl(${i / 28 * 360},95%,60%)`, vx: Math.cos(i / 28 * 6.28) * 220, vy: Math.sin(i / 28 * 6.28) * 220, r: 4 }));
+  else if (fx === 'fx-wagyu') { add({ c: '#ffd84a' }, 16); add({ e: '🥩', sz: 18 }, 3); add({ e: '✨', sz: 14 }, 4); }
+  else if (fx === 'fx-god') { add({ c: '#fff6a8', g: 120 }, 22); add({ e: '🌠', sz: 16 }, 4); add({ e: '🐾', sz: 14 }, 3); }
+  else add({}, 14);
+}
+function drawParticle(c, p) {
+  c.globalAlpha = Math.max(0, Math.min(1, p.life / 0.9));
+  if (p.e) { c.font = `${p.sz || 16}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(p.e, p.x, p.y); }
+  else if (p.shape === 'ring') { c.strokeStyle = p.c; c.lineWidth = 1.5; c.beginPath(); c.arc(p.x, p.y, p.r, 0, Math.PI * 2); c.stroke(); }
+  else if (p.shape === 'rect') { c.save(); c.translate(p.x, p.y); c.rotate((p.rot || 0) + p.life * 8); c.fillStyle = p.c; c.fillRect(-4, -2, 8, 4); c.restore(); }
+  else { c.fillStyle = p.c; c.beginPath(); c.arc(p.x, p.y, p.r, 0, Math.PI * 2); c.fill(); }
+}
+
+// 抽獎
+function canFreePull() { return prof.gfree !== todayKey(); }
+function rollOne(minR) {
+  let r;
+  if (prof.pity.m >= PITY_MYTH - 1) r = 5;
+  else if (prof.pity.l >= PITY_LEG - 1) r = Math.random() < 0.1 ? 5 : 4;
+  else {
+    let x = Math.random(); r = 0;
+    for (let i = 0; i < RAR.length; i++) { if (x < RAR[i].p) { r = i; break; } x -= RAR[i].p; }
+  }
+  if (minR !== undefined && r < minR) r = minR;
+  prof.pity.l = r >= 4 ? 0 : prof.pity.l + 1;
+  prof.pity.m = r === 5 ? 0 : prof.pity.m + 1;
+  const pool = ITEMS.filter(i => i.r === r);
+  return grant(pool[Math.floor(Math.random() * pool.length)]);
+}
+function owns(id) { return id.startsWith('t-') ? prof.titles.includes(itemInfo(id).name) : prof.owned.includes(id); }
+function giveOne(id) {
+  const it = itemInfo(id);
+  if (it.cat === 'title') { if (!prof.titles.includes(it.name)) prof.titles.push(it.name); }
+  else if (!prof.owned.includes(id)) prof.owned.push(id);
+}
+function grant(it) {
+  const res = { it, dup: false, shards: 0 };
+  if (it.cat === 'bone') { prof.bone += it.n; return res; }
+  const ids = it.cat === 'set' ? it.sub : [it.id];
+  if (ids.every(owns)) { res.dup = true; res.shards = RAR[it.r].shard; prof.shards += res.shards; }
+  else ids.forEach(giveOne);
+  return res;
+}
+function doPull(n) {
+  const free = n === 1 && canFreePull();
+  const cost = free ? 0 : (n === 1 ? GACHA_COST : GACHA10_COST);
+  if (prof.bone < cost) { toast('🦴 骨頭不夠<br><span style="font-size:15px">還差 ' + (cost - prof.bone) + ' 根</span>'); return; }
+  prof.bone -= cost; if (free) prof.gfree = todayKey();
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const needGuarantee = n === 10 && i === 9 && !out.some(o => o.it.r >= 2);
+    out.push(rollOne(needGuarantee ? 2 : undefined));
+  }
+  saveProf();
+  showPulls(out);
+}
+
+// 抽獎動畫
+function showPulls(out) {
+  const top = Math.max(...out.map(o => o.it.r));
+  const box = $('gachaFx'); box.className = 'modal on gfx r' + top; box.innerHTML = '';
+  const cap = document.createElement('div'); cap.className = 'capsule'; cap.textContent = top >= 5 ? '👑' : top >= 4 ? '🔥' : '🥚';
+  box.appendChild(cap);
+  const intro = top >= 5 ? 2600 : top >= 4 ? 1900 : top >= 3 ? 1400 : 900;
+  if (top >= 5) { const b = document.createElement('div'); b.className = 'mythText'; b.textContent = '👑 A5 和牛！'; box.appendChild(b); }
+  let skipped = false;
+  const reveal = () => {
+    if (skipped) return; skipped = true;
+    box.innerHTML = '<div class="pulls"></div><div class="note" style="color:#fff">點畫面關閉</div>';
+    const grid = box.querySelector('.pulls'); grid.classList.toggle('one', out.length === 1);
+    out.forEach((o, i) => {
+      const R = RAR[o.it.r], d = document.createElement('div');
+      d.className = 'pcard r' + o.it.r; d.style.animationDelay = (i * 0.12) + 's'; d.style.borderColor = R.color;
+      d.innerHTML = `<div class="prar" style="background:${R.color}">${R.icon} ${R.name}</div><div class="picon">${o.it.icon}</div><div class="pname">${esc(o.it.name)}</div><div class="psub">${o.it.cat === 'bone' ? '已加入骨頭' : o.dup ? '重複 → 碎片 +' + o.shards : CAT_NAME[o.it.cat]}</div>`;
+      grid.appendChild(d);
+    });
+    box.onclick = () => { box.className = 'modal'; box.onclick = null; renderProf(); renderLvLine(); };
+  };
+  setTimeout(reveal, intro);
+  box.onclick = () => reveal();
+}
+
+function gachaHTML() {
+  let h = `<div class="gtop">🦴 <b>${prof.bone}</b>　💎 碎片 <b>${prof.shards}</b></div>`;
+  h += `<div class="gmachine">🎰</div>`;
+  h += `<div class="btns"><button class="main fr" data-pull="1">${canFreePull() ? '今日免費抽！' : '抽 1 次 🦴' + GACHA_COST}</button><button class="main vs" data-pull="10">十連抽 🦴${GACHA10_COST}</button></div>`;
+  h += `<div class="note">十連抽保證至少一個五分熟以上<br>再 <b>${PITY_LEG - prof.pity.l}</b> 抽必出一分熟以上・再 <b>${PITY_MYTH - prof.pity.m}</b> 抽必出 A5 和牛</div>`;
+  h += '<h3>機率</h3><div class="odds">' + RAR.map(R => `<span style="background:${R.color}">${R.icon} ${R.name}（${R.tag}）${+(R.p * 100).toFixed(1)}%</span>`).join('') + '</div>';
+  h += '<h3>💎 碎片兌換</h3><div class="note">抽到重複的會變成碎片，可以直接換想要的</div><div class="exch">';
+  ITEMS.filter(i => i.cat !== 'bone').sort((a, b) => b.r - a.r).forEach(it => {
+    const own = (it.cat === 'set' ? it.sub : [it.id]).every(owns), R = RAR[it.r], cost = R.cost;
+    h += `<button data-exch="${it.id}" ${own || prof.shards < cost ? 'disabled' : ''} style="border-color:${R.color}"><span>${it.icon}</span>${esc(it.name)}<small>${own ? '已擁有' : '💎 ' + cost}</small></button>`;
+  });
+  return h + '</div>';
+}
+function wardHTML() {
+  const sec = (title, cat, field, noneName) => {
+    const ids = cat === 'bg' ? Object.keys(THEMES).filter(id => prof.owned.includes(id)) :
+      cat === 'frame' ? Object.keys(FRAMES).filter(id => prof.owned.includes(id)) :
+        prof.owned.filter(id => (itemInfo(id) || {}).cat === cat);
+    let s = `<h3>${title}</h3><div class="ward">`;
+    if (noneName) s += `<button data-equip="${field}:" class="${!prof[field] ? 'on' : ''}"><span>🚫</span>${noneName}</button>`;
+    ids.forEach(id => {
+      const it = cat === 'bg' ? THEMES[id] : cat === 'frame' ? FRAMES[id] : itemInfo(id);
+      s += `<button data-equip="${field}:${id}" class="${prof[field] === id ? 'on' : ''}"><span>${it.icon}</span>${esc(it.name)}</button>`;
+    });
+    if (!ids.length && !noneName) s += '<div class="note">還沒有</div>';
+    return s + '</div>';
+  };
+  return '<div class="note">裝備你抽到或買到的外觀，裝扮、濾鏡、外框會套用在你自己的狗狗上</div>' +
+    sec('合成特效', 'fx', 'fx', '預設') + sec('狗狗裝扮', 'hat', 'hat', '不戴') + sec('照片濾鏡', 'flt', 'flt', '原圖') +
+    sec('場地背景', 'bg', 'theme') + sec('狗狗外框', 'frame', 'frame') + sec('頭像框', 'avf', 'avf', '無') + sec('名牌底色', 'np', 'np', '無');
+}
+$('profBody').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b || b.disabled) return;
+  if (b.dataset.pull) doPull(+b.dataset.pull);
+  else if (b.dataset.exch) {
+    const it = itemInfo(b.dataset.exch), cost = RAR[it.r].cost;
+    if (prof.shards < cost) return;
+    prof.shards -= cost; (it.cat === 'set' ? it.sub : [it.id]).forEach(giveOne);
+    toast('💎 兌換成功！<br>' + it.icon + ' ' + esc(it.name)); saveProf(); renderProf();
+  } else if (b.dataset.equip !== undefined) {
+    const [field, id] = b.dataset.equip.split(':');
+    prof[field] = field === 'theme' ? (id || 'default') : field === 'frame' ? (id || 'f-default') : id;
+    saveProf(); renderProf();
+  }
+});
+// 頭像框、名牌的 class
+function avfClass(id) { return id ? ' avf ' + id : ''; }
+function npClass(id) { return id ? 'np ' + id : ''; }
+
 // ====== 連線檢查 ======
 $('diagBtn').addEventListener('click', () => { hideAll(); show('diag', true); $('diagOut').textContent = ''; });
 $('diagBack').addEventListener('click', goHome);
@@ -1632,31 +2022,35 @@ async function runDiag() {
   if (!authUser) await step('遊客登入', async () => { const c = await am.signInAnonymously(auth); authUser = c.user; pid = c.user.uid; });
   if (!authUser) { log(false, '沒有登入，無法繼續檢查（請到 Authentication 開啟「匿名」）'); $('diagRun').disabled = false; return; }
   log(true, '登入身分：' + (authUser.isAnonymous ? '遊客' : '帳號') + '・ID ' + pid.slice(-4));
-  const qRef = fs.doc(fdb, 'queue', pid);
   const nm = playerName || '測試';
-  await step('寫入排隊資料', () => fs.setDoc(qRef, { name: nm, t: fs.serverTimestamp(), room: null, v: VERSION }));
-  await step('伺服器時間對照', async () => { const s = await fs.getDoc(qRef); const d = Math.round((Date.now() - tms(s.data().t)) / 1000); return '手機時間和伺服器差 ' + d + ' 秒'; });
-  await step('讀取排隊名單', async () => {
-    const s = await fs.getDocs(fs.query(fs.collection(fdb, 'queue'), fs.where('t', '>=', fs.Timestamp.fromMillis(Date.now() - 300000)), fs.limit(200)));
-    return '最近 5 分鐘有 ' + s.docs.length + ' 筆（含自己）';
-  });
-  let roomRef = null;
-  await step('建立對戰房間', async () => {
-    const r = fs.doc(fs.collection(fdb, 'rooms'));
-    await fs.setDoc(r, { p: [pid, 'selftest'], names: { [pid]: nm }, kind: 'test', at: fs.serverTimestamp() });
-    roomRef = r;
-  });
-  await step('通知對手進房（更新排隊資料）', () => fs.updateDoc(qRef, { room: roomRef ? roomRef.id : 'x' }));
-  if (roomRef) {
-    await step('讀取對戰房間', async () => { const s = await fs.getDoc(roomRef); if (!s.exists()) throw new Error('房間不存在'); });
-    await step('寫入對戰畫面', () => fs.setDoc(fs.doc(fdb, 'rooms', roomRef.id, 'players', pid), { sent: 0, score: 0, alive: true, b: [], t: Date.now(), done: false }));
+  if (!rdb) log(false, 'Realtime Database 沒有初始化（網址設定錯誤？）');
+  else {
+    rtOn();
+    await step('連線對戰伺服器（Realtime Database）', async () => {
+      for (let i = 0; i < 20 && !rtConnected; i++) await sleep(250);
+      if (!rtConnected) throw new Error('5 秒內連不上');
+    });
+    const qr = rref('queue/' + pid);
+    await step('寫入排隊資料', () => rt.set(qr, { name: nm, v: VERSION, t: rt.serverTimestamp() }));
+    await step('讀取排隊名單', async () => { const s = await rt.get(rref('queue')); return '目前 ' + Object.keys(s.val() || {}).length + ' 人（含自己）'; });
+    await step('伺服器時間對照', async () => { const s = await rt.get(rref('queue/' + pid + '/t')); return '手機時間和伺服器差 ' + Math.round((Date.now() - (+s.val() || 0)) / 1000) + ' 秒'; });
+    const rid = rt.push(rref('rooms')).key;
+    await step('建立對戰房間', () => rt.set(rref('rooms/' + rid), { p: { [pid]: true, selftest: true }, names: { [pid]: nm }, kind: 'test', at: rt.serverTimestamp() }));
+    await step('配對交易（搶房間）', async () => { const r = await rt.runTransaction(rref('queue/' + pid + '/room'), cur => cur ? undefined : rid); if (!r.committed) throw new Error('沒有成功'); });
+    await step('寫入對戰畫面', () => rt.set(rref('rooms/' + rid + '/players/' + pid), { sent: 0, score: 0, alive: true, b: [], t: Date.now(), done: false }));
+    await step('讀取對戰畫面', async () => { const s = await rt.get(rref('rooms/' + rid + '/players/' + pid)); if (!s.exists()) throw new Error('讀不到'); });
+    await step('刪除測試資料', async () => { await rt.remove(rref('rooms/' + rid + '/players/' + pid)); await rt.remove(rref('rooms/' + rid)); await rt.remove(qr); });
+    const lr = rref('lobby/t' + pid.slice(0, 6));
+    await step('友誼賽房號', async () => { await rt.set(lr, { host: pid, name: nm, v: VERSION, t: rt.serverTimestamp() }); await rt.remove(lr); });
+    rtOff();
   }
-  await step('刪除排隊資料', () => fs.deleteDoc(qRef));
-  const lRef = fs.doc(fdb, 'lobby', 'test' + pid.slice(0, 8));
-  await step('建立友誼賽房號', () => fs.setDoc(lRef, { host: pid, name: nm, t: fs.serverTimestamp(), room: null, v: VERSION }));
-  await step('讀取友誼賽房號', async () => { const s = await fs.getDoc(lRef); if (!s.exists()) throw new Error('讀不到'); });
-  await step('刪除友誼賽房號', () => fs.deleteDoc(lRef));
   await step('讀取牛排段位', async () => { const s = await fs.getDoc(fs.doc(fdb, LADDER, pid)); return s.exists() ? tierOf(s.data().stars | 0).name : '還沒打過排位'; });
+  await step('讀取線上人數', async () => {
+    const since = fs.Timestamp.fromMillis(Date.now() - 200000);
+    const a = (await fs.getCountFromServer(fs.query(fs.collection(fdb, 'presence_solo'), fs.where('t', '>=', since)))).data().count;
+    return '單人 ' + a + ' 人';
+  });
+  await step('寫入上線狀態', () => fs.setDoc(fs.doc(fdb, 'presence_solo', cid), { t: fs.serverTimestamp() }).then(() => fs.deleteDoc(fs.doc(fdb, 'presence_solo', cid))));
   await step('讀取今日排行', async () => { const s = await fs.getDocs(fs.query(fs.collection(fdb, 'daily', todayKey(), 'scores'), fs.limit(1))); return s.docs.length ? '有資料' : '今天還沒人上榜'; });
   log(null, '檢查結束');
   $('diagRun').disabled = false;
