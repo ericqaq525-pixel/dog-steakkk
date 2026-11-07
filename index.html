@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta name="game-ver" content="v42">
+<meta name="game-ver" content="v43">
 <meta charset="UTF-8">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
@@ -497,7 +497,7 @@
     <div class="drwWrap"><a href="#" class="drwBtn">🎁 單人今日榜每天 0 點結算，前 20 名有獎勵（點我看）</a><div class="drwTbl" style="display:none"></div></div>
     <ol class="board" id="board1"></ol>
     <div class="note" id="note1"></div>
-    <div class="ver">v42　<button id="diagBtn" style="font:inherit;font-size:12px;margin:0;background:none;border:none;color:#b85e0c;text-decoration:underline;cursor:pointer;opacity:1">🔧 連線檢查</button></div>
+    <div class="ver">v43　<button id="diagBtn" style="font:inherit;font-size:12px;margin:0;background:none;border:none;color:#b85e0c;text-decoration:underline;cursor:pointer;opacity:1">🔧 連線檢查</button></div>
   </div></div>
 
   <div class="modal" id="over"><div class="card">
@@ -1122,7 +1122,7 @@ const firebaseConfig = {
   appId: "1:741734243486:web:62dbac94d9e9c4f51a2f8f"
 };
 const RTDB_URL = 'https://dogsteakkk-default-rtdb.asia-southeast1.firebasedatabase.app';   // Realtime Database 的網址
-const VERSION = 'v42';
+const VERSION = 'v43';
 const FB_VERSIONS = ['13.1.0', '11.0.2'];
 let fbVer = '';
 let fs = null, fdb = null, fbReady, am = null, auth = null, authUser = null, authKnown = false;
@@ -1156,7 +1156,7 @@ function renderBoards() {
     const ol = $(id); ol.textContent = '';
     if (boardTab === 'speed') { const nt = renderSpeedBoard(ol, k); $('note' + (k + 1)).textContent = nt; return; }
     const src = boardTab === 'all' ? uniqTop(soloEntries) : boardTab === 'day' ? uniqTop(dayEntries) : rankEntries;
-    const list = k === 0 ? src.slice(0, 10) : src;
+    const list = src;
     list.forEach((e, i) => {
       const li = document.createElement('li');
       if ((boardTab !== 'rank' && myIds.has(e.id)) || (boardTab === 'rank' && e.id === pid)) li.className = 'me';
@@ -2840,7 +2840,7 @@ document.addEventListener('click', e => {
 });
 function renderSpeedBoard(ol, k) {
   subscribeSpeed();
-  const src = uniqTop(speedSub === 'day' ? spDay : spAll), list = k === 0 ? src.slice(0, 10) : src;
+  const src = uniqTop(speedSub === 'day' ? spDay : spAll), list = src;
   list.forEach((e, i) => {
     const li = document.createElement('li'); if (myIds.has(e.id)) li.className = 'me';
     const rk = document.createElement('span'); rk.className = 'rk'; rk.textContent = i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1;
