@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
+<meta name="game-ver" content="v26">
 <meta charset="UTF-8">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>合成狗狗</title>
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="合成狗狗">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#fbe9c6">
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   html, body { touch-action: manipulation; -webkit-text-size-adjust: 100%; margin: 0; height: 100%; background: #fbe9c6; font-family: -apple-system, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif; overflow: hidden; user-select: none; -webkit-user-select: none; color: #7a4a1c; }
@@ -119,6 +128,9 @@
   #oppMeta { font-size: 12px; margin-top: 2px; }
   #lvHud { width: 100%; max-width: 480px; display: flex; align-items: center; gap: 8px; padding: 0 12px 4px; font-size: 13px; }
   #lvHud b { white-space: nowrap; }
+  #sndBtn { border: none; background: #fff3dc; border-radius: 999px; font-size: 15px; padding: 2px 8px; cursor: pointer; box-shadow: 0 2px 0 #e2c48f; }
+  button.main.sp { background: #3a7bd5; box-shadow: 0 4px 0 #22508f; }
+  .stabs { margin-top: 4px; } .stabs button { font-size: 12px; padding: 3px 10px; }
   .hudbar { flex: 1; height: 12px; border-radius: 6px; background: #f0d9ad; overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,.15); }
   .hudbar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #f08a24, #ffd84a); transition: width .25s; }
   #lvHud.flash .hudbar i { background: linear-gradient(90deg, #ffd84a, #fff6a8); }
@@ -161,7 +173,9 @@
   .avf-mint { border-color: #6fd6b8 !important; } .avf-pink { border-color: #ff8fb8 !important; } .avf-sky { border-color: #6ec3ff !important; }
   .avf-duo { border-color: #f08a24 #6ec3ff #6ec3ff #f08a24 !important; }
   .avf-glow { border-color: #ffd84a !important; box-shadow: 0 0 10px #ffd84a; }
-  .avf-rainbow { border-color: transparent !important; box-shadow: 0 0 0 3px hsl(0,90%,60%); animation: hueSpin 2s linear infinite; }
+  @property --rba { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+  .avf-rainbow { border-color: transparent !important; background: linear-gradient(#fff, #fff) padding-box, conic-gradient(from var(--rba), #ff4d4d, #ffa64d, #ffe14d, #5ee86b, #4dd2ff, #6b6bff, #c44dff, #ff4d4d) border-box !important; animation: rbSpin 2s linear infinite; }
+  @keyframes rbSpin { to { --rba: 360deg; } }
   .avf-wagyu { border-color: #c9a227 !important; box-shadow: 0 0 0 2px #b3261e, 0 0 10px #ffd84a; }
   @keyframes hueSpin { to { filter: hue-rotate(360deg); } }
   .np { padding: 0 8px; border-radius: 8px; }
@@ -169,6 +183,224 @@
   .np-wagyu { background: linear-gradient(90deg, #ffe08a, #c9a227); color: #5a3a00; }
   .np-rainbow { background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bff95, #6bc6ff, #c06bff); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.4); }
   .oppname.np { display: inline-block; }
+  .gfx2 { position: fixed; inset: 0; z-index: 50; padding: 0; flex-direction: column; background: radial-gradient(circle at 50% 40%, #4a2a12, #160a02 75%); overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; }
+  .gfx2 .gcv { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+  .gstage { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; gap: 10px; }
+  .gctl { position: absolute; top: max(10px, env(safe-area-inset-top)); right: 10px; z-index: 6; display: flex; gap: 6px; }
+  .gctl button { border: none; background: rgba(255,255,255,.18); color: #fff; font: inherit; font-size: 14px; font-weight: 700; padding: 6px 12px; border-radius: 999px; }
+  .ghint { color: #fff; font-size: 18px; font-weight: 700; text-align: center; text-shadow: 0 2px 6px #000a; min-height: 48px; }
+  .ghint b { color: #ffd84a; } .ghint small { font-size: 12px; opacity: .75; font-weight: 400; }
+  .ghint .omen { font-size: 26px; animation: pulse .4s ease infinite; display: inline-block; }
+  .gprog { width: 200px; height: 10px; border-radius: 99px; background: rgba(255,255,255,.15); overflow: hidden; }
+  .gprog i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #ffd84a, #ff7a00); transition: width .1s; }
+  .gflash { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+  .gfx2 button.main:disabled { opacity: .5; }
+  button.main.gray { background: #8d7b6a; box-shadow: 0 4px 0 #5a4a3c; }
+  .gbtns { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; align-items: center; min-height: 56px; }
+  .gbtns .note { width: 100%; margin: 0; }
+  /* 扭蛋機 */
+  .gm { position: relative; width: 230px; display: flex; flex-direction: column; align-items: center; cursor: grab; }
+  .gm-globe { position: relative; width: 210px; height: 210px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.55), rgba(190,230,255,.18) 45%, rgba(120,170,220,.25)); border: 6px solid #f3e6d0; box-shadow: inset 0 -12px 30px rgba(0,0,0,.25), 0 6px 20px rgba(0,0,0,.4); overflow: hidden; z-index: 2; }
+  .gm-balls { position: absolute; inset: 0; }
+  .gb { position: absolute; width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(var(--cc) 50%, #f4f1ea 50%); box-shadow: inset -3px -4px 6px rgba(0,0,0,.25); transition: transform .25s cubic-bezier(.3,1.6,.5,1); }
+  .gb.c0 { --cc: #a1887f; } .gb.c1 { --cc: #e07a5f; } .gb.c2 { --cc: #d1495b; } .gb.c3 { --cc: #9b2c8e; box-shadow: 0 0 12px #c06cff; } .gb.c4 { --cc: #ff7a00; box-shadow: 0 0 14px #ff7a00; } .gb.c5 { --cc: #ffd84a; box-shadow: 0 0 16px #ffd84a; }
+  .gm-shine { position: absolute; left: 18%; top: 10%; width: 30%; height: 18%; border-radius: 50%; background: rgba(255,255,255,.5); filter: blur(4px); transform: rotate(-25deg); }
+  .gm-body { position: relative; margin-top: -16px; width: 210px; height: 140px; border-radius: 18px 18px 26px 26px; background: linear-gradient(#ef6b4a, #c8432a); box-shadow: inset 0 6px 0 rgba(255,255,255,.25), 0 8px 0 #8e2a17, 0 12px 20px rgba(0,0,0,.4); }
+  .gm-label { position: absolute; top: 20px; left: 0; right: 0; text-align: center; color: #fff4d8; font-weight: 900; font-size: 15px; letter-spacing: 2px; }
+  .gm-knob { position: absolute; left: 22px; top: 48px; width: 76px; height: 76px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #fff, #e6dccb); box-shadow: 0 4px 0 #a08a6a, 0 6px 10px rgba(0,0,0,.35); }
+  .gm-handle { position: absolute; left: 6px; right: 6px; top: 31px; height: 14px; border-radius: 8px; background: linear-gradient(#ffcf5a, #e09a12); box-shadow: 0 2px 0 #9a6a08; }
+  .gm-handle::after { content: ''; position: absolute; right: -2px; top: -8px; width: 16px; height: 30px; border-radius: 8px; background: #ffe08a; box-shadow: 0 2px 0 #9a6a08; }
+  .gm-chute { position: absolute; right: 22px; top: 62px; width: 66px; height: 54px; border-radius: 12px; background: #2b1408; box-shadow: inset 0 6px 10px #000; }
+  .gm.omenGlow .gm-globe { animation: omen .3s ease infinite alternate; }
+  @keyframes omen { from { box-shadow: 0 0 20px #ff7a00, inset 0 -12px 30px rgba(0,0,0,.25); } to { box-shadow: 0 0 60px #ffd84a, inset 0 0 40px #ffb000; } }
+  /* 扭蛋本體 */
+  .gcap { --cc: #a1887f; position: relative; width: var(--sz); height: var(--sz); cursor: pointer; }
+  .gcap.c0 { --cc: #a1887f; } .gcap.c1 { --cc: #e07a5f; } .gcap.c2 { --cc: #d1495b; } .gcap.c3 { --cc: #9b2c8e; } .gcap.c4 { --cc: #ff7a00; } .gcap.c5 { --cc: #e8b923; }
+  .gcap .top, .gcap .bot { position: absolute; left: 0; right: 0; height: 50%; }
+  .gcap .top { top: 0; border-radius: 999px 999px 0 0; background: radial-gradient(circle at 32% 34%, rgba(255,255,255,.75) 0 9%, transparent 10%), linear-gradient(160deg, color-mix(in srgb, var(--cc) 70%, #fff), var(--cc)); box-shadow: inset 0 -4px 8px rgba(0,0,0,.15); }
+  .gcap .bot { bottom: 0; border-radius: 0 0 999px 999px; background: linear-gradient(#faf7f0, #d6cfc0); box-shadow: inset 0 -6px 10px rgba(0,0,0,.18); }
+  .gcap .band { position: absolute; left: -2%; right: -2%; top: 46%; height: 8%; border-radius: 4px; background: rgba(0,0,0,.22); }
+  .gcap .glow { position: absolute; inset: -45%; border-radius: 50%; background: radial-gradient(circle, var(--cc), transparent 62%); opacity: 0; transition: opacity .3s; pointer-events: none; }
+  .gcap.c3 .glow { opacity: .55; } .gcap.c4 .glow { opacity: .8; animation: pulse .7s ease infinite; } .gcap.c5 .glow { opacity: 1; animation: pulse .5s ease infinite; }
+  .gcap.c5 .top { background: radial-gradient(circle at 32% 34%, rgba(255,255,255,.9) 0 9%, transparent 10%), conic-gradient(from 0deg, #ffd84a, #fff6c4, #c9a227, #ffe680, #ffd84a); }
+  .gcap .cracks { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .gcap .cracks path { fill: none; stroke: #fff; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; opacity: 0; filter: drop-shadow(0 0 3px var(--cc)); transition: opacity .15s; }
+  .gcap[data-crack="1"] .k1, .gcap[data-crack="2"] .k1, .gcap[data-crack="2"] .k2, .gcap[data-crack="3"] path { opacity: 1; }
+  .gcap[data-crack="2"] .glow { opacity: .9; }
+  .gopen { padding: 40px; }
+  .gup { position: absolute; top: 28%; left: 50%; transform: translateX(-50%); color: #fff; font-size: 26px; font-weight: 900; text-shadow: 0 0 14px #ffd84a, 0 3px 0 #a04400; animation: upfloat .9s ease forwards; white-space: nowrap; z-index: 5; }
+  @keyframes upfloat { 0% { opacity: 0; transform: translate(-50%, 20px) scale(.6); } 25% { opacity: 1; transform: translate(-50%, 0) scale(1.15); } 100% { opacity: 0; transform: translate(-50%, -40px) scale(1); } }
+  /* 大卡片 */
+  .gbig { position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .grays { position: absolute; left: 50%; top: 45%; width: 900px; height: 900px; margin: -450px 0 0 -450px; border-radius: 50%; background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--rc) 55%, transparent) 0 8deg, transparent 8deg 22deg); -webkit-mask: radial-gradient(circle, #000 15%, transparent 62%); mask: radial-gradient(circle, #000 15%, transparent 62%); animation: spin 9s linear infinite; pointer-events: none; z-index: -1; }
+  .gbig.r5 .grays { animation-duration: 5s; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .mythText.leg { text-shadow: 0 0 20px #ff7a00, 0 4px 0 #8a2a00; }
+  .gcard3 { width: min(64vw, 250px); aspect-ratio: 3 / 4.3; perspective: 900px; }
+  .gcard3 .tilt { --rx: 0deg; --ry: 0deg; --hx: 50%; --hy: 50%; width: 100%; height: 100%; transform: rotateX(var(--rx)) rotateY(var(--ry)); transition: transform .15s; transform-style: preserve-3d; }
+  .gcard3 .inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transform: rotateY(180deg) scale(.7); transition: transform .9s cubic-bezier(.2,1.5,.4,1); }
+  .gcard3 .inner.flip { transform: rotateY(360deg) scale(1); }
+  .gcard3 .inner.nofx { transition: none; }
+  .gcard3 .face { position: absolute; inset: 0; border-radius: 16px; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .gcard3 .back { transform: rotateY(180deg); background: repeating-linear-gradient(45deg, #f08a24 0 14px, #e07a14 14px 28px); border: 5px solid #fff4d8; color: #fff; }
+  .gcard3 .back .paws { font-size: 70px; } .gcard3 .back .backt { font-weight: 900; font-size: 20px; letter-spacing: 3px; }
+  .gcard3 .front { background: #fff8ea; border: 5px solid var(--rc); box-shadow: 0 0 30px color-mix(in srgb, var(--rc) 70%, transparent); gap: 6px; padding: 10px; }
+  .gcard3 .front.r5 { background: linear-gradient(160deg, #fffbe6, #ffe39a); }
+  .gcard3 .front.r4 { background: linear-gradient(160deg, #fff4e6, #ffd2a6); }
+  .gcard3 .front .prar { color: #fff; font-size: 13px; font-weight: 800; padding: 2px 12px; border-radius: 99px; }
+  .gcard3 .bigicon { font-size: 84px; line-height: 1.2; filter: drop-shadow(0 6px 6px rgba(0,0,0,.2)); }
+  .gcard3 .pc-title, .gbig > .pc-title { font-size: 19px; font-weight: 900; color: #6a3a10; line-height: 1.25; }
+  .gcard3 .psub { font-size: 13px; opacity: .75; }
+  .gcard3 .front.pcf { justify-content: flex-start; padding: 8px 8px 10px; }
+  .gcard3 .pc-photo { width: 100%; flex: 1; min-height: 0; border-radius: 10px; overflow: hidden; background: #ddd; }
+  .gcard3 .pc-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .gcard3 .pc-stamp { position: absolute; top: 14px; right: 14px; background: rgba(255,255,255,.9); color: #b23a48; font-size: 11px; font-weight: 800; padding: 2px 6px; border-radius: 6px; border: 2px dashed #b23a48; transform: rotate(6deg); }
+  .gcard3 .front.pcf .pc-title { font-size: 16px; }
+  .pc-credit { font-size: 9px; opacity: .55; line-height: 1.1; }
+  .holo { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: color-dodge; opacity: .45; background: linear-gradient(115deg, transparent 20%, #ff7ad9 35%, #7df9ff 45%, #fff38a 55%, transparent 70%); background-size: 250% 250%; background-position: var(--hx) var(--hy); }
+  .gpeek { position: absolute; inset: 0; z-index: 7; background: rgba(0,0,0,.75); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+  /* 十連 */
+  .gten { display: grid; grid-template-columns: repeat(5, 62px); gap: 8px; justify-content: center; }
+  .gten.one { grid-template-columns: 130px; }
+  .gten.one .mcard { height: 170px; } .gten.one .mcard img { height: 110px; } .gten.one .mcard b { font-size: 13px; }
+  .gcell { width: 62px; min-height: 86px; display: flex; align-items: center; justify-content: center; }
+  .mcard { width: 100%; height: 86px; border-radius: 10px; background: #fff8ea; border: 3px solid var(--rc); display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; position: relative; animation: flipIn .45s ease backwards; padding: 2px; }
+  .mcard.r3 { box-shadow: 0 0 10px #c06cff; } .mcard.r4 { box-shadow: 0 0 14px #ff7a00; } .mcard.r5 { box-shadow: 0 0 18px #ffd84a; background: linear-gradient(#fffbe6, #ffe39a); }
+  .mcard span { font-size: 28px; line-height: 1.1; }
+  .mcard img { width: 100%; height: 46px; object-fit: cover; border-radius: 6px; }
+  .mcard b { font-size: 9px; line-height: 1.15; color: #6a3a10; max-height: 2.3em; overflow: hidden; }
+  .mcard em { font-style: normal; font-size: 9px; color: #7a4a1c; opacity: .8; }
+  .mcard em.new { position: absolute; top: 2px; left: 2px; background: #e63946; color: #fff; opacity: 1; padding: 0 4px; border-radius: 4px; font-weight: 800; }
+  /* 明信片冊 */
+  .abar { height: 10px; border-radius: 99px; background: #f0dfc0; overflow: hidden; margin: 4px 16px; }
+  .abar i { display: block; height: 100%; background: linear-gradient(90deg, #f08a24, #ffd84a); }
+  .album { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .ac { position: relative; aspect-ratio: 3 / 4; border: 3px solid var(--rc); border-radius: 10px; padding: 0; overflow: hidden; background: #3a2a1a; cursor: pointer; }
+  .ac img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ac:not(.own) img { filter: brightness(0) opacity(.45); }
+  .ac span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 26px; font-weight: 900; }
+  .ac small { position: absolute; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.45); color: #fff; font-size: 10px; }
+  .ac.own.r4, .ac.own.r5 { box-shadow: 0 0 10px var(--rc); }
+  .lockcard { position: relative; width: min(56vw, 220px); aspect-ratio: 3 / 4; border: 5px solid var(--rc); border-radius: 16px; overflow: hidden; background: #2a1a0a; }
+  .lockcard img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0) opacity(.5); }
+  .lockcard span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 70px; font-weight: 900; }
+  .tchip { display: block; font-size: 10px; line-height: 1.25; color: #b85e0c; font-weight: 700; overflow: hidden; text-overflow: ellipsis; }
+  ol.board .nm .np { padding: 0 5px; border-radius: 6px; }
+  .np-sky { background: #d4ecff; } .np-peach { background: #ffd9cc; }
+  .np-choco { background: #6b4226; color: #fff3e0; } .np-matcha { background: #c8e0a0; color: #33461a; }
+  .np-night { background: linear-gradient(90deg, #1c2550, #3a2f6b); color: #fff; text-shadow: 0 0 4px #9fb4ff; }
+  .np-sakura { background: linear-gradient(90deg, #ffd6e7, #ff9ec4); color: #8a1f4b; }
+  .np-neon { background: #1a1030; color: #7df9ff; text-shadow: 0 0 4px #7df9ff, 0 0 8px #ff4fd8; animation: neonF 1.6s ease-in-out infinite; }
+  @keyframes neonF { 50% { text-shadow: 0 0 2px #7df9ff, 0 0 12px #ff4fd8; } }
+  .np-galaxy { background: linear-gradient(90deg, #2b1055, #7597de, #c86dd7, #2b1055); background-size: 300% 100%; color: #fff; animation: npSlide 4s linear infinite; text-shadow: 0 1px 2px #0008; }
+  .np-fire { background: linear-gradient(90deg, #ff3d00, #ffb300, #ff6d00, #ff3d00); background-size: 300% 100%; color: #fff; animation: npSlide 1.8s linear infinite; text-shadow: 0 1px 2px #7a1a00; }
+  .np-ice { background: linear-gradient(90deg, #ffffff, #cdeeff, #3a2a20, #cdeeff, #ffffff); background-size: 300% 100%; color: #2a1a10; animation: npSlide 5s linear infinite; text-shadow: 0 0 3px #fff; }
+  @keyframes npSlide { to { background-position: 300% 0; } }
+  .tlist .tsub { width: 100%; font-size: 12px; opacity: .6; margin-top: 4px; }
+  .road { display: flex; flex-direction: column; gap: 4px; }
+  .rstep { display: flex; align-items: center; gap: 8px; background: #fff; border: 2px solid #f0dfc0; border-radius: 12px; padding: 5px 8px; text-align: left; font-size: 13px; }
+  .rstep b { min-width: 52px; color: #b85e0c; } .rstep span { flex: 1; }
+  .rstep.ok { border-color: #f08a24; background: #fff4e0; } .rstep.got { opacity: .55; }
+  .rstep i, .ach .ad { font-style: normal; }
+  .rstep button.main, .ach button.main { margin: 0; padding: 5px 12px; font-size: 13px; }
+  .achl { display: flex; flex-direction: column; gap: 5px; }
+  .ach { display: flex; align-items: center; gap: 8px; background: #fff; border: 2px solid #f0dfc0; border-radius: 12px; padding: 6px 8px; text-align: left; }
+  .ach.ok { border-color: #f08a24; background: #fff4e0; } .ach.got { opacity: .55; }
+  .ach .ai { font-size: 24px; } .ach .am { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .ach .am b { font-size: 14px; } .ach .am small { font-size: 11px; opacity: .75; }
+  .abar { display: block; height: 7px; border-radius: 99px; background: #f0dfc0; overflow: hidden; }
+  .abar i { display: block; height: 100%; background: linear-gradient(90deg, #f08a24, #ffd84a); border-radius: 99px; }
+  .gbal { display: flex; justify-content: center; gap: 18px; font-size: 15px; margin: 2px 0 8px; }
+  .gban { position: relative; border-radius: 16px; padding: 14px 10px 10px; background: linear-gradient(135deg, #ef6b4a, #c8432a); color: #fff; box-shadow: 0 4px 0 #8e2a17; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .gban b { font-size: 20px; letter-spacing: 2px; } .gban small { font-size: 12px; opacity: .9; }
+  .gban-cap { display: flex; gap: 4px; margin-bottom: 4px; }
+  .gban-cap .gb { position: relative; display: inline-block; width: 24px; height: 24px; animation: bob 1.6s ease-in-out infinite; }
+  .gban-cap .gb:nth-child(2n) { animation-delay: .3s; } .gban-cap .gb:nth-child(3n) { animation-delay: .6s; }
+  .gpull { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0 8px; }
+  .gpull button.main { margin: 0; line-height: 1.2; padding: 10px 6px; } .gpull small { font-size: 12px; opacity: .9; font-weight: 600; }
+  .pity { background: #fff; border: 2px solid #f0dfc0; border-radius: 12px; padding: 6px 10px; display: flex; flex-direction: column; gap: 5px; text-align: left; font-size: 12px; }
+  .pity > div:not(.note) { display: grid; grid-template-columns: 112px 1fr 56px; align-items: center; gap: 6px; }
+  .pity small { text-align: right; opacity: .7; }
+  table.otab { width: 100%; border-collapse: collapse; font-size: 13px; background: #fff; border-radius: 12px; overflow: hidden; }
+  .otab th { background: #f6e3c0; font-size: 12px; padding: 4px; } .otab td { padding: 4px; border-top: 1px solid #f3e6cf; text-align: center; }
+  .rchip { display: inline-block; color: #fff; font-weight: 800; font-size: 12px; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+  details { background: #fff; border: 2px solid #f0dfc0; border-radius: 12px; margin-top: 8px; padding: 6px 8px; text-align: left; }
+  details summary { font-weight: 800; cursor: pointer; padding: 2px 0; }
+  details .exch { margin-top: 6px; }
+  .plist { margin: 6px 0; } .plist > div:last-child { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; }
+  .plist span:not(.rchip) { font-size: 11px; background: #fff3dc; border-radius: 8px; padding: 1px 6px; } .plist span.no { opacity: .55; }
+  .comp, .scrp { display: flex; align-items: center; gap: 8px; border-radius: 14px; padding: 8px 10px; margin-bottom: 8px; text-align: left; }
+  .comp { background: linear-gradient(135deg, #fff1c2, #ffd36b); border: 2px solid #f0b400; flex-wrap: wrap; }
+  .comp b { font-size: 15px; width: 100%; } .comp small { width: 100%; font-size: 12px; opacity: .8; } .comp span { flex: 1; font-weight: 800; }
+  .comp button.main, .scrp button.main { margin: 0; padding: 6px 14px; line-height: 1.15; }
+  .scrp { background: linear-gradient(135deg, #e9f7ff, #bfe3ff); border: 2px solid #6bb6ef; }
+  .scrp > div { flex: 1; display: flex; flex-direction: column; } .scrp b { font-size: 15px; } .scrp small { font-size: 11px; opacity: .8; }
+  .scrp button small { font-size: 11px; opacity: .9; }
+  .scard { position: relative; width: min(84vw, 300px); height: min(84vw, 300px); border-radius: 18px; background: #fff8ea; border: 5px solid #f08a24; box-shadow: 0 8px 0 #b85e0c; overflow: hidden; touch-action: none; }
+  .sgrid { position: absolute; inset: 10px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .sgrid span { display: flex; align-items: center; justify-content: center; font-size: 46px; background: #fff; border-radius: 12px; border: 2px dashed #f0d3a0; }
+  .scard.shown .sgrid span.win { background: #fff1c2; border: 3px solid #f0b400; animation: pulse .6s ease 3; }
+  .scover { position: absolute; inset: 0; width: 100%; height: 100%; cursor: crosshair; }
+  .sres { color: #fff; font-size: 20px; font-weight: 800; text-align: center; min-height: 56px; text-shadow: 0 2px 6px #000a; }
+  .sres b { color: #ffd84a; }
+  .scrp button.main:disabled, .comp button.main:disabled { opacity: .45; }
+  .rulesBtn { margin-top: 8px; border: 2px solid #e2c48f; background: #fff; color: #7a4a1c; font: inherit; font-size: 13px; font-weight: 700; padding: 5px 14px; border-radius: 999px; cursor: pointer; }
+  #rules { z-index: 7; } .rulesCard { text-align: left; }
+  .rulesCard h2 { text-align: center; }
+  .rsec { background: #fff; border: 2px solid #f0dfc0; border-radius: 12px; padding: 4px 10px; margin-bottom: 8px; }
+  .rsec h3 { margin: 6px 0 2px; } .rsec ul { margin: 2px 0 6px; padding-left: 18px; font-size: 13px; line-height: 1.5; }
+  .rulesCard #rulesClose { display: block; margin: 8px auto 0; }
+  .sprz { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin: -2px 0 10px; }
+  .sprz div { background: #fff; border: 2px solid #cfe6f8; border-radius: 10px; padding: 3px 2px; text-align: center; font-size: 11px; line-height: 1.25; }
+  .sprz div b { display: block; font-size: 16px; letter-spacing: -2px; } .sprz div small { opacity: .6; }
+  .sprz div.top { border-color: #f0b400; background: #fff6d6; }
+  h3.bigh { font-size: 18px; margin-top: 18px; border-top: 2px dashed #e2c48f; padding-top: 12px; }
+  .sets { display: flex; flex-direction: column; gap: 6px; margin-bottom: 6px; }
+  .set { background: #fff; border: 2px solid #f0dfc0; border-radius: 12px; padding: 6px 8px; text-align: left; }
+  .set.ok { border-color: #f08a24; background: #fff4e0; } .set.got { opacity: .6; }
+  .set .sh { display: flex; justify-content: space-between; align-items: center; } .set .sh small { opacity: .7; }
+  .sthumbs { display: flex; gap: 3px; flex-wrap: wrap; margin: 4px 0; }
+  .sthumbs img { width: 34px; height: 44px; object-fit: cover; border-radius: 5px; border: 1px solid #e2c48f; }
+  .sthumbs img.no { filter: brightness(0) opacity(.3); }
+  .set .sf { display: flex; align-items: center; gap: 6px; font-size: 12px; } .set .sf span { flex: 1; } .set .sf i { font-style: normal; }
+  .set button.main { margin: 0; padding: 4px 12px; font-size: 13px; }
+  .ac .cst { position: absolute; top: 2px; right: 3px; font-style: normal; font-size: 10px; color: #ffd84a; text-shadow: 0 0 3px #000, 0 0 2px #000; }
+  .ac.holoc::after { content: ''; position: absolute; inset: 0; background: linear-gradient(115deg, transparent 25%, rgba(255,122,217,.45) 40%, rgba(125,249,255,.45) 50%, rgba(255,243,138,.45) 60%, transparent 75%); background-size: 250% 250%; mix-blend-mode: color-dodge; animation: holoMove 3s linear infinite; pointer-events: none; }
+  @keyframes holoMove { from { background-position: 0% 0%; } to { background-position: 250% 250%; } }
+  .cstar { font-size: 18px; color: #f0b400; letter-spacing: 2px; } .cstar.s3 { color: #ff9a1f; text-shadow: 0 0 6px #ffd84a; }
+  .skins { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 4px; }
+  .skins button, .spick button { border: 2px solid #e2c48f; background: #fff; border-radius: 12px; padding: 4px 2px; font: inherit; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .skins button img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #f0dfc0; }
+  .skins button .q { width: 44px; height: 44px; border-radius: 50%; background: #3a2a1a; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 900; }
+  .skins button small, .spick button small { font-size: 10px; color: #7a4a1c; }
+  .skins button.on { border-color: #f08a24; background: #fff1d6; }
+  .skins button:disabled { opacity: .5; }
+  .spick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; max-width: 420px; }
+  .spick button img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 50%; }
+  .spick button.on { border-color: #ffd84a; box-shadow: 0 0 10px #ffd84a; }
+  .apick button img { border-radius: 50%; object-fit: cover; }
+  .dogc .ac img { object-fit: cover; }
+  .lockcard.dogview { border-radius: 50%; width: min(60vw, 230px); aspect-ratio: 1; }
+  .lockcard.dogview.own img { filter: none; }
+  #ann { z-index: 7; } .annCard { text-align: left; }
+  .annTop { text-align: center; font-size: 13px; font-weight: 800; color: #fff; background: linear-gradient(90deg, #f08a24, #ef6b4a); border-radius: 999px; padding: 3px 12px; width: fit-content; margin: 0 auto 4px; }
+  .annCard h2 { text-align: center; margin-bottom: 8px; }
+  .annItem { display: flex; gap: 8px; align-items: flex-start; background: #fff; border: 2px solid #f0dfc0; border-radius: 12px; padding: 6px 8px; margin-bottom: 6px; font-size: 13px; line-height: 1.45; }
+  .annItem > span { font-size: 22px; line-height: 1.1; } .annItem b { display: block; font-size: 14px; }
+  #annGift { margin: 8px 0; text-align: center; }
+  .giftBox { background: linear-gradient(135deg, #fff1c2, #ffd36b); border: 2px solid #f0b400; border-radius: 14px; padding: 8px; }
+  .giftBox b { display: block; font-size: 16px; } .giftBox button.main { margin-top: 6px; }
+  .annChk { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; margin-top: 6px; }
+  .annCard #annClose { display: block; margin: 8px auto 0; }
+  #a2hs { z-index: 8; }
+  .a2top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .a2top img { width: 64px; height: 64px; border-radius: 15px; box-shadow: 0 3px 8px rgba(0,0,0,.25); }
+  .a2top b { display: block; font-size: 20px; } .a2top small { font-size: 12px; opacity: .8; }
+  .a2sec { background: #fff; border: 2px solid #f0dfc0; border-radius: 12px; padding: 6px 10px; margin-bottom: 8px; }
+  .a2sec.me { border-color: #f08a24; background: #fff4e0; }
+  .a2sec h3 { margin: 4px 0; font-size: 15px; } .a2sec ol { margin: 2px 0 4px; padding-left: 20px; font-size: 13px; line-height: 1.6; }
+  .a2warn { font-size: 12px; background: #ffe9e3; border-radius: 10px; padding: 6px 8px; margin-bottom: 8px; }
+  .annCard #a2Close { display: block; margin: 8px auto 0; }
   .ver { font-size: 11px; opacity: .45; margin-top: 10px; }
   #toast { white-space: nowrap; position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%) scale(.6); background: #fff7e6; font-size: 22px; font-weight: 800; text-align: center; padding: 16px 22px; border-radius: 18px; box-shadow: 0 6px 0 #d7b072; opacity: 0; pointer-events: none; z-index: 4; }
   #toast img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-top: 8px; border: 4px solid #fff6a8; }
@@ -183,10 +415,10 @@
   <div id="hud">
     <div class="box"><div class="lbl">分數</div><div class="val" id="score">0</div></div>
     <div class="box"><div class="lbl">下一隻</div><img id="next" class="mini big"></div>
-    <div class="box" id="bestBox"><div class="lbl">我的最高</div><div class="val" id="best">0</div></div>
+    <div class="box" id="bestBox"><div class="lbl" id="bestLbl">我的最高</div><div class="val" id="best">0</div></div>
     <button class="box" id="trophy"><div class="lbl">排行榜</div><div class="val">🏆</div></button>
   </div>
-  <div id="lvHud"><b id="lvHudLv">Lv.1</b><span class="hudbar"><i id="lvHudFill"></i></span><span id="lvHudTxt">0 / 300</span></div>
+  <div id="lvHud"><b id="lvHudLv">Lv.1</b><span class="hudbar"><i id="lvHudFill"></i></span><span id="lvHudTxt">0 / 300</span><button id="sndBtn" title="音效">🔊</button></div>
   <div id="vsbar">
     <div class="box" id="miniWrap"><canvas id="mini"></canvas></div>
     <div class="box" style="flex:1;min-width:0">
@@ -213,7 +445,7 @@
     <div class="dogs" id="startDogs"></div>
     <input id="nameIn" maxlength="12" placeholder="輸入你的名字" autocomplete="off">
     <div class="lvline" id="lvLine"></div>
-    <div class="pills"><button data-open="me">👤 檔案</button><button data-open="check">📅 簽到</button><button data-open="task">🎯 任務</button><button data-open="shop">🛒 商店</button><button data-open="gacha">🎰 扭蛋</button><button data-open="ward">🎒 衣櫃</button></div>
+    <div class="pills"><button data-open="me">👤 檔案</button><button data-open="check">📅 簽到</button><button data-open="task">🎯 任務</button><button data-open="ach">🏆 成就</button><button data-open="gacha">🎰 扭蛋</button><button data-open="ward">🎒 衣櫃</button><button data-open="album">📮 明信片</button></div>
     <div class="myrank" id="myRank"></div>
     <div class="acct" id="acct"></div>
     <div class="online" id="online"></div>
@@ -221,18 +453,20 @@
       <button class="main" id="goSolo">單人模式</button>
       <button class="main vs" id="goRanked">⚔️ 排位賽</button>
       <button class="main fr" id="goFriend">👫 友誼賽</button>
+      <button class="main sp" id="goSpeed">⏱ 速通</button>
     </div>
-    <div class="note">對戰：合成大狗狗會把狗狗砸到對手場上！限時 3 分鐘，先爆的輸，時間到比分數。排位贏一場得一顆星，從青銅牛排一路升到王者牛排！2 分鐘配不到人會派電腦陪練（不計星）。</div>
+    <div><button class="rulesBtn" id="rulesBtn">📖 玩法與規則說明</button> <button class="rulesBtn" id="annBtn">📢 公告</button> <button class="rulesBtn" id="a2hsBtn">📲 加到主畫面</button></div>
     <h3>🏆 排行榜</h3>
-    <div class="tabs"><button data-t="day" class="on">今日</button><button data-t="all">總榜</button><button data-t="rank">🥩 排位</button></div>
+    <div class="tabs"><button data-t="solo" class="on">🐶 單人</button><button data-t="speed">⏱ 速通</button><button data-t="rank">🥩 排位</button></div>
+    <div class="tabs stabs"><button data-s="day" class="on">今日</button><button data-s="all">總榜</button></div>
     <ol class="board" id="board1"></ol>
     <div class="note" id="note1"></div>
-    <div class="ver">v10　<button id="diagBtn" style="font:inherit;font-size:12px;margin:0;background:none;border:none;color:#b85e0c;text-decoration:underline;cursor:pointer;opacity:1">🔧 連線檢查</button></div>
+    <div class="ver">v26　<button id="diagBtn" style="font:inherit;font-size:12px;margin:0;background:none;border:none;color:#b85e0c;text-decoration:underline;cursor:pointer;opacity:1">🔧 連線檢查</button></div>
   </div></div>
 
   <div class="modal" id="over"><div class="card">
-    <h2>遊戲結束</h2>
-    <div><b id="pname"></b> 本局 <b id="final" style="font-size:22px">0</b> 分</div>
+    <h2 id="overTitle">遊戲結束</h2>
+    <div id="overLine"><b id="pname"></b> 本局 <b id="final" style="font-size:22px">0</b> 分</div>
     <div id="biggest" style="margin-top:4px"></div>
     <div id="rankMsg" class="note"></div>
     <div id="xpMsg" style="font-weight:800;color:#b85e0c;margin-top:4px"></div>
@@ -241,7 +475,8 @@
       <button class="main gray" id="home1">回主畫面</button>
     </div>
     <h3>🏆 排行榜</h3>
-    <div class="tabs"><button data-t="day" class="on">今日</button><button data-t="all">總榜</button><button data-t="rank">🥩 排位</button></div>
+    <div class="tabs"><button data-t="solo" class="on">🐶 單人</button><button data-t="speed">⏱ 速通</button><button data-t="rank">🥩 排位</button></div>
+    <div class="tabs stabs"><button data-s="day" class="on">今日</button><button data-s="all">總榜</button></div>
     <ol class="board" id="board2"></ol>
     <div class="note" id="note2"></div>
   </div></div>
@@ -299,11 +534,46 @@
   </div></div>
 
   <div class="modal" id="prof"><div class="card">
-    <div class="tabs ptabs"><button data-p="me" class="on">👤 檔案</button><button data-p="check">📅 簽到</button><button data-p="task">🎯 任務</button><button data-p="shop">🛒 商店</button><button data-p="gacha">🎰 扭蛋</button><button data-p="ward">🎒 衣櫃</button></div>
+    <div class="tabs ptabs"><button data-p="me" class="on">👤 檔案</button><button data-p="check">📅 簽到</button><button data-p="task">🎯 任務</button><button data-p="ach">🏆 成就</button><button data-p="gacha">🎰 扭蛋</button><button data-p="ward">🎒 衣櫃</button><button data-p="album">📮 明信片</button></div>
     <div id="profBody"></div>
     <button class="main gray" id="profBack">返回</button>
   </div></div>
 
+  <div class="modal" id="ann"><div class="card annCard">
+    <div class="annTop">📢 更新公告</div>
+    <h2 id="annTitle"></h2>
+    <div id="annBody"></div>
+    <div id="annGift"></div>
+    <button class="main" id="annClose">知道了</button>
+  </div></div>
+  <div class="modal" id="a2hs"><div class="card annCard">
+    <div class="a2top"><img src="icon-180.png" alt="" onerror="this.style.display='none'"><div><b>合成狗狗</b><small>加到主畫面，像 App 一樣一點就開</small></div></div>
+    <div id="a2body"></div>
+    <button class="main" id="a2Close">知道了</button>
+  </div></div>
+  <div class="modal" id="rules"><div class="card rulesCard">
+    <h2>📖 玩法與規則</h2>
+    <div class="rsec"><h3>🐶 單人模式</h3><ul>
+      <li>點畫面投下狗狗，<b>兩隻一樣的碰在一起</b>會合成下一隻更大的</li>
+      <li>狗狗超過<b>紅線</b>太久就結束（會倒數提醒）</li>
+      <li>合成拿到的分數＝經驗值，排行榜分今日和總榜</li></ul></div>
+    <div class="rsec"><h3>⏱ 速通</h3><ul>
+      <li>從零開始計時，<b>合成出第 10 隻・冰炫風狗狗</b>就完成</li>
+      <li>速通中不能暫停，中途爆掉不算成績</li>
+      <li>排行榜比<b>時間</b>，越快越前面（分今日和總榜）</li></ul></div>
+    <div class="rsec"><h3>⚔️ 排位賽</h3><ul>
+      <li>需要登入（遊客也可以），限時 <b>3 分鐘</b></li>
+      <li>合成第 4 隻以上的狗狗會<b>攻擊</b>，把小狗砸到對手場上；連續合成、合出冰炫風攻擊更強</li>
+      <li>對手的攻擊 2 秒後落下，這段時間內你的攻擊可以<b>抵銷</b>它</li>
+      <li><b>先爆的輸</b>；時間到就比分數</li>
+      <li>贏 <b>+1 星</b>、輸 <b>−1 星</b>、平手不變，星星集滿升段：<br>青銅 → 白銀 → 黃金 → 白金 → 鑽石 → 大師 → 王者牛排</li>
+      <li>2 分鐘配不到人會派電腦陪練（不計星）</li>
+      <li>防掛機：4 秒不投會自動投下；離開畫面 15 秒直接判輸</li></ul></div>
+    <div class="rsec"><h3>👫 友誼賽</h3><ul>
+      <li>開房間後把<b>房號</b>給朋友輸入就能對戰</li>
+      <li>規則跟排位一樣，但不計星</li></ul></div>
+    <button class="main" id="rulesClose">知道了</button>
+  </div></div>
   <div class="modal" id="gachaFx"></div>
 
   <div class="modal" id="result"><div class="card">
@@ -321,7 +591,8 @@
 
   <div class="modal" id="boardModal"><div class="card">
     <h2>🏆 排行榜</h2>
-    <div class="tabs"><button data-t="day" class="on">今日</button><button data-t="all">總榜</button><button data-t="rank">🥩 排位</button></div>
+    <div class="tabs"><button data-t="solo" class="on">🐶 單人</button><button data-t="speed">⏱ 速通</button><button data-t="rank">🥩 排位</button></div>
+    <div class="tabs stabs"><button data-s="day" class="on">今日</button><button data-s="all">總榜</button></div>
     <ol class="board" id="board3"></ol>
     <div class="note" id="note3"></div>
     <button class="main" id="closeBoard">繼續玩</button>
@@ -443,7 +714,8 @@ class World {
     this.bodies.push(this.makeBody(this.cur, x, DROP_Y, 200));
     this.cur = this.nxt; this.nxt = rndLevel();
     this.cooldown = DROP_COOLDOWN; this.idleT = 0;
-    if (this.isPlayer) $('next').src = FRUITS[this.nxt].src;
+    if (this.isPlayer && running) sfx('drop');
+    if (this.isPlayer) $('next').src = dogSrc(this.nxt);
     return true;
   }
   addScore(n) {
@@ -451,7 +723,7 @@ class World {
     if (this.isPlayer) {
       $('score').textContent = this.score;
       if (running) gainXP(n, true);   // 合成拿到的分數＝經驗值，即時累積
-      if (mode === 'solo' && this.score > best) { best = this.score; $('best').textContent = best; store('dog-best', best); }
+      if (mode === 'solo' && !speedrun && this.score > best) { best = this.score; $('best').textContent = best; store('dog-best', best); }
     }
   }
   walls(b) {
@@ -530,7 +802,7 @@ class World {
         }
       }
     } else { this.addScore(500); burst(this.particles, x, y, '#ffd84a', 40); }
-    if (this.isPlayer && running) onPlayerMerge(Math.min(lv + 1, HIDDEN));
+    if (this.isPlayer && running) { onPlayerMerge(Math.min(lv + 1, HIDDEN)); if (lv + 1 === HIDDEN) { if (!speedrun) sfx('hidden'); } else sfx('merge', lv + 1); if (speedrun && lv + 1 >= SPEED_GOAL) speedDone(); }
     if (this.attackEnabled) this.attack(lv + 1);
   }
   attack(newLevel) {
@@ -543,7 +815,7 @@ class World {
     if (atk <= 0) return;
     const cancel = Math.min(this.pendingIn, atk); // 先抵銷要掉下來的
     this.pendingIn -= cancel; atk -= cancel;
-    if (atk > 0) { if (this.isPlayer) toast('⚔️ 攻擊 +' + atk); if (this.onAttack) this.onAttack(atk); }
+    if (atk > 0) { if (this.isPlayer) { toast('⚔️ 攻擊 +' + atk); sfx('atk'); } if (this.onAttack) this.onAttack(atk); }
   }
   receive(n) { if (n <= 0) return; if (this.pendingIn === 0) this.pendingSince = performance.now(); this.pendingIn += n; }
   garbageTick() {
@@ -556,6 +828,7 @@ class World {
         b.age = 0.3; b.garbage = 1.2;
         this.bodies.push(b);
       }
+      if (this.isPlayer) sfx('thud');
     }
   }
   checkOver(dt) {
@@ -638,11 +911,11 @@ function drawDog(c, b, level, x, y, ang, s = 1, alpha = 1, detail = true, mine =
   c.save(); c.globalAlpha = alpha; c.translate(x, y); c.rotate(ang);
   if (detail && level === HIDDEN) { c.shadowColor = '#fff6a8'; c.shadowBlur = 25 + 10 * Math.sin(performance.now() / 200); }
   else if (mine && GLOW_FRAMES[prof.frame]) { c.shadowColor = GLOW_FRAMES[prof.frame]; c.shadowBlur = 10; }
-  c.beginPath(); c.arc(0, 0, r, 0, Math.PI * 2); c.fillStyle = (b && b.overT > 0) ? '#e8322f' : mine ? frameColor(b, f.c) : f.c; c.fill();
+  c.beginPath(); c.arc(0, 0, r, 0, Math.PI * 2); c.fillStyle = (b && b.overT > 0) ? '#e8322f' : mine ? (prof.frame === 'f-rainbow' ? rainbowFill(c, r, b) : frameColor(b, f.c)) : f.c; c.fill();
   c.shadowBlur = 0;
   const bw = Math.max(2.5, r * 0.07);
   c.save(); c.beginPath(); c.arc(0, 0, r - bw, 0, Math.PI * 2); c.clip();
-  const im = (mine && prof.flt && filteredImg(level)) || f.img;
+  const im = (mine && skinImg(level)) || (mine && prof.flt && filteredImg(level)) || f.img;
   if (im.complete !== false) c.drawImage(im, -r + bw, -r + bw, (r - bw) * 2, (r - bw) * 2);
   c.restore();
   if (b && b.garbage > 0) { c.globalAlpha = Math.min(1, b.garbage) * 0.5; c.fillStyle = '#c62828'; c.beginPath(); c.arc(0, 0, r, 0, Math.PI * 2); c.fill(); }
@@ -715,9 +988,11 @@ function applyOppPack(a) {
 let last = performance.now();
 function loop(t) {
   if (t - last > AWAY_LOSE_MS && mode === 'match' && match && match.startAt && !match.finished) finishMatch('lose', '你離開遊戲太久了');
-  const dt = Math.min(1 / 30, (t - last) / 1000); last = t;
+  const rawDt = Math.max(0, (t - last) / 1000), dt = Math.min(1 / 30, rawDt); last = t;
   if (running && !paused) {
     P.update(dt);
+    speedTick(Math.min(rawDt, 1));
+    if (P.dangerT > 0) { dangerBeep -= dt; if (dangerBeep <= 0) { sfx('danger'); dangerBeep = Math.max(0.15, 0.5 - P.dangerT * 0.15); } } else dangerBeep = 0;
     if (AI) { AI.update(dt); AI.aiPlay(dt); }
   } else {
     for (const p of P.particles) { p.vy += (p.g ?? 600) * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt; }
@@ -749,31 +1024,42 @@ function setMode(m) {
 }
 function hideAll() { ['start', 'over', 'result', 'matching', 'friend', 'boardModal', 'login', 'diag', 'prof'].forEach(id => show(id, false)); }
 function goHome() {
-  hideAll(); running = false; AI = null; setMode('solo'); renderMyRank(); show('start', true); setPresence(null); refreshOnline(); renderLvLine();
+  hideAll(); running = false; speedrun = false; AI = null; setMode('solo'); setSpeedHud(false); renderMyRank(); show('start', true); setPresence(null); refreshOnline(); renderLvLine();
 }
 function startSolo() {
-  gameMerges = 0;
+  gameMerges = 0; spLastSubmit = null; speedrun = false; lastWasSpeed = false; setSpeedHud(false);
   hideAll(); setMode('solo'); AI = null; P.reset(); P.attackEnabled = false;
-  P.onOver = soloOver; $('score').textContent = 0; $('next').src = FRUITS[P.nxt].src; running = true;
+  P.onOver = soloOver; $('score').textContent = 0; $('next').src = dogSrc(P.nxt); running = true;
   setPresence('solo');
 }
 $('goSolo').addEventListener('click', () => { if (readName()) startSolo(); });
 $('goRanked').addEventListener('click', () => { if (readName()) needLogin(startMatchmaking); });
 $('goFriend').addEventListener('click', () => { if (readName()) needLogin(openFriend); });
 $('nameIn').addEventListener('keydown', e => { if (e.key === 'Enter') $('goSolo').click(); });
-$('again').addEventListener('click', startSolo);
+$('again').addEventListener('click', () => lastWasSpeed ? startSpeed() : startSolo());
 $('home1').addEventListener('click', goHome);
 $('home2').addEventListener('click', goHome);
 $('againMatch').addEventListener('click', () => { if (lastKind === 'friend') openFriend(); else startMatchmaking(); });
 $('trophy').addEventListener('click', () => {
   if (!running) return;
-  if (mode === 'solo') paused = true;   // 對戰不能暫停
+  if (mode === 'solo' && !speedrun) paused = true;   // 對戰、速通不能暫停
   show('boardModal', true);
 });
 $('closeBoard').addEventListener('click', () => { paused = false; show('boardModal', false); });
 
 function soloOver() {
-  running = false; setPresence(null);
+  running = false; setPresence(null); sfx('over');
+  if (speedrun) {   // 速通沒完成：不上榜
+    speedrun = false;
+    $('overTitle').textContent = '💥 速通失敗';
+    $('overLine').innerHTML = `差一點！撐了 <b>${fmtT(spT)}</b><br><span style="font-size:13px">要合成出第 10 隻・冰炫風狗狗才算完成</span>`;
+    $('biggest').innerHTML = '最大合成：<img class="mini big" src="' + FRUITS[P.biggest].src + '">';
+    $('rankMsg').textContent = ''; boardMode = 'speed'; renderBoards(); show('over', true);
+    $('xpMsg').textContent = '本局經驗 +' + onSoloEnd(P.score) + `（Lv.${prof.lv}）`; gameMerges = 0;
+    return;
+  }
+  $('overTitle').textContent = '遊戲結束'; boardMode = 'solo'; renderBoards();
+  $('overLine').innerHTML = '<b id="pname"></b> 本局 <b id="final" style="font-size:22px">0</b> 分';
   $('pname').textContent = playerName;
   $('final').textContent = P.score;
   $('biggest').innerHTML = '最大合成：<img class="mini big" src="' + FRUITS[P.biggest].src + '">';
@@ -794,7 +1080,7 @@ const firebaseConfig = {
   appId: "1:741734243486:web:62dbac94d9e9c4f51a2f8f"
 };
 const RTDB_URL = 'https://dogsteakkk-default-rtdb.asia-southeast1.firebasedatabase.app';   // Realtime Database 的網址
-const VERSION = 'v10';
+const VERSION = 'v26';
 const FB_VERSIONS = ['13.1.0', '11.0.2'];
 let fbVer = '';
 let fs = null, fdb = null, fbReady, am = null, auth = null, authUser = null, authKnown = false;
@@ -811,33 +1097,38 @@ async function loadFirebase() {
 }
 
 // ====== 排行榜 ======
-let soloEntries = [], dayEntries = [], rankEntries = [], myIds = new Set(), boardNote = '排行榜載入中…', boardTab = 'day';
+let soloEntries = [], dayEntries = [], rankEntries = [], myIds = new Set(), boardNote = '排行榜載入中…', boardTab = 'day', boardMode = 'solo';
 document.querySelectorAll('.tabs').forEach(tb => tb.addEventListener('click', e => {
   const t = e.target.dataset && e.target.dataset.t; if (!t) return;
-  boardTab = t; renderBoards();
+  boardMode = t; renderBoards();
 }));
 function renderBoards() {
-  document.querySelectorAll('.tabs button[data-t]').forEach(b => b.classList.toggle('on', b.dataset.t === boardTab));
+  try { refreshLooks(); } catch (e) { }
+  const sub = speedSub || 'day';
+  boardTab = boardMode === 'solo' ? sub : boardMode;
+  document.querySelectorAll('.tabs button[data-t]').forEach(b => b.classList.toggle('on', b.dataset.t === boardMode));
+  document.querySelectorAll('.stabs').forEach(x => x.style.display = boardMode === 'rank' ? 'none' : '');
+  document.querySelectorAll('.stabs button').forEach(b => b.classList.toggle('on', b.dataset.s === sub));
   ['board1', 'board2', 'board3'].forEach((id, k) => {
     const ol = $(id); ol.textContent = '';
+    if (boardTab === 'speed') { const nt = renderSpeedBoard(ol, k); $('note' + (k + 1)).textContent = nt; return; }
     const src = boardTab === 'all' ? soloEntries : boardTab === 'day' ? dayEntries : rankEntries;
     const list = k === 0 ? src.slice(0, 10) : src;
     list.forEach((e, i) => {
       const li = document.createElement('li');
       if ((boardTab !== 'rank' && myIds.has(e.id)) || (boardTab === 'rank' && e.id === pid)) li.className = 'me';
       const rk = document.createElement('span'); rk.className = 'rk'; rk.textContent = i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1;
-      const nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = e.name;
-      if (e.lv) { const lb = document.createElement('span'); lb.className = 'lvb'; lb.textContent = 'Lv.' + e.lv; nm.appendChild(lb); }
+      const nm = nameCell(e, boardTab === 'rank');
       const sc = document.createElement('span'); sc.className = 'sc';
       if (boardTab !== 'rank') {
-        const im = document.createElement('img'); im.className = 'mini'; im.src = FRUITS[Math.max(0, Math.min(HIDDEN, e.level | 0))].src;
+        const im = avImg(e, false);
         sc.textContent = e.score; li.append(rk, im, nm, sc);
       } else {
         const t = tierOf(e.stars);
         const tb = document.createElement('span'); tb.className = 'tierb'; tb.style.background = t.color; tb.textContent = t.name;
         sc.className = 'stars'; sc.textContent = '★' + e.stars;
         const wr = document.createElement('span'); wr.className = 'wr'; wr.textContent = e.wins + '勝' + e.losses + '敗';
-        li.append(rk, nm, tb, sc, wr);
+        li.append(rk, avImg(e, true), nm, tb, sc, wr);
       }
       ol.appendChild(li);
     });
@@ -868,13 +1159,13 @@ renderBoards();
   fs.onSnapshot(fs.query(fs.collection(fdb, 'scores'), fs.orderBy('score', 'desc'), fs.limit(BOARD_SIZE)), snap => {
     soloEntries = snap.docs.map(d => {
       const v = d.data() || {};
-      return { id: d.id, name: String(v.name || '匿名').slice(0, 12), score: Math.max(0, Math.floor(+v.score || 0)), level: +v.level || 0, lv: v.lv | 0 };
+      return { id: d.id, name: String(v.name || '匿名').slice(0, 12), score: Math.max(0, Math.floor(+v.score || 0)), level: +v.level || 0, lv: v.lv | 0, t: okTitle(v.t), np: okNp(v.np), uid: typeof v.uid === 'string' ? v.uid.slice(0, 128) : '', av: typeof v.av === 'number' ? v.av : -1, avf: v.avf, apc: Math.max(0, Math.min(36, v.apc | 0)) };
     });
     clearTimeout(timer); boardNote = '';
     renderBoards(); updateRankMsg();
   }, err => { clearTimeout(timer); console.warn(err); boardNote = '排行榜連線失敗（' + (err.code || '未知錯誤') + '）。'; renderBoards(); });
   fs.onSnapshot(fs.query(fs.collection(fdb, LADDER), fs.orderBy('stars', 'desc'), fs.limit(BOARD_SIZE)), snap => {
-    rankEntries = snap.docs.map(d => { const v = d.data() || {}; return { id: d.id, name: String(v.name || '匿名').slice(0, 12), stars: v.stars | 0, wins: v.wins | 0, losses: v.losses | 0, lv: v.lv | 0 }; });
+    rankEntries = snap.docs.map(d => { const v = d.data() || {}; return { id: d.id, name: String(v.name || '匿名').slice(0, 12), stars: v.stars | 0, wins: v.wins | 0, losses: v.losses | 0, lv: v.lv | 0, t: okTitle(v.t), np: okNp(v.np), uid: typeof v.uid === 'string' ? v.uid.slice(0, 128) : '', av: typeof v.av === 'number' ? v.av : -1, avf: v.avf, apc: Math.max(0, Math.min(36, v.apc | 0)) }; });
     renderBoards();
   }, err => console.warn(err));
   subscribeDaily();
@@ -890,7 +1181,7 @@ function subscribeDaily() {
   if (dayUnsub) dayUnsub();
   dayKeySub = todayKey(); dayEntries = []; renderBoards();
   dayUnsub = fs.onSnapshot(fs.query(fs.collection(fdb, 'daily', dayKeySub, 'scores'), fs.orderBy('score', 'desc'), fs.limit(BOARD_SIZE)), snap => {
-    dayEntries = snap.docs.map(d => { const v = d.data() || {}; return { id: d.id, name: String(v.name || '匿名').slice(0, 12), score: Math.max(0, Math.floor(+v.score || 0)), level: +v.level || 0, lv: v.lv | 0 }; });
+    dayEntries = snap.docs.map(d => { const v = d.data() || {}; return { id: d.id, name: String(v.name || '匿名').slice(0, 12), score: Math.max(0, Math.floor(+v.score || 0)), level: +v.level || 0, lv: v.lv | 0, t: okTitle(v.t), np: okNp(v.np), uid: typeof v.uid === 'string' ? v.uid.slice(0, 128) : '', av: typeof v.av === 'number' ? v.av : -1, avf: v.avf, apc: Math.max(0, Math.min(36, v.apc | 0)) }; });
     renderBoards(); updateRankMsg();
   }, err => console.warn(err));
 }
@@ -1047,7 +1338,7 @@ async function submitScore(name, sc, level) {
   try {
     const body = { name: name.slice(0, 12), score: Math.min(100000, Math.floor(sc)), level: Math.floor(level), lv: prof.lv, at: fs.serverTimestamp() };
     const ref = fs.doc(fs.collection(fdb, 'scores'));
-    await Promise.all([fs.setDoc(ref, body), fs.setDoc(fs.doc(fdb, 'daily', todayKey(), 'scores', ref.id), body)]);
+    await setDeco([[ref, body], [fs.doc(fdb, 'daily', todayKey(), 'scores', ref.id), body]]);
     myIds.add(ref.id); lastSubmit = ref.id;
     $('rankMsg').textContent = '分數已上傳！';
     renderBoards(); updateRankMsg();
@@ -1217,7 +1508,7 @@ async function countdownAndStart() {
   $('matchKind').textContent = match.kind === 'friend' ? '友誼賽' : (match.isAI ? '排位賽・電腦對手' : '排位賽');
   $('oppName').textContent = match.oppName;
   $('oppMeta').innerHTML = match.isAI ? '🤖 電腦陪練' : (match.oppMeta || '');
-  for (const n of ['3', '2', '1', '開始！']) { $('count').textContent = n; show('count', true); await sleep(700); }
+  for (const n of ['3', '2', '1', '開始！']) { $('count').textContent = n; show('count', true); sfx('count', n === '開始！'); await sleep(700); }
   show('count', false);
   if (!match) return;
   P.attackEnabled = true; P.autoDrop = true; P.onOver = () => myTopOut();
@@ -1225,7 +1516,7 @@ async function countdownAndStart() {
     match.base = { s: myStars, w: myWins, l: myLosses };
     match.chargeP = writeRecord(Math.max(0, myStars - 1), myWins, myLosses + 1);
   }
-  $('next').src = FRUITS[P.nxt].src;
+  $('next').src = dogSrc(P.nxt);
   if (AI) { AI.reset(); AI.attackEnabled = true; AI.onAttack = n => P.receive(n); AI.onOver = () => finishMatch('win', '電腦的狗狗爆出紅線了！'); P.onAttack = n => AI.receive(n); }
   else P.onAttack = n => { if (match) { match.sent += n; flushMatch(true); } };
   match.startAt = performance.now(); match.oppSeenAt = Date.now();
@@ -1353,7 +1644,7 @@ async function finishMatch(res, why) {
   $('resWhy').textContent = why;
   $('resMe').textContent = P.score; $('resOpp').textContent = oppScore; $('resOppName').textContent = m.oppName;
   $('againMatch').textContent = m.kind === 'friend' ? '再開一間' : '再排一場';
-  show('result', true); setPresence(null); $('resXp').textContent = '';
+  show('result', true); setPresence(null); $('resXp').textContent = ''; sfx(res === 'void' ? 'draw' : res);
   const fx = $('starFx'); fx.className = ''; fx.innerHTML = '';
   match = null;
   if (m.kind === 'ranked' && !m.isAI) {
@@ -1391,7 +1682,7 @@ function starEffect(win, before, after) {
 async function writeRecord(s, w, l) {
   if (!fdb || !pid) return false;
   try {
-    await fs.setDoc(fs.doc(fdb, LADDER, pid), { name: playerName, stars: Math.max(0, s), wins: w, losses: l, lv: prof.lv, at: fs.serverTimestamp() });
+    await setDeco([[fs.doc(fdb, LADDER, pid), { name: playerName, stars: Math.max(0, s), wins: w, losses: l, lv: prof.lv, at: fs.serverTimestamp() }]]);
     myStars = Math.max(0, s); myWins = w; myLosses = l; renderMyRank(); return true;
   } catch (e) { console.warn(e); return false; }
 }
@@ -1404,7 +1695,7 @@ async function loadOppInfo(m, oppId) {
     const lv = Math.max(1, pv.lv | 0), av = Math.max(0, Math.min(HIDDEN, pv.avatar | 0));
     const okId = x => typeof x === 'string' && /^[a-z0-9-]{1,20}$/.test(x) ? x : '';
     if (match === m) $('oppName').className = 'oppname ' + npClass(okId(pv.np));
-    m.oppMeta = tierHTML(stars) + `<br><img class="mini${avfClass(okId(pv.avf))}" src="${FRUITS[av].src}"> Lv.${lv}` + (pv.title ? ` <span class="ttl">「${esc(String(pv.title).slice(0, 10))}」</span>` : '');
+    m.oppMeta = tierHTML(stars) + `<br><img class="mini${avfClass(okId(pv.avf))}" src="${avatarSrcOf(av, Math.max(0, Math.min(36, pv.apc | 0)))}"> Lv.${lv}` + (pv.title ? ` <span class="ttl">「${esc(titleTag(String(pv.title).slice(0, 12)))}」</span>` : '');
     if (match === m) { $('oppMeta').innerHTML = m.oppMeta; $('matchInfo').innerHTML = '找到對手了！<br><b>' + esc(m.oppName) + '</b><br>' + m.oppMeta; }
   } catch (e) { console.warn(e); }
 }
@@ -1455,7 +1746,7 @@ function defProf() {
     lv: 1, xp: 0, tx: 0, bone: 0, title: '新手飼主', titles: ['新手飼主'], avatar: 0, theme: 'default', frame: 'f-default', owned: ['default', 'f-default'],
     stats: { games: 0, best: 0, merges: 0, maxDog: 0, hidden: 0, matches: 0, wins: 0 },
     daily: { day: '', prog: {}, claimed: [] }, checkin: { last: '', streak: 0, best: 0, total: 0 },
-    hat: '', fx: '', flt: '', avf: '', np: '', shards: 0, pity: { l: 0, m: 0 }, gfree: ''
+    hat: '', fx: '', flt: '', avf: '', np: '', shards: 0, pity: { l: 0, m: 0 }, gfree: '', cards: [], snd: '', ach: [], scr: 0, cdup: [], skin: [], apc: 0
   };
 }
 function normProf(p) {
@@ -1468,8 +1759,14 @@ function normProf(p) {
   if (!Array.isArray(o.titles)) o.titles = ['新手飼主'];
   ['lv', 'xp', 'tx', 'bone', 'avatar'].forEach(k => o[k] = Math.max(k === 'lv' ? 1 : 0, Math.floor(+o[k] || 0)));
   o.pity = Object.assign({ l: 0, m: 0 }, p.pity || {}); o.shards = Math.max(0, Math.floor(+o.shards || 0));
-  ['hat', 'fx', 'flt', 'avf', 'np', 'gfree', 'theme', 'frame'].forEach(k => { if (typeof o[k] !== 'string') o[k] = d[k] || ''; });
+  ['hat', 'fx', 'flt', 'avf', 'np', 'gfree', 'theme', 'frame', 'snd'].forEach(k => { if (typeof o[k] !== 'string') o[k] = d[k] || ''; });
   if (!o.theme) o.theme = 'default'; if (!o.frame) o.frame = 'f-default';
+  o.scr = Math.max(0, Math.floor(+o.scr || 0));
+  o.apc = Math.max(0, Math.min(36, Math.floor(+o.apc || 0)));
+  o.skin = Array.from({ length: 10 }, (_, i) => { const v = Math.floor(+((p.skin || [])[i]) || 0); return v >= 1 && v <= 36 ? v : 0; });
+  o.cdup = Array.from({ length: 36 }, (_, i) => Math.max(0, Math.min(99, Math.floor(+((p.cdup || [])[i]) || 0))));
+  o.ach = Array.isArray(p.ach) ? p.ach.filter(x => typeof x === 'string').slice(0, 300) : [];
+  o.cards = Array.isArray(p.cards) ? [...new Set(p.cards.map(x => Math.floor(+x)).filter(x => x >= 1 && x <= 36))] : [];
   return o;
 }
 let prof;
@@ -1486,18 +1783,22 @@ function profDoc() {
   return {
     name: (playerName || '玩家').slice(0, 12), lv: prof.lv, xp: prof.xp, tx: prof.tx, bone: prof.bone, title: prof.title, titles: prof.titles.slice(0, 40),
     avatar: prof.avatar, theme: prof.theme, frame: prof.frame, owned: prof.owned.slice(0, 200), stats: prof.stats, daily: prof.daily, checkin: prof.checkin,
-    hat: prof.hat, fx: prof.fx, flt: prof.flt, avf: prof.avf, np: prof.np, shards: prof.shards, pity: prof.pity, gfree: prof.gfree, at: fs.serverTimestamp()
+    hat: prof.hat, fx: prof.fx, flt: prof.flt, avf: prof.avf, np: prof.np, shards: prof.shards, pity: prof.pity, gfree: prof.gfree, cards: prof.cards, snd: prof.snd, ach: prof.ach, scr: prof.scr, cdup: prof.cdup, skin: prof.skin, apc: prof.apc, at: fs.serverTimestamp()
   };
 }
 async function pushProfile() {
   if (!fdb || !pid) return;
-  try { await fs.setDoc(fs.doc(fdb, 'profiles', pid), profDoc()); } catch (e) { console.warn('個人檔案上傳失敗', e); }
+  try { await fs.setDoc(fs.doc(fdb, 'profiles', pid), profDoc()); }
+  catch (e) {   // 規則還沒更新（不認得 cards）→ 先不帶明信片上傳，其他進度照樣同步
+    try { const d = profDoc(); delete d.cards; delete d.snd; delete d.ach; delete d.scr; delete d.cdup; delete d.skin; delete d.apc; await fs.setDoc(fs.doc(fdb, 'profiles', pid), d); console.warn('明信片／音效沒有同步，請更新 Firestore 規則', e); }
+    catch (e2) { console.warn('個人檔案上傳失敗', e2); }
+  }
 }
 async function pullProfile() {   // 登入後：雲端進度比較多就用雲端的（換手機也能接著玩）
   if (!fdb || !pid) return;
   try {
     const s = await fs.getDoc(fs.doc(fdb, 'profiles', pid));
-    if (s.exists() && (+s.data().tx || 0) > prof.tx) { prof = normProf(s.data()); store(PROF_KEY, JSON.stringify(prof)); renderLvLine(); }
+    if (s.exists() && (+s.data().tx || 0) > prof.tx) { const lc = prof.cards; prof = normProf(s.data()); prof.cards = [...new Set([...prof.cards, ...lc])]; store(PROF_KEY, JSON.stringify(prof)); renderLvLine(); }
     else pushProfile();
   } catch (e) { console.warn(e); }
 }
@@ -1508,8 +1809,10 @@ function gainXP(n, live) {
   let up = 0;
   while (prof.xp >= xpNeed(prof.lv)) { prof.xp -= xpNeed(prof.lv); prof.lv++; up++; }
   if (up) {
-    prof.bone += 30 * up;
-    setTimeout(() => toast('⬆️ 升到 Lv.' + prof.lv + '！<br><span style="font-size:16px">🦴 +' + 30 * up + '</span>'), 300);
+    let lb = 0; for (let L = prof.lv - up + 1; L <= prof.lv; L++) lb += lvBone(L);
+    prof.bone += lb; prof.scr = (prof.scr || 0) + up;
+    const road = LV_ROAD.some(([L]) => L > prof.lv - up && L <= prof.lv);
+    setTimeout(() => { toast('⬆️ 升到 Lv.' + prof.lv + '！<br><span style="font-size:16px">🦴 +' + lb + '　🎫 刮刮樂 ×' + up + (road ? '<br>🎁 等級之路有大獎可以領！' : '') + '</span>'); updDots(); }, 300);
     const hud = $('lvHud'); hud.classList.remove('flash'); void hud.offsetWidth; hud.classList.add('flash');
     if (running) for (let k = 0; k < 3; k++) burst(P.particles, 80 + k * 100, 100, '#ffd84a', 20);
     checkTitles();
@@ -1589,11 +1892,11 @@ function frameColor(b, fallback) {
 function renderLvLine() {
   const el = $('lvLine'); if (!el) return;
   const need = xpNeed(prof.lv), pct = Math.round(prof.xp / need * 100);
-  el.innerHTML = `<img class="mini big${avfClass(prof.avf)}" src="${FRUITS[Math.min(prof.avatar, HIDDEN)].src}"> <b>Lv.${prof.lv}</b> <span class="xpbar"><i style="width:${pct}%"></i></span> <span>🦴 ${prof.bone}</span><br><span class="ttl">「${esc(prof.title)}」</span>`;
+  el.innerHTML = `<img class="mini big${avfClass(prof.avf)}" src="${myAvatarSrc()}"> <b>Lv.${prof.lv}</b> <span class="xpbar"><i style="width:${pct}%"></i></span> <span>🦴 ${prof.bone}</span><br><span class="ttl">「${esc(titleTag(prof.title))}」</span>`;
   const dot = canCheckIn() || claimableMissions() > 0;
   document.querySelectorAll('[data-open]').forEach(b => {
     const t = b.dataset.open, on = (t === 'check' && canCheckIn()) || (t === 'task' && claimableMissions() > 0) || (t === 'gacha' && canFreePull());
-    b.classList.toggle('dot', on);
+    if (!['task', 'ach', 'album'].includes(t)) b.classList.toggle('dot', on); else try { updDots(); } catch (e) { }
   });
 }
 
@@ -1609,20 +1912,23 @@ function renderProf() {
   const box = $('profBody'); let h = '';
   if (profTab === 'me') {
     const need = xpNeed(prof.lv), st = prof.stats;
-    h += `<div class="pf-head"><img class="${avfClass(prof.avf)}" src="${FRUITS[Math.min(prof.avatar, HIDDEN)].src}"><div><div class="pf-name"><span class="${npClass(prof.np)}">${esc(playerName || '玩家')}</span></div><div class="ttl">「${esc(prof.title)}」</div><div>Lv.${prof.lv}・🦴 ${prof.bone}</div></div></div>`;
+    h += `<div class="pf-head"><img class="${avfClass(prof.avf)}" src="${myAvatarSrc()}"><div><div class="pf-name"><span class="${npClass(prof.np)}">${esc(playerName || '玩家')}</span></div><div class="ttl">「${esc(titleTag(prof.title))}」</div><div>Lv.${prof.lv}・🦴 ${prof.bone}</div></div></div>`;
     h += `<div class="xpbar wide"><i style="width:${Math.round(prof.xp / need * 100)}%"></i></div><div class="note">經驗值 ${prof.xp} / ${need}（合成得到的分數就是經驗值，升級送 🦴30）</div>`;
     h += `<div class="pf-grid"><div><b>${st.games}</b>單人場數</div><div><b>${st.best}</b>最高分</div><div><b>${st.merges}</b>合成次數</div><div><b>${st.matches}</b>對戰場數</div><div><b>${st.wins}</b>排位勝場</div><div><b>${prof.checkin.total}</b>簽到天數</div></div>`;
     h += pid ? `<div style="margin:6px 0">${tierHTML(myStars)}</div>` : '<div class="note">登入後會顯示排位段位，進度也會存到雲端</div>';
     h += '<h3>選擇頭像</h3><div class="pick">';
     FRUITS.forEach((f, i) => {
-      const ok = i <= prof.stats.maxDog && (i !== HIDDEN || hiddenFound);
-      h += `<button data-av="${i}" class="${i === prof.avatar ? 'on' : ''}" ${ok ? '' : 'disabled'} title="${ok ? '' : '合成出這隻狗才能用'}">${ok ? `<img src="${f.src}">` : '🔒'}</button>`;
+      const ok = i !== HIDDEN || hiddenFound;
+      const onAv = i === prof.avatar && !prof.apc;
+      h += `<button data-av="${i}" class="${onAv ? 'on' : ''}" ${ok ? '' : 'disabled'} title="${ok ? '' : '合成出這隻狗才能用'}">${ok ? `<img src="${f.src}">` : '🔒'}</button>`;
     });
-    h += '</div><h3>選擇稱號</h3><div class="tlist">';
+    h += '</div>' + apcPickHTML() + '<h3>選擇稱號</h3><div class="tlist">';
     TITLES.forEach(T => {
       const own = prof.titles.includes(T.t);
-      h += `<button data-tt="${esc(T.t)}" class="${T.t === prof.title ? 'on' : ''}" ${own ? '' : 'disabled'}>${own ? '' : '🔒 '}${esc(T.t)}${own ? '' : `<small>${esc(T.how)}</small>`}</button>`;
+      h += `<button data-tt="${esc(T.t)}" class="${T.t === prof.title ? 'on' : ''}" ${own ? '' : 'disabled'}>${own ? '' : '🔒 '}${esc(titleTag(T.t))}${own ? '' : `<small>${esc(T.how)}</small>`}</button>`;
     });
+    const extra = prof.titles.filter(t => !TITLES.some(T => T.t === t));
+    if (extra.length) { h += '<div class="tsub">🎰 扭蛋抽到的稱號</div>'; extra.forEach(t => { h += `<button data-tt="${esc(t)}" class="${t === prof.title ? 'on' : ''}">${esc(titleTag(t))}</button>`; }); }
     h += '</div>';
   } else if (profTab === 'check') {
     const c = prof.checkin, today = todayKey();
@@ -1651,7 +1957,10 @@ function renderProf() {
     for (const [id, F] of Object.entries(FRAMES)) if (!F.gacha) h += shopItem(id, F.icon, F.name, F.price, prof.frame === id, '');
     h += '</div>';
   }
-  if (profTab === 'gacha') h += gachaHTML(); else if (profTab === 'ward') h += wardHTML();
+  if (profTab === 'task') h += roadHTML();
+  if (profTab === 'ach') h += achHTML();
+  try { updDots(); } catch (e) { }
+  if (profTab === 'gacha') h += gachaHTML(); else if (profTab === 'ward') h += wardHTML(); else if (profTab === 'album') h += albumHTML();
   box.innerHTML = h;
 }
 function shopItem(id, icon, name, price, on, style) {
@@ -1660,7 +1969,7 @@ function shopItem(id, icon, name, price, on, style) {
 }
 $('profBody').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b || b.disabled) return;
-  if (b.dataset.av !== undefined) { prof.avatar = +b.dataset.av; saveProf(); renderProf(); }
+  if (b.dataset.av !== undefined) { prof.avatar = +b.dataset.av; prof.apc = 0; saveProf(); renderProf(); }
   else if (b.dataset.tt) { prof.title = b.dataset.tt; saveProf(); renderProf(); }
   else if (b.id === 'doCheck') {
     if (!canCheckIn()) return;
@@ -1918,18 +2227,19 @@ function grant(it) {
   else ids.forEach(giveOne);
   return res;
 }
-function doPull(n) {
-  const free = n === 1 && canFreePull();
+function doPull(n, gift) {
+  const free = !!gift || (n === 1 && canFreePull());
   const cost = free ? 0 : (n === 1 ? GACHA_COST : GACHA10_COST);
   if (prof.bone < cost) { toast('🦴 骨頭不夠<br><span style="font-size:15px">還差 ' + (cost - prof.bone) + ' 根</span>'); return; }
-  prof.bone -= cost; if (free) prof.gfree = todayKey();
+  prof.bone -= cost; if (free && !gift) prof.gfree = todayKey();
   const out = [];
   for (let i = 0; i < n; i++) {
     const needGuarantee = n === 10 && i === 9 && !out.some(o => o.it.r >= 2);
     out.push(rollOne(needGuarantee ? 2 : undefined));
   }
+  prof.stats.pulls = (prof.stats.pulls || 0) + n; prof.stats.a5 = (prof.stats.a5 || 0) + out.filter(o => o.it.r === 5).length;
   saveProf();
-  showPulls(out);
+  if (out.some(o => o.it.cat === 'card') && !window.CARD_IMG) loadCards().then(() => showPulls(out)); else showPulls(out);
 }
 
 // 抽獎動畫
@@ -1962,6 +2272,7 @@ function gachaHTML() {
   h += `<div class="gmachine">🎰</div>`;
   h += `<div class="btns"><button class="main fr" data-pull="1">${canFreePull() ? '今日免費抽！' : '抽 1 次 🦴' + GACHA_COST}</button><button class="main vs" data-pull="10">十連抽 🦴${GACHA10_COST}</button></div>`;
   h += `<div class="note">十連抽保證至少一個五分熟以上<br>再 <b>${PITY_LEG - prof.pity.l}</b> 抽必出一分熟以上・再 <b>${PITY_MYTH - prof.pity.m}</b> 抽必出 A5 和牛</div>`;
+  h += `<div class="note">📮 每次抽中時有 ${CARD_RATE * 100}% 是同稀有度的狗狗明信片（共 ${CARDS.length} 張）</div>`;
   h += '<h3>機率</h3><div class="odds">' + RAR.map(R => `<span style="background:${R.color}">${R.icon} ${R.name}（${R.tag}）${+(R.p * 100).toFixed(1)}%</span>`).join('') + '</div>';
   h += '<h3>💎 碎片兌換</h3><div class="note">抽到重複的會變成碎片，可以直接換想要的</div><div class="exch">';
   ITEMS.filter(i => i.cat !== 'bone').sort((a, b) => b.r - a.r).forEach(it => {
@@ -1985,7 +2296,7 @@ function wardHTML() {
     return s + '</div>';
   };
   return '<div class="note">裝備你抽到或買到的外觀，裝扮、濾鏡、外框會套用在你自己的狗狗上</div>' +
-    sec('合成特效', 'fx', 'fx', '預設') + sec('狗狗裝扮', 'hat', 'hat', '不戴') + sec('照片濾鏡', 'flt', 'flt', '原圖') +
+    sec('合成特效', 'fx', 'fx', '預設') + sec('合成音效（點一下試聽）', 'snd', 'snd', '預設') + sec('狗狗裝扮', 'hat', 'hat', '不戴') + sec('照片濾鏡', 'flt', 'flt', '原圖') +
     sec('場地背景', 'bg', 'theme') + sec('狗狗外框', 'frame', 'frame') + sec('頭像框', 'avf', 'avf', '無') + sec('名牌底色', 'np', 'np', '無');
 }
 $('profBody').addEventListener('click', e => {
@@ -2005,6 +2316,1347 @@ $('profBody').addEventListener('click', e => {
 // 頭像框、名牌的 class
 function avfClass(id) { return id ? ' avf ' + id : ''; }
 function npClass(id) { return id ? 'np ' + id : ''; }
+
+// ====== v11：狗狗明信片 + 互動扭蛋機 ======
+const CARDS = [
+  { t: '牛排想吃牛肉麵', r: 5 }, { t: '冰炫風阿排', r: 5 }, { t: '根本沒有這樣的奶蛙', r: 5 }, { t: '教授看上課睡覺的我', r: 5 },
+  { t: '炙燒牛排', r: 4 }, { t: '享受梳毛的牛排', r: 4 }, { t: '洗完澡懶得吹頭髮', r: 4 }, { t: '長在人行道的樹', r: 4 },
+  { t: '斑馬線排排', r: 3 }, { t: '通宵早八考完試', r: 3 }, { t: '教院嘿嘿嘿', r: 3 }, { t: '睡搞搞雙人組', r: 3 }, { t: '( ･᷄ὢ･᷅ )', r: 3 }, { t: '黑烙腮鬍的小貓咪', r: 3 },
+  { t: '優雅交叉排', r: 2 }, { t: '優雅交叉巧', r: 2 }, { t: 'Wink排', r: 2 }, { t: '你素隨！', r: 2 }, { t: '早八我就這樣打哈欠', r: 2 }, { t: '無辜排排', r: 2 }, { t: '大鼻巧', r: 2 },
+  { t: '愛睏排', r: 1 }, { t: '大鼻排', r: 1 }, { t: '我在宿舍的樣子', r: 1 }, { t: '牛排要翻面', r: 1 }, { t: '拔辣剛吃飽', r: 1 }, { t: '看什麼看', r: 1 }, { t: '不愛洗澡好委屈', r: 1 }, { t: '洗澡好像也不賴', r: 1 },
+  { t: '拔辣想吃豬腳飯', r: 0 }, { t: '滄海一牛排', r: 0 }, { t: '牛排的尾巴搖搖搖', r: 0 }, { t: '你在跟我講話嗎', r: 0 }, { t: '回眸一笑', r: 0 }, { t: '排排肉球', r: 0 }, { t: '復仇者聯盟2', r: 0 },
+];
+const CARD_RATE = 0.4;   // 抽到某個稀有度時，有 40% 是那個稀有度的明信片
+CAT_NAME.card = '狗狗明信片';
+const cardImg = i => (window.CARD_IMG && CARD_IMG[i]) || '';
+const ownsCard = n => prof.cards.includes(n);
+function cardItem(n) { const C = CARDS[n - 1]; return { id: 'card' + n, r: C.r, cat: 'card', name: C.t, icon: '📮', card: n }; }
+function grantCard(n) {
+  const it = cardItem(n), res = { it, dup: false, shards: 0 };
+  if (ownsCard(n)) { res.dup = true; res.shards = RAR[it.r].shard; prof.shards += res.shards; }
+  else prof.cards.push(n);
+  return res;
+}
+function rollOne(minR) {
+  let r;
+  if (prof.pity.m >= PITY_MYTH - 1) r = 5;
+  else if (prof.pity.l >= PITY_LEG - 1) r = Math.random() < 0.1 ? 5 : 4;
+  else {
+    let x = Math.random(); r = 0;
+    for (let i = 0; i < RAR.length; i++) { if (x < RAR[i].p) { r = i; break; } x -= RAR[i].p; }
+  }
+  if (minR !== undefined && r < minR) r = minR;
+  prof.pity.l = r >= 4 ? 0 : prof.pity.l + 1;
+  prof.pity.m = r === 5 ? 0 : prof.pity.m + 1;
+  const cards = []; CARDS.forEach((C, i) => { if (C.r === r) cards.push(i + 1); });
+  if (cards.length && Math.random() < CARD_RATE) return grantCard(cards[Math.floor(Math.random() * cards.length)]);
+  const pool = ITEMS.filter(i => i.r === r);
+  return grant(pool[Math.floor(Math.random() * pool.length)]);
+}
+
+// ---------- 音效（簡單合成，不用載入檔案）----------
+let AC = null, gMute = store('dog-gmute') === '1';
+function beep(f, d = 0.08, type = 'square', v = 0.05, delay = 0) {
+  if (gMute) return;
+  try {
+    AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+    if (AC.state === 'suspended') AC.resume();
+    const t0 = AC.currentTime + delay, o = AC.createOscillator(), g = AC.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, t0);
+    g.gain.setValueAtTime(v, t0); g.gain.exponentialRampToValueAtTime(0.0001, t0 + d);
+    o.connect(g); g.connect(AC.destination); o.start(t0); o.stop(t0 + d + 0.02);
+  } catch (e) { }
+}
+const buzz = ms => { try { navigator.vibrate && navigator.vibrate(ms); } catch (e) { } };
+function fanfare(r) {
+  const notes = r >= 5 ? [523, 659, 784, 1047, 1319, 1568] : r >= 4 ? [523, 659, 784, 1047, 1319] : r >= 3 ? [523, 659, 784, 1047] : r >= 2 ? [523, 659, 784] : [587, 784];
+  notes.forEach((f, i) => beep(f, 0.22, 'triangle', 0.07, i * 0.09));
+  if (r >= 4) beep(notes[notes.length - 1] * 1.5, 0.6, 'sine', 0.05, notes.length * 0.09);
+}
+
+// ---------- 全螢幕粒子 ----------
+const GX = { parts: [], rain: 0, rainR: 0, alive: false, cv: null, cx: null };
+const RAR_PAL = [['#c8a27c', '#fff'], ['#ff9a6b', '#ffd2a8'], ['#ff4d6d', '#ffb3c1'], ['#c06cff', '#7df9ff', '#fff'], ['#ff7a00', '#ffd84a', '#ff3d00'], ['#ffd84a', '#fff6a8', '#ffffff', '#ffb700']];
+function gxBurst(x, y, r, scale = 1) {
+  const n = Math.round([18, 26, 40, 70, 110, 170][r] * scale), pal = RAR_PAL[r];
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * Math.PI * 2, s = (120 + Math.random() * (220 + r * 90)) * (0.6 + scale * 0.4);
+    const kind = Math.random() < (r >= 3 ? 0.35 : 0.15) ? 'star' : Math.random() < 0.4 ? 'conf' : 'dot';
+    GX.parts.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 60, g: 380, life: 0.8 + Math.random() * (0.6 + r * 0.15), c: pal[i % pal.length], r: 2 + Math.random() * (3 + r * 0.6), k: kind, rot: Math.random() * 6, vr: (Math.random() - .5) * 14 });
+  }
+}
+function gxSparks(x, y, r, n = 10) {
+  const pal = RAR_PAL[r];
+  for (let i = 0; i < n; i++) { const a = Math.random() * Math.PI * 2, s = 80 + Math.random() * 160; GX.parts.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, g: 200, life: 0.35 + Math.random() * 0.3, c: pal[i % pal.length], r: 1.5 + Math.random() * 2, k: 'dot' }); }
+}
+function gxStart() { GX.alive = true; const id = GX.lid = (GX.lid || 0) + 1; const f = () => { if (GX.alive && GX.lid === id) { gxLoop(); requestAnimationFrame(f); } }; requestAnimationFrame(f); }
+function gxLoop() {
+  const cv = GX.cv, c = GX.cx, dpr = Math.min(2, window.devicePixelRatio || 1), w = innerWidth, h = innerHeight;
+  if (cv.width !== Math.round(w * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
+  c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, w, h);
+  const dt = 1 / 60;
+  if (GX.rain > 0) {   // 一分熟火花往上飄、A5 金幣雨
+    GX.rain -= dt;
+    for (let i = 0; i < (GX.rainR >= 5 ? 4 : 2); i++) {
+      if (GX.rainR >= 5) GX.parts.push({ x: Math.random() * w, y: -10, vx: (Math.random() - .5) * 40, vy: 120 + Math.random() * 160, g: 60, life: 3, c: RAR_PAL[5][i % 4], r: 2 + Math.random() * 4, k: Math.random() < .5 ? 'star' : 'conf', rot: 0, vr: 6 });
+      else GX.parts.push({ x: Math.random() * w, y: h + 10, vx: (Math.random() - .5) * 30, vy: -120 - Math.random() * 160, g: -30, life: 2.6, c: RAR_PAL[4][i % 3], r: 1.5 + Math.random() * 3, k: 'dot' });
+    }
+  }
+  const P = GX.parts;
+  for (let i = P.length - 1; i >= 0; i--) {
+    const p = P[i];
+    p.vy += p.g * dt; p.vx *= 0.99; p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt; if (p.rot !== undefined) p.rot += (p.vr || 0) * dt;
+    if (p.life <= 0 || p.y > h + 40 || p.y < -60) { P.splice(i, 1); continue; }
+    c.globalAlpha = Math.min(1, p.life * 1.6); c.fillStyle = p.c;
+    if (p.k === 'star') {
+      c.save(); c.translate(p.x, p.y); c.rotate(p.rot || 0); c.beginPath();
+      for (let j = 0; j < 10; j++) { const rr = j % 2 ? p.r * 0.45 : p.r * 1.6, a = j * Math.PI / 5; c.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); }
+      c.closePath(); c.shadowColor = p.c; c.shadowBlur = 8; c.fill(); c.restore();
+    } else if (p.k === 'conf') {
+      c.save(); c.translate(p.x, p.y); c.rotate(p.rot || 0); c.fillRect(-p.r, -p.r * 0.45, p.r * 2, p.r * 0.9); c.restore();
+    } else { c.beginPath(); c.arc(p.x, p.y, p.r, 0, Math.PI * 2); c.fill(); }
+  }
+  c.globalAlpha = 1;
+}
+function centerOf(el) { const b = el.getBoundingClientRect(); return [b.left + b.width / 2, b.top + b.height / 2]; }
+function flash(color = '#fff', dur = 450) {
+  const f = document.createElement('div'); f.className = 'gflash'; f.style.background = color; $('gachaFx').appendChild(f);
+  f.animate([{ opacity: 0.95 }, { opacity: 0 }], { duration: dur, easing: 'ease-out' }).onfinish = () => f.remove();
+}
+function shakeScreen(px = 8, dur = 400) {
+  const st = $('gachaFx').querySelector('.gstage'); if (!st) return;
+  st.animate([0, 1, 2, 3, 4, 5, 6].map(i => ({ transform: i === 6 ? 'none' : `translate(${(Math.random() - .5) * px * 2}px,${(Math.random() - .5) * px * 2}px)` })), { duration: dur });
+}
+
+// ---------- 扭蛋、卡片的 HTML ----------
+function capHTML(r, sz) {
+  return `<div class="gcap c${r}" style="--sz:${sz}px"><div class="glow"></div><div class="top"></div><div class="bot"></div><div class="band"></div>` +
+    `<svg class="cracks" viewBox="0 0 100 100"><path class="k1" d="M50 50 L38 30 L44 22 M50 50 L64 34"/><path class="k2" d="M50 50 L70 58 L80 50 M50 50 L28 56 L20 48"/><path class="k3" d="M50 50 L46 72 L54 82 M50 50 L60 76 M38 30 L26 26"/></svg></div>`;
+}
+function resultSub(o) { return o.it.cat === 'bone' ? '已加入骨頭' : o.dup ? '重複 → 💎 碎片 +' + o.shards : o.it.cat === 'card' ? '📮 新明信片！' : CAT_NAME[o.it.cat]; }
+function frontHTML(o) {
+  const R = RAR[o.it.r];
+  if (o.it.cat === 'card') {
+    return `<div class="face front pcf r${o.it.r}" style="--rc:${R.color}"><div class="pc-photo"><img src="${cardImg(o.it.card - 1)}" alt=""></div>` +
+      `<div class="pc-stamp">📮 No.${String(o.it.card).padStart(2, '0')}</div><div class="prar" style="background:${R.color}">${R.icon} ${R.name}・${R.tag}</div>` +
+      `<div class="pc-title">${esc(o.it.name)}</div><div class="psub">${resultSub(o)}</div><div class="pc-credit">📷 圖源：Threads @yesjustbeyourself</div>${o.it.r >= 3 ? '<div class="holo"></div>' : ''}</div>`;
+  }
+  return `<div class="face front r${o.it.r}" style="--rc:${R.color}"><div class="prar" style="background:${R.color}">${R.icon} ${R.name}・${R.tag}</div>` +
+    `<div class="bigicon">${o.it.icon}</div><div class="pc-title">${esc(o.it.name)}</div><div class="psub">${resultSub(o)}</div>${o.it.r >= 3 ? '<div class="holo"></div>' : ''}</div>`;
+}
+function card3dHTML(o) {
+  return `<div class="tilt"><div class="inner"><div class="face back"><div class="paws">🐾</div><div class="backt">合成狗狗</div></div>${frontHTML(o)}</div></div>`;
+}
+function bindTilt(wrap) {   // 用手指拖卡片，會跟著轉、有閃光
+  const tilt = wrap.querySelector('.tilt'); if (!tilt) return;
+  const mv = e => {
+    const b = tilt.getBoundingClientRect(), px = ((e.clientX - b.left) / b.width) - 0.5, py = ((e.clientY - b.top) / b.height) - 0.5;
+    tilt.style.setProperty('--ry', (px * 34).toFixed(1) + 'deg'); tilt.style.setProperty('--rx', (-py * 30).toFixed(1) + 'deg');
+    tilt.style.setProperty('--hx', (50 + px * 120).toFixed(0) + '%'); tilt.style.setProperty('--hy', (50 + py * 120).toFixed(0) + '%');
+  };
+  const reset = () => { tilt.style.setProperty('--ry', '0deg'); tilt.style.setProperty('--rx', '0deg'); };
+  wrap.addEventListener('pointermove', mv); wrap.addEventListener('pointerleave', reset); wrap.addEventListener('pointerup', reset);
+}
+
+// ---------- 主流程 ----------
+let gxRun = 0;
+function showPulls(out) {
+  const run = ++gxRun, n = out.length, top = Math.max(...out.map(o => o.it.r));
+  const box = $('gachaFx');
+  box.className = 'modal on gfx2'; box.onclick = null;
+  box.innerHTML = `<canvas class="gcv"></canvas><div class="gstage"></div>` +
+    `<div class="gctl"><button class="gmute">${gMute ? '🔇' : '🔊'}</button><button class="gskip">跳過 ⏭</button></div>`;
+  GX.cv = box.querySelector('.gcv'); GX.cx = GX.cv.getContext('2d'); GX.parts = []; GX.rain = 0;
+  if (!GX.alive) gxStart();
+  const stage = box.querySelector('.gstage');
+  const alive = () => run === gxRun && box.classList.contains('on');
+  box.querySelector('.gmute').onclick = e => { e.stopPropagation(); gMute = !gMute; store('dog-gmute', gMute ? '1' : '0'); e.target.textContent = gMute ? '🔇' : '🔊'; };
+  const skipBtn = box.querySelector('.gskip');
+  let skipped = false;
+  skipBtn.onclick = e => { e.stopPropagation(); if (skipped) return; skipped = true; skipBtn.style.visibility = 'hidden'; finalGrid(); };
+
+  // 1) 轉把手
+  const balls = machineBalls(top);
+  stage.innerHTML = `<div class="gm ${top >= 4 ? 'hot' : ''}"><div class="gm-globe"><div class="gm-balls">${balls}</div><div class="gm-shine"></div></div>` +
+    `<div class="gm-body"><div class="gm-label">${n === 10 ? '十連抽' : '扭蛋機'}</div><div class="gm-knob"><div class="gm-handle"></div></div><div class="gm-chute"></div></div></div>` +
+    `<div class="ghint">👆 按住把手<b>轉一圈</b>！<br><small>（也可以一直點把手）</small></div><div class="gprog"><i></i></div>`;
+  const knob = stage.querySelector('.gm-knob'), globe = stage.querySelector('.gm-balls'), prog = stage.querySelector('.gprog i');
+  let turned = 0, lastA = null, lastTick = 0, done = false, downAt = 0, moved = 0;
+  const NEED = 360;
+  const setRot = () => {
+    knob.style.transform = `rotate(${turned}deg)`; prog.style.width = Math.min(100, turned / NEED * 100) + '%';
+    const tick = Math.floor(turned / 30);
+    if (tick > lastTick) {
+      lastTick = tick; beep(300 + tick * 25, 0.04, 'square', 0.03); buzz(8);
+      globe.querySelectorAll('.gb').forEach(b => b.style.transform = `translate(${(Math.random() - .5) * 14}px,${(Math.random() - .5) * 18}px) rotate(${Math.random() * 360}deg)`);
+    }
+    if (turned >= NEED && !done) { done = true; cranked(); }
+  };
+  const angle = e => { const [cx, cy] = centerOf(knob); return Math.atan2(e.clientY - cy, e.clientX - cx) * 180 / Math.PI; };
+  const gm = stage.querySelector('.gm');
+  gm.addEventListener('pointerdown', e => { if (done) return; e.preventDefault(); gm.setPointerCapture && gm.setPointerCapture(e.pointerId); lastA = angle(e); downAt = Date.now(); moved = 0; });
+  gm.addEventListener('pointermove', e => {
+    if (lastA === null || done) return;
+    const a = angle(e); let d = a - lastA; if (d > 180) d -= 360; if (d < -180) d += 360; lastA = a;
+    moved += Math.abs(d); turned += Math.abs(d); setRot();
+  });
+  const up = () => { if (lastA === null) return; lastA = null; if (!done && moved < 15) { turned += 90; setRot(); } };
+  gm.addEventListener('pointerup', up); gm.addEventListener('pointercancel', up);
+
+  function cranked() {
+    stage.querySelector('.ghint').innerHTML = top >= 4 ? '<b class="omen">！！！</b>' : top >= 3 ? '<b class="omen">✨ 好像有光…</b>' : '喀啦喀啦…';
+    knob.animate([{ transform: `rotate(${turned}deg)` }, { transform: `rotate(${turned + 360}deg)` }], { duration: 500, easing: 'ease-out', fill: 'forwards' });
+    gm.animate([{ transform: 'none' }, { transform: 'translateX(-6px) rotate(-2deg)' }, { transform: 'translateX(6px) rotate(2deg)' }, { transform: 'none' }], { duration: 160, iterations: top >= 4 ? 5 : 3 });
+    if (top >= 4) { gm.classList.add('omenGlow'); beep(110, 0.6, 'sawtooth', 0.04); }
+    beep(220, 0.15, 'triangle', 0.06, 0.1); buzz([20, 40, 20]);
+    setTimeout(() => { if (alive() && !skipped) (n === 1 ? dropOne() : dropTen()); }, top >= 4 ? 1100 : 650);
+  }
+
+  // 2a) 單抽：扭蛋掉出來 → 點三下打開
+  function dropOne() {
+    const o = out[0], R = o.it.r;
+    let shown = R >= 3 && Math.random() < 0.65 ? Math.max(0, R - 1 - Math.floor(Math.random() * 2)) : R;   // 先假裝比較低，敲開時升級
+    const chute = stage.querySelector('.gm-chute'), [sx, sy] = centerOf(chute);
+    stage.innerHTML = `<div class="gopen">${capHTML(shown, 130)}</div><div class="ghint">👆 點扭蛋 <b>3 下</b> 打開！</div>`;
+    const cap = stage.querySelector('.gcap'), [ex, ey] = centerOf(cap);
+    cap.animate([
+      { transform: `translate(${sx - ex}px,${sy - ey}px) scale(.3)`, offset: 0 },
+      { transform: `translate(${(sx - ex) * 0.4}px,${-40}px) scale(.8) rotate(-200deg)`, offset: 0.45 },
+      { transform: 'translate(0,0) scale(1.08) rotate(-360deg)', offset: 0.75 },
+      { transform: 'translate(0,-18px) scale(1) rotate(-370deg)', offset: 0.87 },
+      { transform: 'translate(0,0) scale(1) rotate(-360deg)', offset: 1 }], { duration: 900, easing: 'ease-out' });
+    setTimeout(() => beep(180, 0.08, 'sine', 0.08), 680);
+    let taps = 0, opening = false;
+    cap.addEventListener('pointerdown', e => {
+      e.preventDefault(); if (opening || !alive()) return;
+      taps++; cap.dataset.crack = taps;
+      const [cx, cy] = centerOf(cap);
+      if (taps < 3) {
+        if (shown < R && (taps === 2 || Math.random() < 0.5)) {   // 升級演出
+          shown = Math.min(R, shown + 1 + (taps === 2 ? 5 : 0)); if (shown > R) shown = R;
+          cap.className = 'gcap c' + shown; flash(RAR[shown].color, 350); gxBurst(cx, cy, shown, 0.4); beep(660 + shown * 80, 0.18, 'triangle', 0.07);
+          const up = document.createElement('div'); up.className = 'gup'; up.textContent = '⬆ 升級！' + RAR[shown].name; stage.appendChild(up); setTimeout(() => up.remove(), 900);
+        }
+        cap.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(-14deg) scale(1.06)' }, { transform: 'rotate(12deg) scale(.96)' }, { transform: 'rotate(0)' }], { duration: 280 });
+        gxSparks(cx, cy, shown, 6 + taps * 6); beep(400 + taps * 160, 0.06, 'square', 0.05); buzz(15 + taps * 10);
+        stage.querySelector('.ghint').innerHTML = taps === 1 ? '再 <b>2</b> 下！' : '最後 <b>1</b> 下！';
+      } else {
+        opening = true; if (shown !== R) cap.className = 'gcap c' + R;
+        openCapsule(cap, R, () => revealBig(o, true));
+      }
+    });
+  }
+  function openCapsule(cap, R, then) {
+    const [cx, cy] = centerOf(cap);
+    cap.classList.add('opening');
+    const t = cap.querySelector('.top'), b = cap.querySelector('.bot');
+    t.animate([{ transform: 'none' }, { transform: 'translate(-30px,-160px) rotate(-60deg)', opacity: 0 }], { duration: 600, easing: 'cubic-bezier(.2,.8,.3,1)', fill: 'forwards' });
+    b.animate([{ transform: 'none' }, { transform: 'translate(20px,140px) rotate(40deg)', opacity: 0 }], { duration: 600, easing: 'cubic-bezier(.2,.8,.3,1)', fill: 'forwards' });
+    flash(R >= 4 ? RAR[R].color : '#fff', R >= 4 ? 700 : 400); gxBurst(cx, cy, R, 1); beep(880, 0.12, 'square', 0.06); buzz(R >= 4 ? [40, 30, 80] : 30);
+    if (R >= 3) shakeScreen(R * 3, 500);
+    if (R >= 4) { GX.rain = R >= 5 ? 3.2 : 2.2; GX.rainR = R; }
+    setTimeout(() => { if (alive()) then(); }, 380);
+  }
+
+  // 3) 大卡片翻開
+  function revealBig(o, isLast, onNext) {
+    const R = o.it.r;
+    const layer = document.createElement('div'); layer.className = 'gbig r' + R;
+    layer.innerHTML = (R >= 3 ? `<div class="grays" style="--rc:${RAR[R].color}"></div>` : '') +
+      (R >= 5 ? '<div class="mythText">👑 A5 和牛！</div>' : R >= 4 ? '<div class="mythText leg">🔥 傳說！</div>' : '') +
+      `<div class="gcard3">${card3dHTML(o)}</div><div class="gbtns"></div>`;
+    stage.innerHTML = ''; stage.appendChild(layer);
+    const inner = layer.querySelector('.inner');
+    setTimeout(() => { inner.classList.add('flip'); fanfare(R); if (o.it.cat === 'snd') setTimeout(() => playVoice(o.it.id, 3), 900); const [cx, cy] = centerOf(inner); gxBurst(cx, cy, R, 0.7); }, R >= 4 ? 450 : 200);
+    bindTilt(layer.querySelector('.gcard3'));
+    const btns = layer.querySelector('.gbtns');
+    if (onNext) btns.innerHTML = '<button class="main">繼續 ▶</button>', btns.firstChild.onclick = e => { e.stopPropagation(); onNext(); };
+    else endButtons(btns);
+    skipBtn.style.visibility = 'hidden';
+  }
+  function endButtons(btns) {
+    const cost = n === 1 ? (canFreePull() ? 0 : GACHA_COST) : GACHA10_COST;
+    const poor = prof.bone < cost;
+    btns.innerHTML = `<button class="main again" ${poor ? 'disabled' : ''}>${poor ? '🦴 骨頭不夠' : (n === 1 ? '再抽一次' : '再十連') + ' 🦴' + cost}</button><button class="main gray close">關閉</button><div class="note" style="color:#fff">🦴 剩 ${prof.bone}　💎 ${prof.shards}</div>`;
+    btns.querySelector('.again').onclick = e => { e.stopPropagation(); doPull(n); };
+    btns.querySelector('.close').onclick = e => { e.stopPropagation(); closeFx(); };
+  }
+
+  // 2b) 十連：十顆扭蛋掉下來，一顆一顆點開
+  function dropTen() {
+    stage.innerHTML = `<div class="ghint">👆 點扭蛋一顆一顆打開<br><small>發光的比較稀有喔</small></div><div class="gten"></div><div class="gbtns"><button class="main openall">全部打開</button></div>`;
+    const grid = stage.querySelector('.gten'); let opened = 0, busy = false, queue = false;
+    out.forEach((o, i) => {
+      const cell = document.createElement('div'); cell.className = 'gcell'; cell.innerHTML = capHTML(o.it.r, 56); grid.appendChild(cell);
+      cell.firstChild.animate([{ transform: 'translateY(-110vh) rotate(-300deg)' }, { transform: 'translateY(6px) rotate(0)', offset: 0.85 }, { transform: 'none' }], { duration: 650, delay: i * 90, easing: 'ease-in', fill: 'backwards' });
+      setTimeout(() => beep(240 + i * 30, 0.05, 'sine', 0.05), 560 + i * 90);
+      cell.addEventListener('pointerdown', e => { e.preventDefault(); openCell(i, cell); });
+    });
+    const allBtn = stage.querySelector('.openall');
+    allBtn.onclick = e => { e.stopPropagation(); queue = true; allBtn.disabled = true; next(); };
+    function next() {
+      if (!alive() || busy) return;
+      const i = out.findIndex((o, k) => !grid.children[k].classList.contains('open'));
+      if (i < 0) return; openCell(i, grid.children[i]); if (!busy) setTimeout(next, 170);
+    }
+    function openCell(i, cell) {
+      if (busy || cell.classList.contains('open') || !alive()) return;
+      const o = out[i], R = o.it.r, cap = cell.querySelector('.gcap');
+      if (R >= 3 && !cell.dataset.t && !queue) {   // 稀有的要點兩下
+        cell.dataset.t = 1; cap.dataset.crack = 2; const [x, y] = centerOf(cap); gxSparks(x, y, R, 14); beep(700, 0.08, 'square', 0.05); buzz(20);
+        cap.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(-18deg) scale(1.1)' }, { transform: 'rotate(14deg)' }, { transform: 'none' }], { duration: 260 });
+        return;
+      }
+      cell.classList.add('open'); opened++;
+      const [x, y] = centerOf(cap); gxBurst(x, y, R, 0.35); if (!(o.it.cat === 'snd' && playVoice(o.it.id, 3))) beep(500 + R * 120, 0.07, 'triangle', 0.06); buzz(12);
+      cell.innerHTML = `<div class="mcard r${R}" style="--rc:${RAR[R].color}">${o.it.cat === 'card' ? `<img src="${cardImg(o.it.card - 1)}" alt="">` : `<span>${o.it.icon}</span>`}<b>${esc(o.it.name)}</b>${o.dup ? '<em>💎+' + o.shards + '</em>' : o.it.cat === 'card' ? (o.star ? '<em class="new">★' + o.star + '</em>' : o.prog ? '<em>升星+1</em>' : '<em class="new">NEW</em>') : ''}</div>`;
+      cell.onclick = e => { e.stopPropagation(); peek(o); };
+      const finish = () => { busy = false; if (opened === out.length) tenDone(); else if (queue) setTimeout(next, 170); };
+      if (R >= 4 || o.it.cat === 'card' && !o.dup && R >= 3) {   // 大獎跳出全螢幕
+        busy = true; GX.rain = R >= 5 ? 3 : R >= 4 ? 2 : 0; GX.rainR = R; flash(RAR[R].color, 600); if (R >= 4) shakeScreen(R * 3, 500);
+        const saved = Array.from(stage.childNodes);
+        setTimeout(() => {
+          if (!alive()) return;
+          revealBig(o, false, () => { stage.innerHTML = ''; saved.forEach(nd => stage.appendChild(nd)); skipBtn.style.visibility = skipped ? 'hidden' : ''; finish(); });
+        }, 300);
+      } else finish();
+    }
+    function tenDone() {
+      skipBtn.style.visibility = 'hidden';
+      stage.querySelector('.ghint').innerHTML = '🎉 全部打開了！<br><small>點卡片可以看大圖</small>';
+      const btns = stage.querySelector('.gbtns'); endButtons(btns);
+      const best = Math.max(...out.map(o => o.it.r)); fanfare(Math.min(best, 3));
+    }
+  }
+  function peek(o) {   // 十連結果點開看大圖
+    const ov = document.createElement('div'); ov.className = 'gpeek';
+    ov.innerHTML = `<div class="gcard3">${card3dHTML(o)}</div><div class="note" style="color:#fff">點旁邊關閉</div>`;
+    ov.querySelector('.inner').classList.add('flip', 'nofx'); if (o.it.cat === 'snd') playVoice(o.it.id, 3);
+    bindTilt(ov.querySelector('.gcard3'));
+    ov.onclick = e => { if (!e.target.closest('.gcard3')) ov.remove(); };
+    box.appendChild(ov);
+  }
+  // 跳過：直接列出全部結果
+  function finalGrid() {
+    GX.rain = 0;
+    stage.innerHTML = `<div class="ghint">結果</div><div class="gten ${n === 1 ? 'one' : ''}"></div><div class="gbtns"></div>`;
+    const grid = stage.querySelector('.gten');
+    out.forEach((o, i) => {
+      const R = o.it.r, cell = document.createElement('div'); cell.className = 'gcell open';
+      cell.innerHTML = `<div class="mcard r${R}" style="--rc:${RAR[R].color};animation-delay:${i * 0.06}s">${o.it.cat === 'card' ? `<img src="${cardImg(o.it.card - 1)}" alt="">` : `<span>${o.it.icon}</span>`}<b>${esc(o.it.name)}</b><em>${o.dup ? '💎+' + o.shards : RAR[R].name}</em></div>`;
+      cell.onclick = e => { e.stopPropagation(); peek(o); };
+      grid.appendChild(cell);
+    });
+    if (top >= 4) { const [x, y] = centerOf(grid); gxBurst(x, y, top, 0.6); }
+    endButtons(stage.querySelector('.gbtns'));
+  }
+}
+function closeFx() {
+  gxRun++; GX.alive = false; GX.parts = [];
+  const box = $('gachaFx'); box.className = 'modal'; box.innerHTML = ''; box.onclick = null;
+  renderProf(); renderLvLine();
+}
+
+// ---------- 明信片冊 ----------
+function albumHTML() {
+  if (!window.CARD_IMG) loadCards().then(ok => { if (ok && profTab === 'album') renderProf(); });
+  const got = prof.cards.length;
+  let h = `<div class="gtop">📮 收集 <b>${got}</b> / ${CARDS.length}　💎 碎片 <b>${prof.shards}</b></div>`;
+  h += `<div class="abar"><i style="width:${got / CARDS.length * 100}%"></i></div>`;
+  h += '<div class="note">扭蛋抽到的明信片會收在這裡，點開看大圖<br>沒有的可以用碎片換<br>📷 照片來源：Threads @yesjustbeyourself</div>';
+  for (let r = 5; r >= 0; r--) {
+    const list = []; CARDS.forEach((C, i) => { if (C.r === r) list.push(i + 1); });
+    const own = list.filter(ownsCard).length;
+    h += `<h3 style="color:${RAR[r].color}">${RAR[r].icon} ${RAR[r].name}・${RAR[r].tag}　<small>${own}/${list.length}</small></h3><div class="album">`;
+    list.forEach(n => {
+      const o = ownsCard(n);
+      h += `<button class="ac r${r} ${o ? 'own' : ''}" data-card="${n}" style="--rc:${RAR[r].color}"><img src="${cardImg(n - 1)}" alt="" loading="lazy">${o ? '' : '<span>?</span>'}<small>No.${String(n).padStart(2, '0')}</small></button>`;
+    });
+    h += '</div>';
+  }
+  return h;
+}
+function openCardView(n) {
+  const C = CARDS[n - 1], o = ownsCard(n), R = RAR[C.r], cost = R.cost;
+  const box = $('gachaFx'); gxRun++;
+  box.className = 'modal on gfx2'; box.onclick = null;
+  if (o) {
+    box.innerHTML = `<canvas class="gcv"></canvas><div class="gstage"><div class="gbig r${C.r}">${C.r >= 3 ? `<div class="grays" style="--rc:${R.color}"></div>` : ''}<div class="gcard3">${card3dHTML({ it: cardItem(n), dup: false })}</div><div class="note" style="color:#fff">拖曳卡片可以轉動・點旁邊關閉</div></div></div>`;
+    box.querySelector('.inner').classList.add('flip', 'nofx');
+    box.querySelector('.psub').textContent = '已收藏';
+  } else {
+    box.innerHTML = `<canvas class="gcv"></canvas><div class="gstage"><div class="gbig"><div class="lockcard" style="--rc:${R.color}"><img src="${cardImg(n - 1)}" alt=""><span>?</span></div>` +
+      `<div class="pc-title" style="color:#fff">No.${String(n).padStart(2, '0')}・${R.icon} ${R.name}</div><div class="note" style="color:#fff;opacity:.6;margin:0">📷 圖源：Threads @yesjustbeyourself</div><div class="note" style="color:#fff">還沒抽到，去扭蛋碰碰運氣吧</div>` +
+      `<div class="gbtns"><button class="main" data-cardx="${n}" ${prof.shards < cost ? 'disabled' : ''}>💎 ${cost} 兌換</button></div></div></div>`;
+  }
+  GX.cv = box.querySelector('.gcv'); GX.cx = GX.cv.getContext('2d'); GX.parts = []; GX.rain = 0;
+  if (!GX.alive) gxStart();
+  bindTilt(box.querySelector('.gbig'));
+  box.onclick = e => {
+    const x = e.target.closest('[data-cardx]');
+    if (x) {
+      e.stopPropagation(); if (prof.shards < cost || ownsCard(n)) return;
+      prof.shards -= cost; prof.cards.push(n); saveProf(); fanfare(C.r);
+      openCardView(n); const [cx, cy] = centerOf(box.querySelector('.gcard3')); gxBurst(cx, cy, C.r, 1);
+      return;
+    }
+    if (!e.target.closest('.gcard3')) closeFx();
+  };
+}
+$('profBody').addEventListener('click', e => {
+  const b = e.target.closest('[data-card]'); if (b) openCardView(+b.dataset.card);
+});
+
+// ====== v12：遊戲音效 ======
+const PENTA = [0, 2, 4, 7, 9, 12, 14, 16, 19, 21, 24];
+var lastMergeSnd = 0, mergeChain = 0, dangerBeep = 0;
+function sfx(k, a) {
+  if (gMute) return;
+  if (k === 'drop') { beep(260, 0.07, 'sine', 0.07); beep(180, 0.06, 'triangle', 0.04, 0.03); }
+  else if (k === 'merge') {
+    const now = performance.now(); mergeChain = now - lastMergeSnd < 700 ? Math.min(mergeChain + 1, 6) : 0; lastMergeSnd = now;
+    const f = 392 * Math.pow(2, PENTA[Math.min(a + mergeChain, PENTA.length - 1)] / 12);
+    beep(f, 0.13, 'triangle', 0.08); beep(f * 2, 0.08, 'sine', 0.03, 0.02);
+    if (a >= 6) { beep(f * 1.25, 0.25, 'triangle', 0.05, 0.08); beep(f * 1.5, 0.35, 'triangle', 0.05, 0.16); }
+  }
+  else if (k === 'hidden') fanfare(5);
+  else if (k === 'goal') fanfare(4);
+  else if (k === 'danger') beep(880, 0.07, 'square', 0.04);
+  else if (k === 'thud') { beep(110, 0.18, 'sawtooth', 0.05); beep(70, 0.2, 'sine', 0.08); }
+  else if (k === 'atk') { [500, 700, 950].forEach((f, i) => beep(f, 0.07, 'square', 0.04, i * 0.04)); }
+  else if (k === 'count') beep(a ? 880 : 523, a ? 0.35 : 0.12, 'triangle', 0.08);
+  else if (k === 'over' || k === 'lose') { [523, 440, 349, 262].forEach((f, i) => beep(f, 0.22, 'triangle', 0.07, i * 0.16)); }
+  else if (k === 'win') fanfare(3);
+  else if (k === 'draw') fanfare(1);
+}
+function updSndBtn() { const b = $('sndBtn'); if (b) b.textContent = gMute ? '🔇' : '🔊'; }
+$('sndBtn').addEventListener('click', e => { e.stopPropagation(); gMute = !gMute; store('dog-gmute', gMute ? '1' : '0'); updSndBtn(); if (!gMute) beep(660, 0.08, 'triangle', 0.06); });
+updSndBtn();
+
+// ====== v12：速通模式 ======
+const SPEED_GOAL = HIDDEN;   // 合成出第 10 隻（隱藏版冰炫風狗狗）就完成
+var speedrun = false, spT = 0, spShown = -1, lastWasSpeed = false, spLastSubmit = null;
+let spBest = +store('dog-sbest') || 0;
+const fmtT = s => { const m = Math.floor(s / 60), r = s - m * 60; return m + ':' + (r < 10 ? '0' : '') + r.toFixed(2); };
+function setSpeedHud(on) {
+  $('bestLbl').textContent = on ? '⏱ 時間' : '我的最高';
+  $('best').textContent = on ? '0:00.00' : best;
+}
+function startSpeed() {
+  startSolo(); speedrun = true; lastWasSpeed = true; spLastSubmit = null; spT = 0; spShown = -1; setSpeedHud(true);
+  toast('⏱ 速通開始！<br><span style="font-size:15px">最快合成出這隻狗狗</span><br><img src="' + FRUITS[SPEED_GOAL].src + '">');
+}
+function speedTick(rawDt) {
+  if (!speedrun || !running) return;
+  spT += rawDt;
+  const k = Math.floor(spT * 10); if (k !== spShown) { spShown = k; $('best').textContent = fmtT(spT); }
+}
+function speedDone() {
+  running = false; speedrun = false; setPresence(null); sfx('goal');
+  const ms = Math.round(spT * 1000), pb = !spBest || ms < spBest;
+  if (pb) { spBest = ms; store('dog-sbest', ms); }
+  prof.stats.sruns = (prof.stats.sruns || 0) + 1; if (!prof.stats.spBest || ms < prof.stats.spBest) prof.stats.spBest = ms;
+  $('overTitle').textContent = '⏱ 速通完成！';
+  $('overLine').innerHTML = `<b id="pname2">${esc(playerName)}</b> 用了 <b style="font-size:22px">${fmtT(ms / 1000)}</b>` + (pb ? '<br>🎉 個人最佳！' : `<br><span style="font-size:13px">個人最佳 ${fmtT(spBest / 1000)}</span>`);
+  $('biggest').innerHTML = '合成出：<img class="mini big" src="' + FRUITS[SPEED_GOAL].src + '">';
+  $('rankMsg').textContent = '';
+  boardMode = 'speed'; renderBoards();
+  show('over', true);
+  submitSpeed(playerName, ms);
+  $('xpMsg').textContent = '本局經驗 +' + onSoloEnd(P.score) + `（Lv.${prof.lv}）`;
+  gameMerges = 0;
+}
+// 排行榜（速通）
+var spDay = [], spAll = [], speedSub = 'day', spSubbed = false, spDayKey = null, spDayUnsub = null;
+const mapSpeed = d => { const v = d.data() || {}; return { id: d.id, name: String(v.name || '匿名').slice(0, 12), ms: Math.max(0, Math.floor(+v.ms || 0)), lv: v.lv | 0, t: okTitle(v.t), np: okNp(v.np), uid: typeof v.uid === 'string' ? v.uid.slice(0, 128) : '', av: typeof v.av === 'number' ? v.av : -1, avf: v.avf, apc: Math.max(0, Math.min(36, v.apc | 0)) }; };
+function subscribeSpeed() {
+  if (!fdb) return;
+  if (!spSubbed) {
+    spSubbed = true;
+    fs.onSnapshot(fs.query(fs.collection(fdb, 'speed'), fs.orderBy('ms', 'asc'), fs.limit(BOARD_SIZE)), snap => { spAll = snap.docs.map(mapSpeed); renderBoards(); updateSpeedMsg(); }, err => { console.warn(err); spErr = err.code || '錯誤'; renderBoards(); });
+  }
+  if (spDayKey !== todayKey()) {
+    if (spDayUnsub) spDayUnsub();
+    spDayKey = todayKey(); spDay = [];
+    spDayUnsub = fs.onSnapshot(fs.query(fs.collection(fdb, 'daily', spDayKey, 'speed'), fs.orderBy('ms', 'asc'), fs.limit(BOARD_SIZE)), snap => { spDay = snap.docs.map(mapSpeed); renderBoards(); updateSpeedMsg(); }, err => { console.warn(err); spErr = err.code || '錯誤'; renderBoards(); });
+  }
+}
+var spErr = '';
+document.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('[data-s]'); if (!b) return;
+  speedSub = b.dataset.s; renderBoards();
+});
+function renderSpeedBoard(ol, k) {
+  subscribeSpeed();
+  const src = speedSub === 'day' ? spDay : spAll, list = k === 0 ? src.slice(0, 10) : src;
+  list.forEach((e, i) => {
+    const li = document.createElement('li'); if (myIds.has(e.id)) li.className = 'me';
+    const rk = document.createElement('span'); rk.className = 'rk'; rk.textContent = i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1;
+    const nm = nameCell(e);
+    const sc = document.createElement('span'); sc.className = 'sc'; sc.textContent = '⏱ ' + fmtT(e.ms / 1000);
+    li.append(rk, avImg(e, false), nm, sc); ol.appendChild(li);
+  });
+  return spErr ? '速通排行榜連線失敗（' + spErr + '），可能是安全規則還沒更新。' : src.length ? '' : (speedSub === 'day' ? '今天還沒有人完成速通，快來搶第一！' : '還沒有人完成速通，快來搶第一！');
+}
+function updateSpeedMsg() {
+  if (!spLastSubmit || !$('over').classList.contains('on')) return;
+  const i = spAll.findIndex(e => e.id === spLastSubmit), d = spDay.findIndex(e => e.id === spLastSubmit);
+  if (i >= 0) $('rankMsg').textContent = `🎉 速通總榜第 ${i + 1} 名！` + (d >= 0 ? `（今日第 ${d + 1} 名）` : '');
+  else if (d >= 0) $('rankMsg').textContent = `🎉 今日速通第 ${d + 1} 名！`;
+}
+async function submitSpeed(name, ms) {
+  if (!fdb) { $('rankMsg').textContent = '排行榜還沒連上，這次時間沒有上傳。'; return; }
+  $('rankMsg').textContent = '上傳時間中…';
+  try {
+    const body = { name: name.slice(0, 12), ms: Math.min(7200000, Math.floor(ms)), lv: prof.lv, at: fs.serverTimestamp() };
+    const ref = fs.doc(fs.collection(fdb, 'speed'));
+    await setDeco([[ref, body], [fs.doc(fdb, 'daily', todayKey(), 'speed', ref.id), body]]);
+    myIds.add(ref.id); spLastSubmit = ref.id;
+    $('rankMsg').textContent = '時間已上傳！'; subscribeSpeed(); renderBoards(); updateSpeedMsg();
+  } catch (e) {
+    console.warn(e);
+    $('rankMsg').textContent = e.code === 'permission-denied' ? '時間被資料庫拒絕了（請更新 Firestore 安全規則）。' : '時間上傳失敗了，下一局再試試。';
+  }
+}
+$('goSpeed').addEventListener('click', () => { if (readName()) startSpeed(); });
+
+// ====== v14：商店背景/外框加入扭蛋、合成音效 ======
+CAT_NAME.snd = '合成音效';
+ITEMS.push(
+  { id: 'grass', r: 0, cat: 'bg', name: '草地', icon: '🌿' }, { id: 'beach', r: 0, cat: 'bg', name: '海灘', icon: '🏖️' },
+  { id: 'sakura', r: 1, cat: 'bg', name: '櫻花', icon: '🌸' }, { id: 'night', r: 1, cat: 'bg', name: '夜空', icon: '🌙' },
+  { id: 'steak', r: 2, cat: 'bg', name: '牛排', icon: '🥩' },
+  { id: 'f-heart', r: 0, cat: 'frame', name: '愛心框', icon: '💗' }, { id: 'f-gold', r: 1, cat: 'frame', name: '金框', icon: '✨' },
+  { id: 'f-rainbow', r: 2, cat: 'frame', name: '彩虹框', icon: '🌈' },
+  { id: 'snd-bubble', r: 0, cat: 'snd', name: '泡泡啵啵', icon: '🫧' }, { id: 'snd-chirp', r: 0, cat: 'snd', name: '小鳥啾啾', icon: '🐤' },
+  { id: 'snd-xylo', r: 1, cat: 'snd', name: '木琴叮叮', icon: '🎵' }, { id: 'snd-8bit', r: 2, cat: 'snd', name: '電玩嗶嗶', icon: '👾' },
+  { id: 'snd-duck', r: 3, cat: 'snd', name: '小鴨啾啾', icon: '🐥' }, { id: 'snd-laser', r: 3, cat: 'snd', name: '雷射咻咻', icon: '🔫' },
+  { id: 'snd-moo', r: 4, cat: 'snd', name: '大便ㄅㄨˊㄅㄨˊ', icon: '💩' },
+);
+// 合成器：一個音（可以滑音、濾波、顫音）
+function ac() { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); return AC; }
+function tone(o) {
+  if (gMute) return;
+  try {
+    const A = ac(), t0 = A.currentTime + (o.delay || 0), d = o.dur || 0.2;
+    const os = A.createOscillator(), g = A.createGain(); os.type = o.type || 'sawtooth';
+    const pts = o.f; os.frequency.setValueAtTime(pts[0], t0);
+    for (let i = 1; i < pts.length; i++) os.frequency.linearRampToValueAtTime(pts[i], t0 + d * i / (pts.length - 1));
+    let node = os;
+    if (o.vib) { const l = A.createOscillator(), lg = A.createGain(); l.frequency.value = o.vib[0]; lg.gain.value = o.vib[1]; l.connect(lg); lg.connect(os.frequency); l.start(t0); l.stop(t0 + d + 0.05); }
+    if (o.filt) {
+      const bq = A.createBiquadFilter(); bq.type = o.filt[0]; bq.Q.value = o.q || 1; const fp = o.filt[1];
+      if (Array.isArray(fp)) { bq.frequency.setValueAtTime(fp[0], t0); for (let i = 1; i < fp.length; i++) bq.frequency.linearRampToValueAtTime(fp[i], t0 + d * i / (fp.length - 1)); }
+      else bq.frequency.value = fp;
+      node.connect(bq); node = bq;
+    }
+    const v = o.vol || 0.08, at = o.atk || 0.01;
+    g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(v, t0 + at);
+    g.gain.setValueAtTime(v, t0 + Math.max(at, d * (o.hold || 0.5))); g.gain.exponentialRampToValueAtTime(0.0001, t0 + d);
+    node.connect(g); g.connect(A.destination); os.start(t0); os.stop(t0 + d + 0.05);
+  } catch (e) { }
+}
+let noiseBuf = null;
+function noise(o) {
+  if (gMute) return;
+  try {
+    const A = ac(), t0 = A.currentTime + (o.delay || 0), d = o.dur || 0.08;
+    if (!noiseBuf) { noiseBuf = A.createBuffer(1, A.sampleRate * 0.5, A.sampleRate); const ch = noiseBuf.getChannelData(0); for (let i = 0; i < ch.length; i++) ch[i] = Math.random() * 2 - 1; }
+    const src = A.createBufferSource(), bq = A.createBiquadFilter(), g = A.createGain();
+    src.buffer = noiseBuf; bq.type = 'bandpass'; bq.frequency.value = o.freq || 1000; bq.Q.value = o.q || 1;
+    g.gain.setValueAtTime(o.vol || 0.1, t0); g.gain.exponentialRampToValueAtTime(0.0001, t0 + d);
+    src.connect(bq); bq.connect(g); g.connect(A.destination); src.start(t0); src.stop(t0 + d + 0.02);
+  } catch (e) { }
+}
+// 擬真一點的聲音：聲帶（鋸齒波）＋口腔共鳴（幾個帶通濾波器）
+function formant(o) {
+  if (gMute) return;
+  try {
+    const A = ac(), t0 = A.currentTime + (o.delay || 0), d = o.dur || 0.3;
+    const ramp = (param, pts) => { param.setValueAtTime(pts[0], t0); for (let i = 1; i < pts.length; i++) param.linearRampToValueAtTime(pts[i], t0 + d * i / (pts.length - 1)); };
+    const os = A.createOscillator(); os.type = o.wave || 'sawtooth'; ramp(os.frequency, o.f);
+    if (o.vib) { const l = A.createOscillator(), lg = A.createGain(); l.frequency.value = o.vib[0]; lg.gain.value = o.vib[1]; l.connect(lg); lg.connect(os.frequency); l.start(t0); l.stop(t0 + d + 0.05); }
+    let src = os;
+    if (o.drive) { const ws = A.createWaveShaper(), n = 256, c = new Float32Array(n); for (let i = 0; i < n; i++) { const x = i / (n - 1) * 2 - 1; c[i] = Math.tanh(x * o.drive); } ws.curve = c; os.connect(ws); src = ws; }
+    const sum = A.createGain(); sum.gain.value = 1;
+    let nz = null;
+    if (o.noise) {
+      if (!noiseBuf) { noiseBuf = A.createBuffer(1, A.sampleRate * 0.5, A.sampleRate); const ch = noiseBuf.getChannelData(0); for (let i = 0; i < ch.length; i++) ch[i] = Math.random() * 2 - 1; }
+      nz = A.createBufferSource(); nz.buffer = noiseBuf; nz.loop = true;
+    }
+    for (const [fp, gv, q] of o.forms) {
+      const bq = A.createBiquadFilter(); bq.type = 'bandpass'; bq.Q.value = q || 6; ramp(bq.frequency, Array.isArray(fp) ? fp : [fp]);
+      const gg = A.createGain(); gg.gain.value = gv; src.connect(bq); bq.connect(gg); gg.connect(sum);
+      if (nz) { const ng = A.createGain(); ng.gain.value = o.noise * gv; nz.connect(ng); ng.connect(bq); }
+    }
+    let out = sum;
+    if (o.am) {   // 一顫一顫（青蛙、放屁）
+      const amg = A.createGain(); amg.gain.value = 0.5; const l = A.createOscillator(), lg = A.createGain();
+      l.type = 'square'; l.frequency.value = o.am; lg.gain.value = 0.5; l.connect(lg); lg.connect(amg.gain); l.start(t0); l.stop(t0 + d + 0.05);
+      sum.connect(amg); out = amg;
+    }
+    const g = A.createGain(), v = o.vol || 0.3, at = o.atk || 0.02;
+    g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(v, t0 + at);
+    g.gain.setValueAtTime(v, t0 + Math.max(at, d * (o.hold || 0.6))); g.gain.exponentialRampToValueAtTime(0.0001, t0 + d);
+    out.connect(g); g.connect(A.destination);
+    os.start(t0); os.stop(t0 + d + 0.05); if (nz) { nz.start(t0); nz.stop(t0 + d + 0.05); }
+  } catch (e) { }
+}
+// 各種合成音效：a＝合成出的狗狗等級（越大越低沉）、c＝連鎖數（越連越高）
+const VOICES = {
+  'snd-bubble': (p) => tone({ type: 'sine', f: [300 * p, 1000 * p], dur: 0.09, vol: 0.12 }),
+  'snd-chirp': (p) => { tone({ type: 'sine', f: [2600 * p, 4200 * p, 3000 * p], dur: 0.09, vol: 0.1 }); tone({ type: 'sine', f: [2800 * p, 4500 * p], dur: 0.07, vol: 0.09, delay: 0.1 }); },
+  'snd-xylo': (p, a, c) => { const f = 523 * Math.pow(2, PENTA[Math.min(a + c, 10)] / 12); tone({ type: 'sine', f: [f], dur: 0.35, vol: 0.12, hold: 0.02, atk: 0.003 }); tone({ type: 'sine', f: [f * 4], dur: 0.08, vol: 0.03, atk: 0.002 }); },
+  'snd-8bit': (p, a, c) => { const f = 330 * Math.pow(2, PENTA[Math.min(a + c, 10)] / 12); [1, 1.26, 1.5, 2].forEach((m, i) => tone({ type: 'square', f: [f * m], dur: 0.06, vol: 0.04, delay: i * 0.045, hold: 0.9, atk: 0.002 })); },
+  'snd-duck': (p) => tone({ type: 'square', f: [950 * p, 1400 * p, 1050 * p], dur: 0.14, vol: 0.14, filt: ['bandpass', 1600], q: 5, atk: 0.005 }),
+  'snd-laser': (p) => tone({ type: 'sawtooth', f: [2000 * p, 900 * p, 180 * p], dur: 0.22, vol: 0.12, atk: 0.002, hold: 0.1 }),
+  'snd-moo': (p) => { for (let i = 0; i < 2; i++) formant({ f: [105 * p, 120 * p, 80 * p], dur: 0.32 + i * 0.12, vol: 0.33, atk: 0.01, hold: 0.5, drive: 5, am: 21 + i * 6, vib: [27, 20], noise: 0.4, delay: i * 0.36,
+    forms: [[[260, 320, 200], 1, 2], [[600, 700, 500], 0.5, 3]] }); },
+};
+if (prof.snd && !VOICES[prof.snd]) prof.snd = '';   // 已刪掉的音效改回預設
+function playVoice(id, a = 3, c = 0) {
+  const fn = VOICES[id]; if (!fn || gMute) return false;
+  const p = (1.45 - Math.min(a, 9) * 0.08) * (1 + c * 0.05);
+  fn(p, a, c); return true;
+}
+if (prof.snd && !VOICES[prof.snd]) prof.snd = '';   // 已刪除的音效改回預設
+// 合成時改用裝備的音效
+const _sfx = sfx;
+sfx = function (k, a) {
+  if (k === 'merge' && prof.snd && VOICES[prof.snd] && !gMute) {
+    const now = performance.now(); mergeChain = now - lastMergeSnd < 700 ? Math.min(mergeChain + 1, 6) : 0; lastMergeSnd = now;
+    playVoice(prof.snd, a, mergeChain); return;
+  }
+  _sfx(k, a);
+};
+// 衣櫃點音效時先試聽
+$('profBody').addEventListener('click', e => {
+  const b = e.target.closest('[data-equip]'); if (!b) return;
+  const v = b.dataset.equip; if (v.startsWith('snd:')) { const id = v.slice(4); if (id) playVoice(id, 3); else beep(523, 0.12, 'triangle', 0.08); }
+});
+
+// ====== v18：稱號 emoji、更多名牌、排行榜顯示名牌 ======
+var TITLE_EMOJI = {
+  '新手飼主': '🐣', '狗狗朋友': '🐶', '合成達人': '✨', '狗狗大師': '🎖️', '勤勞簽到王': '📅', '隱藏版獵人': '🔍', '高分玩家': '💯', '牛排愛好者': '🥩', '對戰狂熱': '⚔️',
+  '骨頭收藏家': '🦴', '狗狗攝影師': '📸', '傳說飼主': '🔥', 'A5 和牛': '👑', '狗狗之神': '🌟',
+  '早八戰士': '😴', '排排的僕人': '🐾', '巧的頭號粉絲': '💛', '拔辣保鑣': '🖤', '教院之光': '🎓', '牛排教主': '🍖', '冰炫風粉絲': '🍦', '校狗守護者': '🛡️',
+};
+function titleTag(t) { return (TITLE_EMOJI && TITLE_EMOJI[t] ? TITLE_EMOJI[t] + ' ' : '') + t; }
+ITEMS.push(
+  { id: 'np-sky', r: 0, cat: 'np', name: '天空藍名牌', icon: '🏷️' }, { id: 'np-peach', r: 0, cat: 'np', name: '蜜桃名牌', icon: '🍑' },
+  { id: 'np-choco', r: 1, cat: 'np', name: '巧克力名牌', icon: '🍫' }, { id: 'np-matcha', r: 1, cat: 'np', name: '抹茶名牌', icon: '🍵' },
+  { id: 'np-night', r: 2, cat: 'np', name: '星夜名牌', icon: '🌙' }, { id: 'np-sakura', r: 2, cat: 'np', name: '櫻花名牌', icon: '🌸' },
+  { id: 'np-neon', r: 3, cat: 'np', name: '霓虹名牌', icon: '💡' }, { id: 'np-galaxy', r: 3, cat: 'np', name: '銀河名牌', icon: '🌌' },
+  { id: 'np-fire', r: 4, cat: 'np', name: '火焰名牌', icon: '🔥' }, { id: 'np-ice', r: 4, cat: 'np', name: '冰炫風名牌', icon: '🍦' },
+  { id: 't-early', r: 1, cat: 'title', name: '早八戰士', icon: '😴' }, { id: 't-servant', r: 1, cat: 'title', name: '排排的僕人', icon: '🐾' },
+  { id: 't-qiao', r: 2, cat: 'title', name: '巧的頭號粉絲', icon: '💛' }, { id: 't-bala', r: 2, cat: 'title', name: '拔辣保鑣', icon: '🖤' },
+  { id: 't-edu', r: 2, cat: 'title', name: '教院之光', icon: '🎓' },
+  { id: 't-steak', r: 3, cat: 'title', name: '牛排教主', icon: '🍖' }, { id: 't-ice', r: 3, cat: 'title', name: '冰炫風粉絲', icon: '🍦' },
+  { id: 't-guard', r: 4, cat: 'title', name: '校狗守護者', icon: '🛡️' },
+);
+for (const it of ITEMS) if (it.cat === 'title' && TITLE_EMOJI[it.name]) it.icon = TITLE_EMOJI[it.name];
+for (const k in SUB_ITEMS) { const it = SUB_ITEMS[k]; if (it.cat === 'title' && TITLE_EMOJI[it.name]) it.icon = TITLE_EMOJI[it.name]; }
+
+// 排行榜上的名字：稱號（含 emoji）＋名牌底色
+function okNp(x) { return typeof x === 'string' && /^np-[a-z0-9-]{1,17}$/.test(x) ? x : ''; }
+function okTitle(x) { return typeof x === 'string' ? x.slice(0, 12) : ''; }
+function nameCell(e) {
+  const nm = document.createElement('span'); nm.className = 'nm';
+  if (e.t) { const tc = document.createElement('span'); tc.className = 'tchip'; tc.textContent = titleTag(e.t); nm.appendChild(tc); }
+  const n = document.createElement('span'); n.textContent = e.name; if (e.np) n.className = 'np ' + e.np; nm.appendChild(n);
+  if (e.lv) { const lb = document.createElement('span'); lb.className = 'lvb'; lb.textContent = 'Lv.' + e.lv; nm.appendChild(lb); }
+  return nm;
+}
+var deco = () => ({ t: okTitle(prof.title), np: okNp(prof.np) });
+// 先帶稱號/名牌上傳；規則還沒更新被拒的話，就不帶再傳一次
+async function setDeco(pairs) {
+  try { await Promise.all(pairs.map(([ref, body]) => fs.setDoc(ref, Object.assign({}, body, deco())))); }
+  catch (e) {
+    if (e.code !== 'permission-denied') throw e;
+    console.warn('排行榜沒有帶名牌（請更新 Firestore 規則）', e);
+    await Promise.all(pairs.map(([ref, body]) => fs.setDoc(ref, body)));
+  }
+}
+
+// 明信片圖片改成另外一個檔案（cards.js），需要時才載入，網頁打開比較快
+var cardsP = null;
+function loadCards() {
+  if (window.CARD_IMG) return Promise.resolve(true);
+  if (!cardsP) cardsP = new Promise(res => {
+    const sc = document.createElement('script'); sc.src = 'cards.js?v=1';
+    sc.onload = () => res(!!window.CARD_IMG); sc.onerror = () => { cardsP = null; res(false); };
+    document.head.appendChild(sc);
+  });
+  return cardsP;
+}
+window.addEventListener('load', () => setTimeout(loadCards, 2500));   // 打開後在背景偷偷載入
+
+// ====== v19：成就、等級之路、扭蛋頁改版 ======
+RAR[0].tag = '一般';
+Object.assign(TITLE_EMOJI, { '狗狗教授': '🧑‍🏫', '傳奇飼主': '🏆', '合成狗狗之王': '🤴', '分數怪物': '💥', '冰炫風大師': '🍨', '速通之神': '⚡', '對戰之王': '🥊', '明信片收藏家': '📮', '簽到達人': '🗓️', '扭蛋狂魔': '🎰' });
+var st = k => +(prof.stats[k] || 0);
+// [id, 分類, 圖示, 說明, 目前進度, 目標, 獎勵]
+var ACH = [];
+const A = (id, g, icon, text, cur, goal, rw, lower) => ACH.push({ id, g, icon, text, cur, goal, rw, lower });
+[[100, 30], [500, 80], [2000, 200], [10000, 500]].forEach(([n, b]) => A('m' + n, '合成', '🔁', `累積合成 ${n} 次`, () => st('merges'), n, { bone: b }));
+[[10, 30], [50, 100], [200, 300]].forEach(([n, b]) => A('g' + n, '單人', '🎮', `玩 ${n} 場單人`, () => st('games'), n, { bone: b }));
+[[1000, 30], [3000, 100], [5000, 200], [8000, 400, '分數怪物']].forEach(([n, b, t]) => A('s' + n, '單人', '💯', `單人一場 ${n} 分`, () => st('best'), n, { bone: b, title: t }));
+A('d6', '狗狗', '🐶', '合成出第 6 隻狗狗', () => st('maxDog') + 1, 6, { bone: 20 });
+A('d8', '狗狗', '🐕', '合成出第 8 隻狗狗', () => st('maxDog') + 1, 8, { bone: 50 });
+A('d9', '狗狗', '🐕‍🦺', '合成出第 9 隻狗狗', () => st('maxDog') + 1, 9, { bone: 100 });
+[[1, 150], [5, 250], [20, 500, '冰炫風大師']].forEach(([n, b, t]) => A('h' + n, '狗狗', '🍦', n === 1 ? '合成出隱藏版冰炫風' : `合成出冰炫風 ${n} 次`, () => st('hidden'), n, { bone: b, title: t }));
+A('sr1', '速通', '⏱', '完成 1 次速通', () => st('sruns'), 1, { bone: 100 });
+A('sr10', '速通', '⏱', '完成 10 次速通', () => st('sruns'), 10, { bone: 300 });
+[[15, 100], [10, 200], [7, 300], [5, 500, '速通之神']].forEach(([m, b, t]) => A('sp' + m, '速通', '🏁', `速通 ${m} 分鐘內完成`, () => st('spBest') ? Math.round(st('spBest') / 1000) : 0, m * 60, { bone: b, title: t }, true));
+[[10, 50], [50, 150], [200, 400]].forEach(([n, b]) => A('vs' + n, '對戰', '⚔️', `打 ${n} 場對戰`, () => st('matches'), n, { bone: b }));
+[[5, 80], [30, 250], [100, 600, '對戰之王']].forEach(([n, b, t]) => A('w' + n, '對戰', '🏆', `排位贏 ${n} 場`, () => st('wins'), n, { bone: b, title: t }));
+[[7, 50], [30, 150], [100, 400, '簽到達人']].forEach(([n, b, t]) => A('c' + n, '簽到', '📅', `累積簽到 ${n} 天`, () => +(prof.checkin.total || 0), n, { bone: b, title: t }));
+A('cs30', '簽到', '🔥', '連續簽到 30 天', () => +(prof.checkin.best || 0), 30, { bone: 300 });
+[[10, 30], [100, 150], [500, 500, '扭蛋狂魔']].forEach(([n, b, t]) => A('p' + n, '扭蛋', '🎰', `扭蛋抽 ${n} 次`, () => st('pulls'), n, { bone: b, title: t }));
+A('a5', '扭蛋', '👑', '抽到 A5 和牛', () => st('a5'), 1, { bone: 200, shard: 50 });
+[[10, 80], [20, 200], [36, 600, '明信片收藏家']].forEach(([n, b, t]) => A('pc' + n, '扭蛋', '📮', n === 36 ? '集滿全部明信片' : `收集 ${n} 張明信片`, () => prof.cards.length, n, { bone: b, title: t }));
+// 等級之路
+var LV_ROAD = [[5, { bone: 100 }], [10, { bone: 200, shard: 10 }], [15, { bone: 300 }], [20, { bone: 400, shard: 30 }], [25, { bone: 500 }],
+  [30, { bone: 600, shard: 50, title: '狗狗教授' }], [40, { bone: 800, shard: 60 }], [50, { bone: 1000, shard: 100, title: '傳奇飼主' }], [75, { bone: 1500, shard: 150 }], [100, { bone: 3000, shard: 300, title: '合成狗狗之王' }]];
+function lvBone(lv) { return 50 + 10 * lv; }   // 每升一級的骨頭
+var rwText = rw => [rw.bone ? '🦴 ' + rw.bone : '', rw.shard ? '💎 ' + rw.shard : '', rw.title ? '稱號「' + titleTag(rw.title) + '」' : ''].filter(Boolean).join('　');
+const achDone = a => { const c = a.cur(); return a.lower ? c > 0 && c <= a.goal : c >= a.goal; };
+function claimable() {
+  if (!ACH || !LV_ROAD || !prof.ach) return 0;
+  let n = ACH.filter(a => achDone(a) && !prof.ach.includes(a.id)).length;
+  n += LV_ROAD.filter(([L]) => prof.lv >= L && !prof.ach.includes('lv' + L)).length;
+  return n;
+}
+function giveRw(rw) { if (rw.bone) prof.bone += rw.bone; if (rw.shard) prof.shards += rw.shard; if (rw.title && !prof.titles.includes(rw.title)) prof.titles.push(rw.title); }
+function achHTML() {
+  let h = `<div class="gtop">🦴 <b>${prof.bone}</b>　💎 <b>${prof.shards}</b></div>`;
+  h += `<h3>⬆️ 等級之路</h3><div class="note">每升一級都有 🦴（升到 Lv.N 拿 50＋10×N 根），到這些等級還有大獎：</div><div class="road">`;
+  LV_ROAD.forEach(([L, rw]) => {
+    const got = prof.ach.includes('lv' + L), ok = prof.lv >= L;
+    h += `<div class="rstep ${got ? 'got' : ok ? 'ok' : ''}"><b>Lv.${L}</b><span>${rwText(rw)}</span>${got ? '<i>✅</i>' : ok ? `<button class="main" data-lvc="${L}">領取</button>` : `<i>🔒</i>`}</div>`;
+  });
+  h += '</div>';
+  let g = '';
+  ACH.forEach(a => {
+    if (a.g !== g) { g = a.g; h += (g === '合成' ? '' : '</div>') + `<h3>${g}</h3><div class="achl">`; }
+    const c = a.cur(), got = prof.ach.includes(a.id), done = achDone(a);
+    const pct = a.lower ? (done ? 100 : 0) : Math.min(100, c / a.goal * 100);
+    const cur = a.lower ? (c ? `最佳 ${fmtT(c)}` : '還沒完成') : `${Math.min(c, a.goal)} / ${a.goal}`;
+    h += `<div class="ach ${got ? 'got' : done ? 'ok' : ''}"><span class="ai">${a.icon}</span><div class="am"><b>${a.text}</b><span class="abar"><i style="width:${pct}%"></i></span><small>${cur}・${rwText(a.rw)}</small></div>` +
+      (got ? '<i class="ad">✅</i>' : done ? `<button class="main" data-achc="${a.id}">領取</button>` : '<i class="ad">🔒</i>') + '</div>';
+  });
+  return h + '</div>';
+}
+$('profBody').addEventListener('click', e => {
+  const b = e.target.closest('[data-achc],[data-lvc]'); if (!b) return;
+  let rw = null;
+  if (b.dataset.achc) { const a = ACH.find(x => x.id === b.dataset.achc); if (!a || !achDone(a) || prof.ach.includes(a.id)) return; prof.ach.push(a.id); rw = a.rw; }
+  else { const L = +b.dataset.lvc, r = LV_ROAD.find(x => x[0] === L); if (!r || prof.lv < L || prof.ach.includes('lv' + L)) return; prof.ach.push('lv' + L); rw = r[1]; }
+  giveRw(rw); saveProf(); renderProf(); updDots();
+  toast('🎉 領取成功！<br><span style="font-size:15px">' + rwText(rw) + '</span>'); beep(784, 0.15, 'triangle', 0.07); beep(1047, 0.2, 'triangle', 0.07, 0.1);
+});
+function updDots() {
+  document.querySelectorAll('[data-open="ach"],.ptabs [data-p="ach"]').forEach(b => b.classList.toggle('dot', claimable() > 0));
+}
+
+// ---------- 扭蛋頁改版 ----------
+const gOpen = new Set();
+document.addEventListener('toggle', e => { const d = e.target; if (d.dataset && d.dataset.k) { if (d.open) gOpen.add(d.dataset.k); else gOpen.delete(d.dataset.k); } }, true);
+function poolCount(r) { return ITEMS.filter(i => i.r === r).length + CARDS.filter(c => c.r === r).length; }
+function gachaHTML() {
+  let h = `<div class="gbal"><span>🦴 <b>${prof.bone}</b></span><span>💎 碎片 <b>${prof.shards}</b></span></div>`;
+  h += `<div class="gban"><div class="gban-cap">${[5, 2, 4, 1, 3, 0, 2].map(r => `<i class="gb c${r}"></i>`).join('')}</div><b>狗狗扭蛋機</b><small>外觀・音效・明信片全部都在這裡</small></div>`;
+  h += `<div class="gpull"><button class="main fr" data-pull="1">${canFreePull() ? '🎁 今日免費抽' : '抽 1 次<br><small>🦴 ' + GACHA_COST + '</small>'}</button><button class="main vs" data-pull="10">十連抽<br><small>🦴 ${GACHA10_COST}</small></button></div>`;
+  const pl = prof.pity.l, pm = prof.pity.m;
+  h += `<div class="pity"><div><span>🔥 一分熟以上保底</span><span class="abar"><i style="width:${pl / PITY_LEG * 100}%"></i></span><small>再 ${PITY_LEG - pl} 抽</small></div>` +
+    `<div><span>👑 A5 和牛保底</span><span class="abar"><i style="width:${pm / PITY_MYTH * 100}%;background:linear-gradient(90deg,#c9a227,#ffe680)"></i></span><small>再 ${PITY_MYTH - pm} 抽</small></div>` +
+    `<div class="note" style="margin:2px 0 0">十連抽保證至少一個五分熟以上</div></div>`;
+  h += '<h3>稀有度與機率</h3><table class="otab"><tr><th>熟度</th><th>等級</th><th>機率</th><th>獎勵數</th></tr>';
+  for (let r = 5; r >= 0; r--) { const R = RAR[r]; h += `<tr><td><span class="rchip" style="background:${R.color}">${R.icon} ${R.name}</span></td><td><b style="color:${R.color}">${R.tag}</b></td><td>${+(R.p * 100).toFixed(1)}%</td><td>${poolCount(r)}</td></tr>`; }
+  h += `</table><div class="note">抽中某個熟度時，有 ${CARD_RATE * 100}% 是那個熟度的明信片<br>抽到重複的會變成 💎 碎片</div>`;
+  h += `<details data-k="pool" ${gOpen.has('pool') ? 'open' : ''}><summary>📜 獎池一覽</summary>`;
+  for (let r = 5; r >= 0; r--) {
+    const R = RAR[r], list = ITEMS.filter(i => i.r === r);
+    h += `<div class="plist"><div class="rchip" style="background:${R.color}">${R.icon} ${R.name}・${R.tag}</div><div>${list.map(i => `<span class="${(i.cat === 'set' ? i.sub : [i.id]).every(owns) || (i.cat === 'bone') ? '' : 'no'}">${i.icon} ${esc(i.name)}</span>`).join('')}<span>📮 明信片 ×${CARDS.filter(c => c.r === r).length}</span></div></div>`;
+  }
+  h += '</details>';
+  h += `<details data-k="exch" ${gOpen.has('exch') ? 'open' : ''}><summary>💎 碎片兌換（你有 ${prof.shards}）</summary><div class="exch">`;
+  ITEMS.filter(i => i.cat !== 'bone').sort((a, b) => b.r - a.r).forEach(it => {
+    const own = (it.cat === 'set' ? it.sub : [it.id]).every(owns), R = RAR[it.r], cost = R.cost;
+    h += `<button data-exch="${it.id}" ${own || prof.shards < cost ? 'disabled' : ''} style="border-color:${R.color}"><span>${it.icon}</span>${esc(it.name)}<small>${own ? '已擁有' : '💎 ' + cost}</small></button>`;
+  });
+  return h + '</div></details>';
+}
+// 扭蛋機裡的球：從底部一層一層堆起來
+function machineBalls(top) {
+  const out = [], Rg = 99, b = 17;
+  for (let row = 0; out.length < 12 && row < 3; row++) {
+    const yc = 198 - b - 22 - row * 30, half = Math.sqrt(Math.max(0, Rg * Rg - (yc - Rg) ** 2)) - b - 8, n = Math.max(1, Math.floor(half * 2 / 35) + 1);
+    for (let i = 0; i < n && out.length < 12; i++) {
+      const x = Rg - half + (n === 1 ? half : i * (half * 2) / (n - 1)) + (row % 2 ? 6 : -4) + (Math.random() * 6 - 3);
+      out.push([x, yc + Math.random() * 4 - 2]);
+    }
+  }
+  return out.map(([x, y], i) => {
+    const rr = i === out.length - 2 && top >= 3 ? top : [0, 0, 1, 1, 2, 0, 1][Math.floor(Math.random() * 7)];
+    return `<i class="gb c${rr}" style="left:${((x - b) / 198 * 100).toFixed(1)}%;top:${((y - b) / 198 * 100).toFixed(1)}%;transform:rotate(${Math.floor(Math.random() * 70 - 35)}deg)"></i>`;
+  }).join('');
+}
+
+// ====== v20：補償、刮刮樂、更密集的成就與等級之路、排行榜即時頭像 ======
+Object.assign(TITLE_EMOJI, { '狗狗教練': '🦮', '刮刮樂之王': '🍀', '合成新星': '🌠', '骨頭富翁': '💰' });
+// 等級之路（更密集）
+LV_ROAD = [3, 5, 8, 10, 12, 15, 18, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100].map(L => {
+  const rw = { bone: L * 30, tk: L % 10 === 0 ? 3 : L >= 20 ? 2 : 1 };
+  if (L % 10 === 0) rw.shard = L;
+  if (L === 15) rw.title = '合成新星'; if (L === 20) rw.title = '狗狗教練';
+  if (L === 30) rw.title = '狗狗教授'; if (L === 50) rw.title = '傳奇飼主'; if (L === 100) rw.title = '合成狗狗之王';
+  return [L, rw];
+});
+// 成就（更密集、獎勵更多）
+ACH = [];
+const tiers = (pre, g, icon, fmt, cur, list) => list.forEach(([n, b, ex]) => A(pre + n, g, icon, fmt(n), cur, n, Object.assign({ bone: b }, ex || {})));
+tiers('m', '合成', '🔁', n => `累積合成 ${n} 次`, () => st('merges'), [[50, 30], [100, 50], [250, 80], [500, 120], [1000, 200, { tk: 1 }], [2500, 350, { tk: 2 }], [5000, 600, { tk: 3 }], [10000, 1000, { tk: 5, shard: 50 }]]);
+tiers('g', '單人', '🎮', n => `玩 ${n} 場單人`, () => st('games'), [[5, 30], [10, 50], [25, 80], [50, 150, { tk: 1 }], [100, 250, { tk: 2 }], [200, 500, { tk: 3 }], [500, 1000, { tk: 5, shard: 50 }]]);
+tiers('s', '單人', '💯', n => `單人一場 ${n} 分`, () => st('best'), [[500, 30], [1000, 50], [2000, 100], [3000, 150, { tk: 1 }], [4000, 200], [5000, 300, { tk: 2 }], [6500, 450], [8000, 700, { tk: 3, title: '分數怪物' }]]);
+for (let d = 4; d <= 9; d++) A('d' + d, '狗狗', ['', '', '', '', '🐶', '🐕', '🐩', '🦮', '🐕', '🐕‍🦺'][d], `合成出第 ${d} 隻狗狗`, () => st('maxDog') + 1, d, { bone: d * 15 + (d >= 8 ? 50 : 0), tk: d >= 8 ? 1 : 0 });
+tiers('h', '狗狗', '🍦', n => n === 1 ? '合成出隱藏版冰炫風' : `合成出冰炫風 ${n} 次`, () => st('hidden'), [[1, 200, { tk: 2 }], [3, 250], [5, 350, { tk: 2 }], [10, 500], [20, 800, { tk: 3, title: '冰炫風大師' }]]);
+tiers('sr', '速通', '⏱', n => `完成 ${n} 次速通`, () => st('sruns'), [[1, 150, { tk: 1 }], [3, 200], [5, 250], [10, 400, { tk: 2 }], [25, 700, { tk: 3 }]]);
+[[20, 100], [15, 150], [12, 200], [10, 300, { tk: 1 }], [8, 400], [7, 500, { tk: 2 }], [6, 650], [5, 800, { tk: 3, title: '速通之神' }]].forEach(([m, b, ex]) =>
+  A('sp' + m, '速通', '🏁', `速通 ${m} 分鐘內完成`, () => st('spBest') ? Math.round(st('spBest') / 1000) : 0, m * 60, Object.assign({ bone: b }, ex || {}), true));
+tiers('vs', '對戰', '⚔️', n => `打 ${n} 場對戰`, () => st('matches'), [[3, 40], [10, 80], [25, 150, { tk: 1 }], [50, 250], [100, 400, { tk: 2 }], [200, 700, { tk: 3 }]]);
+tiers('w', '對戰', '🏆', n => `排位贏 ${n} 場`, () => st('wins'), [[1, 50], [5, 100], [15, 200, { tk: 1 }], [30, 350], [60, 550, { tk: 2 }], [100, 900, { tk: 3, title: '對戰之王' }]]);
+tiers('c', '簽到', '📅', n => `累積簽到 ${n} 天`, () => +(prof.checkin.total || 0), [[3, 30], [7, 60], [14, 100, { tk: 1 }], [30, 200, { tk: 2 }], [60, 350], [100, 600, { tk: 3, title: '簽到達人' }]]);
+tiers('cs', '簽到', '🔥', n => `連續簽到 ${n} 天`, () => +(prof.checkin.best || 0), [[3, 40], [7, 100], [14, 200, { tk: 1 }], [30, 400, { tk: 3 }]]);
+tiers('p', '扭蛋', '🎰', n => `扭蛋抽 ${n} 次`, () => st('pulls'), [[1, 20], [10, 50], [50, 120], [100, 200, { tk: 2 }], [250, 350], [500, 600, { tk: 3, title: '扭蛋狂魔' }]]);
+A('a5', '扭蛋', '👑', '抽到 A5 和牛', () => st('a5'), 1, { bone: 300, shard: 50, tk: 2 });
+tiers('pc', '扭蛋', '📮', n => n === 36 ? '集滿全部明信片' : `收集 ${n} 張明信片`, () => prof.cards.length, [[5, 50], [10, 100], [15, 150], [20, 250, { tk: 1 }], [25, 350], [30, 450, { tk: 2 }], [36, 800, { tk: 3, title: '明信片收藏家' }]]);
+tiers('sc', '刮刮樂', '🎫', n => `刮 ${n} 張刮刮樂`, () => st('scr'), [[1, 20], [10, 80], [30, 200, { tk: 2 }], [100, 500, { tk: 3, title: '刮刮樂之王' }]]);
+tiers('lv', '等級', '⭐', n => `升到 Lv.${n}`, () => prof.lv, []);   // 等級獎勵在等級之路
+const _rwText = rwText;
+rwText = rw => [_rwText(Object.assign({}, rw, { title: '' })), rw.tk ? '🎫 ×' + rw.tk : '', rw.title ? '稱號「' + titleTag(rw.title) + '」' : ''].filter(Boolean).join('　');
+const _giveRw = giveRw;
+giveRw = rw => { _giveRw(rw); if (rw.tk) prof.scr = (prof.scr || 0) + rw.tk; };
+
+// 升級補償：v19 以前每級只拿 30 根
+function compBone() { let s = 0; for (let L = 2; L <= prof.lv; L++) s += lvBone(L) - 30; return s; }
+const compTk = () => Math.min(20, prof.lv - 1);
+
+// ---------- 刮刮樂 ----------
+const SCR_PRIZES = [[30, { bone: 30 }, '🦴'], [25, { bone: 60 }, '🍖'], [18, { bone: 120 }, '🥩'], [12, { shard: 8 }, '💎'], [8, { bone: 250 }, '🐶'], [4, { shard: 25 }, '💠'], [2.4, { bone: 500 }, '👑'], [0.6, { bone: 1500 }, '🍦']];
+function rollScratch() {
+  let x = Math.random() * SCR_PRIZES.reduce((a, p) => a + p[0], 0);
+  for (const p of SCR_PRIZES) { if (x < p[0]) return p; x -= p[0]; }
+  return SCR_PRIZES[0];
+}
+function scratchHTML() {
+  const n = prof.scr || 0;
+  return `<div class="scrp"><div><b>🎫 刮刮樂</b><small>每升一級送 1 張，成就和等級之路也會送<br>刮出 3 個一樣的就拿那個獎！</small></div><button class="main" data-scr="1" ${n ? '' : 'disabled'}>刮一張<br><small>剩 ${n} 張</small></button></div>`;
+}
+function openScratch() {
+  if (!(prof.scr > 0)) return;
+  prof.scr--; prof.stats.scr = st('scr') + 1;
+  const pz = rollScratch(); giveRw(pz[1]); saveProf();
+  // 九格：中獎符號 3 個，其他符號最多 2 個
+  const others = SCR_PRIZES.map(p => p[2]).filter(s => s !== pz[2]), cells = [pz[2], pz[2], pz[2]];
+  const cnt = {}; while (cells.length < 9) { const s = others[Math.floor(Math.random() * others.length)]; if ((cnt[s] || 0) < 2) { cnt[s] = (cnt[s] || 0) + 1; cells.push(s); } }
+  cells.sort(() => Math.random() - 0.5);
+  const box = $('gachaFx'); gxRun++;
+  box.className = 'modal on gfx2'; box.onclick = null;
+  box.innerHTML = `<canvas class="gcv"></canvas><div class="gstage"><div class="ghint">🎫 用手指刮開銀色的地方！</div>` +
+    `<div class="scard"><div class="sgrid">${cells.map(s => `<span class="${s === pz[2] ? 'win' : ''}">${s}</span>`).join('')}</div><canvas class="scover"></canvas></div>` +
+    `<div class="sres"></div><div class="gbtns"><button class="main gray sall">全部刮開</button></div></div>`;
+  GX.cv = box.querySelector('.gcv'); GX.cx = GX.cv.getContext('2d'); GX.parts = []; GX.rain = 0;
+  if (!GX.alive) gxStart();
+  const card = box.querySelector('.scard'), cv = box.querySelector('.scover'), c = cv.getContext('2d');
+  const W2 = card.clientWidth, H2 = card.clientHeight, dpr = Math.min(2, devicePixelRatio || 1);
+  cv.width = W2 * dpr; cv.height = H2 * dpr; c.scale(dpr, dpr);
+  const g = c.createLinearGradient(0, 0, W2, H2); g.addColorStop(0, '#c9c9c9'); g.addColorStop(0.5, '#f2f2f2'); g.addColorStop(1, '#a9a9a9');
+  c.fillStyle = g; c.fillRect(0, 0, W2, H2);
+  c.fillStyle = 'rgba(120,120,120,.35)'; c.font = 'bold 15px sans-serif'; c.textAlign = 'center';
+  for (let y = 24; y < H2; y += 34) for (let x = (y / 34 % 2) * 40 + 20; x < W2; x += 80) c.fillText('🐾 刮我', x, y);
+  c.globalCompositeOperation = 'destination-out'; c.lineCap = 'round'; c.lineJoin = 'round'; c.lineWidth = 34;
+  let last = null, moves = 0, done = false, lastSnd = 0;
+  const pos = e => { const b = cv.getBoundingClientRect(); return [e.clientX - b.left, e.clientY - b.top]; };
+  const finish = () => {
+    if (done) return; done = true;
+    cv.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400, fill: 'forwards' });
+    setTimeout(() => {
+      card.classList.add('shown');
+      const big = pz[1].bone >= 500 || pz[1].shard >= 25;
+      box.querySelector('.sres').innerHTML = `🎉 刮中 ${pz[2]}${pz[2]}${pz[2]}！<br><b>${rwText(pz[1])}</b>`;
+      const [x, y] = centerOf(card); gxBurst(x, y, big ? 4 : 2, big ? 1 : 0.6); fanfare(big ? 4 : 2); if (big) { GX.rain = 2; GX.rainR = 4; }
+      const btns = box.querySelector('.gbtns'), left = prof.scr || 0;
+      btns.innerHTML = `<button class="main again" ${left ? '' : 'disabled'}>${left ? '再刮一張（剩 ' + left + '）' : '刮刮樂用完了'}</button><button class="main gray close">關閉</button>`;
+      btns.querySelector('.again').onclick = e => { e.stopPropagation(); openScratch(); };
+      btns.querySelector('.close').onclick = e => { e.stopPropagation(); closeFx(); };
+    }, 380);
+  };
+  const cleared = () => {
+    const d = c.getImageData(0, 0, cv.width, cv.height).data; let z = 0, t = 0;
+    for (let i = 3; i < d.length; i += 4 * 37) { t++; if (d[i] < 40) z++; }
+    return z / t;
+  };
+  cv.addEventListener('pointerdown', e => { e.preventDefault(); cv.setPointerCapture && cv.setPointerCapture(e.pointerId); last = pos(e); c.beginPath(); c.arc(last[0], last[1], 17, 0, 7); c.fill(); });
+  cv.addEventListener('pointermove', e => {
+    if (!last || done) return; const p = pos(e);
+    c.beginPath(); c.moveTo(last[0], last[1]); c.lineTo(p[0], p[1]); c.stroke(); last = p;
+    const now = performance.now(); if (now - lastSnd > 70) { lastSnd = now; noise({ freq: 3000 + Math.random() * 2000, q: 0.8, dur: 0.04, vol: 0.05 }); }
+    if (++moves % 12 === 0 && cleared() > 0.55) finish();
+  });
+  const up = () => { last = null; if (!done && cleared() > 0.55) finish(); };
+  cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+  box.querySelector('.sall').onclick = e => { e.stopPropagation(); finish(); };
+}
+$('profBody').addEventListener('click', e => {
+  const b = e.target.closest('[data-scr],[data-comp]'); if (!b) return;
+  if (b.dataset.scr) openScratch();
+  else if (!prof.ach.includes('comp1')) {
+    const bn = compBone(), tk = compTk(); prof.ach.push('comp1'); prof.bone += bn; prof.scr = (prof.scr || 0) + tk; saveProf(); renderProf(); updDots();
+    toast('🎁 補償領取成功！<br><span style="font-size:15px">🦴 ' + bn + '　🎫 ×' + tk + '</span>'); fanfare(2);
+  }
+});
+const _achHTML = achHTML;
+achHTML = () => {
+  let h = '';
+  if (!prof.ach.includes('comp1') && prof.lv > 1) h += `<div class="comp"><b>🎁 升級獎勵補償</b><small>以前每升一級只給 30 根，補給你差額</small><span>🦴 ${compBone()}　🎫 ×${compTk()}</span><button class="main" data-comp="1">領取</button></div>`;
+  h += scratchHTML();
+  return h + _achHTML();
+};
+const _claimable = claimable;
+claimable = () => _claimable() + (prof.ach && !prof.ach.includes('comp1') && prof.lv > 1 ? 1 : 0) + (prof.scr > 0 ? 1 : 0);
+
+// ---------- 排行榜：頭像＋即時外觀 ----------
+var LOOK = {};
+let lookSubs = [], lookKey = '', lookT = null;
+const okId2 = x => typeof x === 'string' && /^[a-z0-9-]{1,20}$/.test(x) ? x : '';
+function lookOf(e, isRank) {
+  if (myIds.has(e.id) || (pid && (e.uid === pid || (isRank && e.id === pid)))) return { av: prof.avatar, avf: prof.avf, np: prof.np, t: prof.title, lv: prof.lv };
+  const L = LOOK[isRank ? e.id : e.uid];
+  if (L) return L;
+  return { av: e.av, avf: e.avf, np: e.np, t: e.t, lv: e.lv };
+}
+function avImg(e, isRank) {
+  const L = lookOf(e, isRank), im = document.createElement('img');
+  const has = typeof L.av === 'number' && L.av >= 0;
+  im.className = 'mini' + (has ? avfClass(okId2(L.avf)) : '');
+  im.src = FRUITS[Math.max(0, Math.min(HIDDEN, has ? L.av : (e.level | 0)))].src;
+  return im;
+}
+nameCell = function (e, isRank) {
+  const L = lookOf(e, isRank);
+  const nm = document.createElement('span'); nm.className = 'nm';
+  if (L.t) { const tc = document.createElement('span'); tc.className = 'tchip'; tc.textContent = titleTag(L.t); nm.appendChild(tc); }
+  const n = document.createElement('span'); n.textContent = e.name; const np = okNp(L.np); if (np) n.className = 'np ' + np; nm.appendChild(n);
+  if (L.lv) { const lb = document.createElement('span'); lb.className = 'lvb'; lb.textContent = 'Lv.' + L.lv; nm.appendChild(lb); }
+  return nm;
+};
+function refreshLooks() {
+  clearTimeout(lookT);
+  lookT = setTimeout(() => {
+    if (!fdb || !fs.documentId) return;
+    const ids = new Set();
+    [soloEntries, dayEntries, spAll, spDay].forEach(l => (l || []).forEach(e => { if (e.uid) ids.add(e.uid); }));
+    rankEntries.forEach(e => ids.add(e.id));
+    const arr = [...ids].filter(x => /^[A-Za-z0-9_-]{6,128}$/.test(x)).sort().slice(0, 60), key = arr.join(',');
+    if (key === lookKey) return; lookKey = key;
+    lookSubs.forEach(u => u()); lookSubs = [];
+    for (let i = 0; i < arr.length; i += 30) {
+      lookSubs.push(fs.onSnapshot(fs.query(fs.collection(fdb, 'profiles'), fs.where(fs.documentId(), 'in', arr.slice(i, i + 30))), snap => {
+        snap.docs.forEach(d => { const v = d.data() || {}; LOOK[d.id] = { av: Math.max(0, Math.min(HIDDEN, v.avatar | 0)), avf: okId2(v.avf), np: okNp(v.np), t: okTitle(v.title), lv: v.lv | 0, apc: Math.max(0, Math.min(36, v.apc | 0)) }; });
+        renderBoards();
+      }, err => console.warn('外觀讀取失敗', err)));
+    }
+  }, 600);
+}
+deco = () => ({ t: okTitle(prof.title), np: okNp(prof.np), av: Math.max(0, Math.min(HIDDEN, prof.avatar | 0)), avf: okId2(prof.avf), uid: pid || '' });
+
+
+$('rulesBtn').addEventListener('click', () => show('rules', true));
+$('rulesClose').addEventListener('click', () => show('rules', false));
+$('rules').addEventListener('click', e => { if (e.target.id === 'rules') show('rules', false); });
+function prizeGrid() {
+  const tot = SCR_PRIZES.reduce((a, p) => a + p[0], 0);
+  return '<div class="sprz">' + SCR_PRIZES.map(p => `<div class="${p[1].bone >= 500 || p[1].shard >= 25 ? 'top' : ''}"><b>${p[2]}${p[2]}${p[2]}</b>${p[1].bone ? '🦴 ' + p[1].bone : '💎 ' + p[1].shard}<br><small>${+(p[0] / tot * 100).toFixed(1)}%</small></div>`).join('') + '</div>';
+}
+const _scratchHTML = scratchHTML;
+scratchHTML = () => _scratchHTML() + prizeGrid();
+
+// ====== v22：等級之路搬到任務、明信片系列套組、閃卡升星、明信片背景 ======
+Object.assign(TITLE_EMOJI, { '排排鐵粉': '🥩', '洗澡監督員': '🛁', '校園觀察家': '🏫', '神話收藏家': '💎', '睡神': '💤' });
+// ---- 系列套組（明信片編號是明信片冊上的 No.）----
+var SETS = [
+  { id: 'set-a5', name: '👑 A5 神話組', cards: [1, 2, 3, 4], rw: { bone: 800, shard: 100, tk: 3, title: '神話收藏家' } },
+  { id: 'set-r1', name: '🔥 一分熟傳說組', cards: [5, 6, 7, 8], rw: { bone: 500, shard: 40, tk: 2 } },
+  { id: 'set-steak', name: '🥩 牛排全系列', cards: [1, 2, 5, 6, 9, 15, 17, 20, 22, 23, 25, 31, 32, 35], rw: { bone: 1000, tk: 3, title: '排排鐵粉' } },
+  { id: 'set-bath', name: '🛁 洗澡三部曲', cards: [7, 28, 29], rw: { bone: 300, tk: 1, title: '洗澡監督員' } },
+  { id: 'set-school', name: '🏫 校園日常', cards: [4, 10, 11, 19, 24], rw: { bone: 400, tk: 2, title: '校園觀察家' } },
+  { id: 'set-sleep', name: '💤 愛睏組', cards: [12, 19, 22, 24], rw: { bone: 300, tk: 1, title: '睡神' } },
+  { id: 'set-food', name: '🍽️ 吃貨組', cards: [1, 26, 30], rw: { bone: 250, tk: 1 } },
+  { id: 'set-nose', name: '👃 大鼻雙人組', cards: [21, 23], rw: { bone: 150, tk: 1 } },
+  { id: 'set-cross', name: '🧘 優雅交叉組', cards: [15, 16], rw: { bone: 150, tk: 1 } },
+];
+const setDone = S => S.cards.every(ownsCard);
+const setClaimable = () => SETS.filter(S => setDone(S) && !prof.ach.includes(S.id)).length;
+function setsHTML() {
+  let h = '<h3>🎁 系列套組</h3><div class="note">集滿一整組就能領獎勵</div><div class="sets">';
+  SETS.forEach(S => {
+    const got = S.cards.filter(ownsCard).length, done = got === S.cards.length, claimed = prof.ach.includes(S.id);
+    h += `<div class="set ${claimed ? 'got' : done ? 'ok' : ''}"><div class="sh"><b>${S.name}</b><small>${got}/${S.cards.length}</small></div>` +
+      `<div class="sthumbs">${S.cards.map(n => `<img src="${cardImg(n - 1)}" class="${ownsCard(n) ? '' : 'no'}" alt="" data-card="${n}">`).join('')}</div>` +
+      `<div class="sf"><span>${rwText(S.rw)}</span>${claimed ? '<i>✅</i>' : done ? `<button class="main" data-setc="${S.id}">領取</button>` : '<i>🔒</i>'}</div></div>`;
+  });
+  return h + '</div>';
+}
+
+// ---- 閃卡升星：重複抽到不換碎片，先升星（★→★★→★★★）----
+const STAR_NEED = [0, 1, 3];   // 累積重複幾張升到 ★★、★★★
+const cardStar = n => { const d = (prof.cdup[n - 1] | 0); return d >= STAR_NEED[2] ? 3 : d >= STAR_NEED[1] ? 2 : 1; };
+const starStr = k => '★'.repeat(k) + '☆'.repeat(3 - k);
+grantCard = function (n) {
+  const it = cardItem(n), res = { it, dup: false, shards: 0 };
+  if (!ownsCard(n)) { prof.cards.push(n); return res; }
+  const before = cardStar(n);
+  if (before >= 3) { res.dup = true; res.shards = RAR[it.r].shard; prof.shards += res.shards; return res; }
+  prof.cdup[n - 1] = (prof.cdup[n - 1] | 0) + 1;
+  const after = cardStar(n);
+  res.star = after > before ? after : 0; res.prog = !res.star;
+  return res;
+};
+const _resultSub = resultSub;
+resultSub = o => o.it.cat === 'card' && o.star ? `✨ 升級成 ${starStr(o.star)}${o.star === 3 ? '（閃卡！）' : ''}` :
+  o.it.cat === 'card' && o.prog ? `重複 → 升星進度 +1（${STAR_NEED[2] - (prof.cdup[o.it.card - 1] | 0)} 張後 ★★★）` : _resultSub(o);
+
+// ---- 明信片當場地背景 ----
+const pcBgImg = {};
+const _curTheme = curTheme;
+curTheme = function () {
+  const m = /^pc-(\d+)$/.exec(prof.theme || '');
+  if (m && ownsCard(+m[1])) return { c1: '#fff3e0', c2: '#f3d7ad', pc: +m[1] };
+  return _curTheme();
+};
+const _drawBg = drawBg;
+drawBg = function (c, danger, th) {
+  if (!th || !th.pc) return _drawBg(c, danger, th);
+  let im = pcBgImg[th.pc];
+  if (!im && window.CARD_IMG) { im = pcBgImg[th.pc] = new Image(); im.src = cardImg(th.pc - 1); }
+  else if (!im) loadCards();
+  _drawBg(c, danger, th);
+  if (im && im.complete && im.naturalWidth) {
+    const s = Math.max(W / im.naturalWidth, H / im.naturalHeight), w = im.naturalWidth * s, h = im.naturalHeight * s;
+    c.save(); c.globalAlpha = 0.42; c.drawImage(im, (W - w) / 2, (H - h) / 2, w, h);
+    c.globalAlpha = 0.35; c.fillStyle = '#fff8ea'; c.fillRect(0, 0, W, H); c.restore();
+    _redrawLine(c, danger);
+  }
+};
+function _redrawLine(c, danger) {   // 紅線畫在照片上面
+  c.save(); c.setLineDash([10, 8]); c.lineWidth = danger ? 4 : 2;
+  c.strokeStyle = danger ? `rgba(230,40,40,${0.5 + 0.5 * Math.sin(performance.now() / 80)})` : 'rgba(200,60,40,.6)';
+  c.beginPath(); c.moveTo(0, LINE_Y); c.lineTo(W, LINE_Y); c.stroke(); c.restore();
+}
+if (/^pc-/.test(prof.theme || '')) { prof.theme = 'default'; }
+
+// 明信片大圖：顯示星等＋設為背景
+const _openCardView = openCardView;
+openCardView = function (n) {
+  _openCardView(n);
+  if (!ownsCard(n)) return;
+  const box = $('gachaFx'), k = cardStar(n), d = prof.cdup[n - 1] | 0;
+  const front = box.querySelector('.front'); if (k === 3 && front && !front.querySelector('.holo')) front.insertAdjacentHTML('beforeend', '<div class="holo"></div>');
+  const sub = box.querySelector('.psub'); if (sub) sub.innerHTML = `<span class="cstar s${k}">${starStr(k)}</span>`;
+  const note = box.querySelector('.gbig > .note');
+  const isBg = prof.theme === 'pc-' + n;
+  const extra = document.createElement('div'); extra.className = 'gbtns';
+  extra.innerHTML = `<div class="note" style="color:#fff;margin:0;width:100%">${k >= 3 ? '✨ 已經是滿星閃卡！' : `再抽到 ${STAR_NEED[k] - d} 張重複就升 ${starStr(k + 1)}`}</div>`;
+  if (note) note.before(extra); else box.querySelector('.gbig').appendChild(extra);
+};
+document.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('[data-pcbg]'); if (!b) return;
+  e.stopPropagation(); const n = +b.dataset.pcbg;
+  prof.theme = prof.theme === 'pc-' + n ? 'default' : 'pc-' + n; saveProf();
+  b.textContent = prof.theme === 'pc-' + n ? '✅ 正在當背景（點擊取消）' : '🖼️ 設為場地背景';
+  toast(prof.theme === 'pc-' + n ? '🖼️ 已設為場地背景' : '已換回預設背景');
+}, true);
+
+// 明信片冊：顯示星等、閃卡、系列套組
+const _albumHTML = albumHTML;
+albumHTML = function () {
+  let h = _albumHTML();
+  h = h.replace(/<button class="ac r(\d) own" data-card="(\d+)"([^>]*)>(.*?)<small>/g, (m, r, n, rest, inner) => {
+    const k = cardStar(+n);
+    return `<button class="ac r${r} own${k === 3 ? ' holoc' : ''}" data-card="${n}"${rest}>${inner}<em class="cst">${'★'.repeat(k)}</em><small>`;
+  });
+  const i = h.indexOf('<h3'); return h.slice(0, i) + setsHTML() + h.slice(i);
+};
+
+// ---- 等級之路（含補償、刮刮樂）搬到任務分頁；成就分頁只放成就 ----
+function roadHTML() {
+  let h = '<h3 class="bigh">⬆️ 等級之路</h3>';
+  if (!prof.ach.includes('comp1') && prof.lv > 1) h += `<div class="comp"><b>🎁 升級獎勵補償</b><small>以前每升一級只給 30 根，補給你差額</small><span>🦴 ${compBone()}　🎫 ×${compTk()}</span><button class="main" data-comp="1">領取</button></div>`;
+  h += scratchHTML();
+  h += `<div class="note">每升一級：🦴 50＋10×等級、🎫 刮刮樂 1 張。到這些等級還有大獎：</div><div class="road">`;
+  LV_ROAD.forEach(([L, rw]) => {
+    const got = prof.ach.includes('lv' + L), ok = prof.lv >= L;
+    h += `<div class="rstep ${got ? 'got' : ok ? 'ok' : ''}"><b>Lv.${L}</b><span>${rwText(rw)}</span>${got ? '<i>✅</i>' : ok ? `<button class="main" data-lvc="${L}">領取</button>` : `<i>🔒</i>`}</div>`;
+  });
+  return h + '</div>';
+}
+achHTML = function () {
+  let h = `<div class="gtop">🦴 <b>${prof.bone}</b>　💎 <b>${prof.shards}</b>　🎫 <b>${prof.scr || 0}</b></div>`, g = '', first = true;
+  ACH.forEach(a => {
+    if (a.g !== g) { g = a.g; h += (first ? '' : '</div>') + `<h3>${g}</h3><div class="achl">`; first = false; }
+    const c = a.cur(), got = prof.ach.includes(a.id), done = achDone(a);
+    const pct = a.lower ? (done ? 100 : 0) : Math.min(100, c / a.goal * 100);
+    const cur = a.lower ? (c ? `最佳 ${fmtT(c)}` : '還沒完成') : `${Math.min(c, a.goal)} / ${a.goal}`;
+    h += `<div class="ach ${got ? 'got' : done ? 'ok' : ''}"><span class="ai">${a.icon}</span><div class="am"><b>${a.text}</b><span class="abar"><i style="width:${pct}%"></i></span><small>${cur}・${rwText(a.rw)}</small></div>` +
+      (got ? '<i class="ad">✅</i>' : done ? `<button class="main" data-achc="${a.id}">領取</button>` : '<i class="ad">🔒</i>') + '</div>';
+  });
+  return h + '</div>';
+};
+const achOnlyClaim = () => ACH.filter(a => achDone(a) && !prof.ach.includes(a.id)).length;
+const roadClaim = () => LV_ROAD.filter(([L]) => prof.lv >= L && !prof.ach.includes('lv' + L)).length + (!prof.ach.includes('comp1') && prof.lv > 1 ? 1 : 0) + (prof.scr > 0 ? 1 : 0);
+updDots = function () {
+  document.querySelectorAll('[data-open="ach"],.ptabs [data-p="ach"]').forEach(b => b.classList.toggle('dot', achOnlyClaim() > 0));
+  document.querySelectorAll('[data-open="task"],.ptabs [data-p="task"]').forEach(b => b.classList.toggle('dot', claimableMissions() > 0 || roadClaim() > 0));
+  document.querySelectorAll('[data-open="album"],.ptabs [data-p="album"]').forEach(b => b.classList.toggle('dot', setClaimable() > 0));
+};
+$('profBody').addEventListener('click', e => {
+  const b = e.target.closest('[data-setc]'); if (!b) return;
+  const S = SETS.find(x => x.id === b.dataset.setc); if (!S || !setDone(S) || prof.ach.includes(S.id)) return;
+  prof.ach.push(S.id); giveRw(S.rw); saveProf(); renderProf(); updDots();
+  toast('🎁 ' + S.name + ' 集滿！<br><span style="font-size:15px">' + rwText(S.rw) + '</span>'); fanfare(3);
+});
+
+// ====== v23：用明信片當合成狗狗的造型 ======
+const skinCache = {};
+function skinSrc(level) {   // 回傳裁成正方形的明信片圖片（dataURL），沒有設定就回傳 null
+  const n = prof.skin && prof.skin[level];
+  if (!n || !ownsCard(n)) return null;
+  if (!window.CARD_IMG) { loadCards().then(ok => { if (ok) { renderChain(); } }); return null; }
+  const key = n; if (skinCache[key]) return skinCache[key].src;
+  const im = new Image();
+  skinCache[key] = { src: null, img: null };
+  im.onload = () => {
+    const s = Math.min(im.naturalWidth, im.naturalHeight), cv = document.createElement('canvas'); cv.width = cv.height = s;
+    cv.getContext('2d').drawImage(im, (im.naturalWidth - s) / 2, (im.naturalHeight - s) * 0.35, s, s, 0, 0, s, s);
+    const src = cv.toDataURL('image/jpeg', 0.85), out = new Image(); out.src = src;
+    skinCache[key] = { src, img: out }; renderChain();
+    if (P && !P.gameOver) try { $('next').src = dogSrc(P.nxt); } catch (e) { }
+  };
+  im.src = cardImg(n - 1);
+  return null;
+}
+function skinImg(level) { const n = prof.skin && prof.skin[level]; if (!n || !ownsCard(n)) return null; skinSrc(level); const c = skinCache[n]; return c && c.img && c.img.complete ? c.img : null; }
+function dogSrc(level) { return skinSrc(level) || FRUITS[level].src; }
+const _chainHTML = chainHTML;
+chainHTML = function () {
+  return FRUITS.map((f, i) => i === HIDDEN && !hiddenFound ? '<span class="mini q">?</span>' : `<img class="mini" src="${dogSrc(i)}">`).join('');
+};
+if (prof.skin && prof.skin.some(Boolean)) loadCards().then(ok => { if (ok) renderChain(); });
+
+function skinHTML() {
+  let h = '<h3>🐶 合成狗狗造型</h3><div class="note">用你抽到的明信片換掉遊戲裡合成的狗狗（只有你自己的畫面會變）</div><div class="skins">';
+  FRUITS.forEach((f, i) => {
+    const locked = i === HIDDEN && !hiddenFound, custom = prof.skin[i] && ownsCard(prof.skin[i]);
+    h += `<button data-skin="${i}" class="${custom ? 'on' : ''}" ${locked ? 'disabled' : ''}>${locked ? '<span class="q">?</span>' : `<img src="${dogSrc(i)}" alt="">`}<small>第 ${i + 1} 隻${i === HIDDEN ? '（隱藏）' : ''}</small></button>`;
+  });
+  return h + `</div>${prof.skin.some(Boolean) ? '<button class="rulesBtn" data-skinreset="1">全部換回原本的狗狗</button>' : ''}`;
+}
+function openSkinPicker(level) {
+  loadCards().then(() => {
+    const box = $('gachaFx'); gxRun++;
+    box.className = 'modal on gfx2'; box.onclick = null;
+    const owned = prof.cards.slice().sort((a, b) => a - b);
+    box.innerHTML = `<div class="gstage" style="justify-content:flex-start;padding:max(16px,env(safe-area-inset-top)) 12px 16px;overflow-y:auto">` +
+      `<div class="ghint">選第 ${level + 1} 隻狗狗要用哪張</div>` +
+      `<div class="spick"><button data-pick="0" class="${!prof.skin[level] ? 'on' : ''}"><img src="${FRUITS[level].src}" alt=""><small>原本的</small></button>` +
+      owned.map(n => `<button data-pick="${n}" class="${prof.skin[level] === n ? 'on' : ''}"><img src="${cardImg(n - 1)}" alt=""><small>No.${String(n).padStart(2, '0')}</small></button>`).join('') + '</div>' +
+      (owned.length ? '' : '<div class="note" style="color:#fff">還沒有明信片，去扭蛋抽抽看吧！</div>') +
+      `<div class="gbtns"><button class="main gray">取消</button></div></div>`;
+    box.onclick = e => {
+      const b = e.target.closest('[data-pick]');
+      if (b) { prof.skin[level] = +b.dataset.pick; saveProf(); renderChain(); closeFx(); toast(+b.dataset.pick ? '🐶 造型換好了！' : '換回原本的狗狗'); return; }
+      if (e.target.closest('button')) closeFx();
+    };
+  });
+}
+const _wardHTML = wardHTML;
+wardHTML = () => { const h = _wardHTML(), i = h.indexOf('<h3>'); return h.slice(0, i) + skinHTML() + h.slice(i); };
+$('profBody').addEventListener('click', e => {
+  const b = e.target.closest('[data-skin],[data-skinreset]'); if (!b || b.disabled) return;
+  if (b.dataset.skinreset) { prof.skin = Array(10).fill(0); saveProf(); renderChain(); renderProf(); return; }
+  openSkinPicker(+b.dataset.skin);
+});
+
+// ====== v24：明信片頭像、解鎖狗狗送狗狗明信片 ======
+var cropC = {};
+function cropSrc(n) {   // 明信片裁成正方形（給頭像用）
+  if (!(n >= 1 && n <= 36)) return null;
+  if (!window.CARD_IMG) { loadCards().then(ok => { if (ok) cropReady(); }); return null; }
+  if (cropC[n]) return cropC[n].src;
+  cropC[n] = { src: null };
+  const im = new Image();
+  im.onload = () => {
+    const s = Math.min(im.naturalWidth, im.naturalHeight), cv = document.createElement('canvas'); cv.width = cv.height = 160;
+    cv.getContext('2d').drawImage(im, (im.naturalWidth - s) / 2, (im.naturalHeight - s) * 0.35, s, s, 0, 0, 160, 160);
+    cropC[n].src = cv.toDataURL('image/jpeg', 0.85); cropReady();
+  };
+  im.src = cardImg(n - 1);
+  return null;
+}
+var cropT = null;
+function cropReady() { clearTimeout(cropT); cropT = setTimeout(() => { try { renderLvLine(); renderBoards(); if ($('prof').classList.contains('on')) renderProf(); } catch (e) { } }, 50); }
+function avatarSrcOf(av, apc) { return (apc && cropSrc(apc)) || FRUITS[Math.max(0, Math.min(HIDDEN, av | 0))].src; }
+function myAvatarSrc() { return avatarSrcOf(prof.avatar, prof.apc && prof.cards.includes(prof.apc) ? prof.apc : 0); }
+if (prof.apc) loadCards().then(ok => { if (ok) cropReady(); });
+
+// 排行榜頭像也支援明信片
+const _lookOf = lookOf;
+lookOf = function (e, isRank) {
+  const L = Object.assign({}, _lookOf(e, isRank));
+  if (myIds.has(e.id) || (pid && (e.uid === pid || (isRank && e.id === pid)))) L.apc = prof.apc && ownsCard(prof.apc) ? prof.apc : 0;
+  else { const X = LOOK[isRank ? e.id : e.uid]; L.apc = X ? X.apc : e.apc; }
+  return L;
+};
+avImg = function (e, isRank) {
+  const L = lookOf(e, isRank), im = document.createElement('img');
+  const has = typeof L.av === 'number' && L.av >= 0;
+  im.className = 'mini' + (has || L.apc ? avfClass(okId2(L.avf)) : '');
+  im.src = has || L.apc ? avatarSrcOf(has ? L.av : 0, L.apc | 0) : FRUITS[Math.max(0, Math.min(HIDDEN, e.level | 0))].src;
+  return im;
+};
+const _deco = deco;
+deco = () => Object.assign(_deco(), { apc: prof.apc && ownsCard(prof.apc) ? prof.apc : 0 });
+
+// 狗狗明信片：解鎖（第一次合成出）那隻狗狗就送
+const dogOwned = i => i === HIDDEN ? (+(prof.stats.hidden || 0) > 0 || hiddenFound) : i <= (prof.stats.maxDog | 0);
+const _onPlayerMerge = onPlayerMerge;
+onPlayerMerge = function (n) {
+  const was = dogOwned(n);
+  _onPlayerMerge(n);
+  if (!was && dogOwned(n)) setTimeout(() => toast(`🎁 解鎖第 ${n + 1} 隻狗狗！<br><span style="font-size:15px">送你一張狗狗明信片 📮</span><br><img src="${FRUITS[n].src}">`), n === HIDDEN ? 2400 : 300);
+};
+function dogCardsHTML() {
+  const got = FRUITS.filter((f, i) => dogOwned(i)).length;
+  let h = `<h3>🐶 狗狗原圖明信片　<small>${got}/${FRUITS.length}</small></h3><div class="note">第一次合成出那隻狗狗就會送你，可以拿來當頭像</div><div class="album dogc">`;
+  FRUITS.forEach((f, i) => {
+    const o = dogOwned(i);
+    h += `<button class="ac ${o ? 'own' : ''}" data-dogc="${i}" style="--rc:${i === HIDDEN ? '#c9a227' : '#e2a24f'}"><img src="${f.src}" alt="">${o ? '' : '<span>?</span>'}<small>第 ${i + 1} 隻${i === HIDDEN ? '・隱藏' : ''}</small></button>`;
+  });
+  return h + '</div>';
+}
+const _albumHTML2 = albumHTML;
+albumHTML = function () { const h = _albumHTML2(), i = h.indexOf('<h3>👑'); return i < 0 ? h + dogCardsHTML() : h.slice(0, i) + dogCardsHTML() + h.slice(i); };
+function setAvatarBtn(kind, v) {
+  const on = kind === 'dog' ? !prof.apc && prof.avatar === v : prof.apc === v;
+  return `<button class="main" data-setav="${kind}:${v}">${on ? '✅ 正在當頭像' : '👤 設為頭像'}</button>`;
+}
+function openDogView(i) {
+  const o = dogOwned(i), box = $('gachaFx'); gxRun++;
+  box.className = 'modal on gfx2'; box.onclick = null;
+  box.innerHTML = `<canvas class="gcv"></canvas><div class="gstage"><div class="gbig">` +
+    `<div class="lockcard dogview ${o ? 'own' : ''}" style="--rc:${i === HIDDEN ? '#ffd84a' : '#f08a24'}"><img src="${FRUITS[i].src}" alt="">${o ? '' : '<span>?</span>'}</div>` +
+    `<div class="pc-title" style="color:#fff">第 ${i + 1} 隻狗狗${i === HIDDEN ? '・冰炫風（隱藏版）' : ''}</div>` +
+    `<div class="gbtns">${o ? setAvatarBtn('dog', i) : '<div class="note" style="color:#fff">合成出這隻狗狗就能解鎖</div>'}</div>` +
+    `<div class="note" style="color:#fff">點旁邊關閉</div></div></div>`;
+  GX.cv = box.querySelector('.gcv'); GX.cx = GX.cv.getContext('2d'); GX.parts = []; if (!GX.alive) gxStart();
+  box.onclick = e => { if (!e.target.closest('button,.lockcard')) closeFx(); };
+}
+const _openCardView2 = openCardView;
+openCardView = function (n) {
+  _openCardView2(n);
+  if (!ownsCard(n)) return;
+  const btns = $('gachaFx').querySelectorAll('.gbig .gbtns'); if (btns.length) btns[btns.length - 1].insertAdjacentHTML('beforeend', setAvatarBtn('pc', n));
+};
+document.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('[data-setav],[data-dogc],[data-apc]'); if (!b) return;
+  if (b.dataset.dogc !== undefined) { openDogView(+b.dataset.dogc); return; }
+  if (b.dataset.apc) { e.stopPropagation(); prof.apc = +b.dataset.apc; saveProf(); cropSrc(prof.apc); renderProf(); return; }
+  e.stopPropagation();
+  const [k, v] = b.dataset.setav.split(':');
+  if (k === 'dog') { prof.avatar = +v; prof.apc = 0; } else { prof.apc = +v; cropSrc(+v); }
+  saveProf(); renderLvLine(); b.textContent = '✅ 正在當頭像'; toast('👤 頭像換好了！');
+}, true);
+// 個人檔案的頭像選單：狗狗＋明信片
+function apcPickHTML() {
+  const owned = prof.cards.slice().sort((a, b) => a - b);
+  if (!owned.length) return '<div class="note">抽到明信片也能拿來當頭像喔</div>';
+  return '<div class="note" style="margin-top:6px">📮 用明信片當頭像</div><div class="pick apick">' +
+    owned.map(n => `<button data-apc="${n}" class="${prof.apc === n ? 'on' : ''}"><img src="${cropSrc(n) || cardImg(n - 1)}" alt=""></button>`).join('') + '</div>';
+}
+
+
+// ====== v25：更新公告＋免費十連、彩虹框 ======
+function rainbowFill(c, r, b) {
+  const t = performance.now() / 600 + (b ? b.id : 0);
+  let g;
+  if (c.createConicGradient) g = c.createConicGradient(t, 0, 0);
+  else g = c.createLinearGradient(-r, -r, r, r);
+  ['#ff4d4d', '#ffa64d', '#ffe14d', '#5ee86b', '#4dd2ff', '#6b6bff', '#c44dff', '#ff4d4d'].forEach((col, i, a) => g.addColorStop(i / (a.length - 1), col));
+  return g;
+}
+const ANN = {
+  id: 'ann-v25', gift: 'gift-v25', title: '大改版來了！🎉',
+  items: [
+    ['🎰', '扭蛋機大改版', '轉把手、敲開扭蛋、3D 翻卡，抽到稀有的還有光柱和金幣雨'],
+    ['📮', '36 張狗狗明信片', '集系列套組拿獎勵，重複抽到會升星變閃卡（照片來源：Threads @yesjustbeyourself）'],
+    ['🐶', '用明信片打扮', '可以換掉合成狗狗的造型、當頭像、當場地背景；解鎖狗狗還會送狗狗明信片'],
+    ['⏱', '速通模式', '比誰最快合成出冰炫風，有今日榜和總榜'],
+    ['🏆', '成就＋等級之路＋刮刮樂', '幾十個成就可以領，每升一級送骨頭和刮刮樂，舊玩家可以領升級補償'],
+    ['🔊', '音效', '遊戲音效、合成音效（像大便ㄅㄨˊㄅㄨˊ）可以在衣櫃換'],
+    ['🏷️', '名牌和稱號', '排行榜會顯示你的頭像、稱號和名牌，換了會即時更新'],
+    ['📲', '加到主畫面', '可以把遊戲變成手機上的 App，點主畫面的「📲 加到主畫面」看教學'],
+  ],
+};
+function annGiftHTML() {
+  return prof.ach.includes(ANN.gift) ? '<div class="giftBox"><b>🎁 免費十連抽</b>✅ 已經領過了</div>'
+    : '<div class="giftBox"><b>🎁 慶祝改版，送你一次免費十連抽！</b><button class="main vs" id="annGiftBtn">立刻抽！</button></div>';
+}
+function openAnn() {
+  $('annTitle').textContent = ANN.title;
+  $('annBody').innerHTML = ANN.items.map(([i, t, d]) => `<div class="annItem"><span>${i}</span><div><b>${t}</b>${d}</div></div>`).join('');
+  $('annGift').innerHTML = annGiftHTML();
+  show('ann', true);
+}
+function closeAnn() { show('ann', false); }
+$('annBtn').addEventListener('click', openAnn);
+$('annClose').addEventListener('click', closeAnn);
+$('ann').addEventListener('click', e => {
+  if (e.target.id === 'ann') closeAnn();
+  if (e.target.id === 'annGiftBtn') {
+    if (prof.ach.includes(ANN.gift)) return;
+    prof.ach.push(ANN.gift); saveProf();
+    closeAnn(); doPull(10, true);
+  }
+});
+// 還沒領十連抽才會自動跳出；領完就不再自動顯示（主畫面的「📢 公告」還是可以看）
+setTimeout(() => { if (!prof.ach.includes(ANN.gift) && $('start').classList.contains('on')) openAnn(); }, 700);
+
+
+// ====== v26：加到主畫面教學 ======
+const isStandalone = () => navigator.standalone === true || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+const ua = navigator.userAgent || '', isIOS = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1), isAndroid = /Android/.test(ua);
+const inApp = /Line\/|FBAN|FBAV|Instagram|Threads|Barcelona/i.test(ua);
+let deferredInstall = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; });
+function openA2hs() {
+  let h = '';
+  if (isStandalone()) h += '<div class="a2sec me">✅ 你已經是從主畫面打開的了，太棒了！</div>';
+  if (inApp) h += '<div class="a2warn">⚠️ 你現在是在 LINE／IG／Threads 裡面打開的，要先點右上角選「用瀏覽器開啟」（iPhone 選 Safari），才能加到主畫面。</div>';
+  if (deferredInstall) h += '<div class="a2sec me"><h3>⚡ 一鍵安裝</h3><button class="main fr" id="a2Install">安裝到主畫面</button></div>';
+  h += `<div class="a2sec ${isIOS ? 'me' : ''}"><h3>🍎 iPhone／iPad（用 Safari）</h3><ol><li>點下方（iPad 在上方）的<b>分享按鈕</b> <span style="font-size:16px">⬆️</span></li><li>往下滑，點<b>「加入主畫面」</b></li><li>右上角按<b>「新增」</b>，主畫面就會出現狗狗大臉的圖示</li></ol></div>`;
+  h += `<div class="a2sec ${isAndroid ? 'me' : ''}"><h3>🤖 Android（用 Chrome）</h3><ol><li>點右上角的<b>「⋮」</b></li><li>點<b>「加到主畫面」</b>或<b>「安裝應用程式」</b></li><li>按<b>「新增／安裝」</b>就完成了</li></ol></div>`;
+  h += '<div class="note">加到主畫面後，網址一樣、進度一樣，有新版本也會自動更新</div>';
+  $('a2body').innerHTML = h;
+  show('a2hs', true);
+}
+$('a2hsBtn').addEventListener('click', openA2hs);
+$('a2Close').addEventListener('click', () => show('a2hs', false));
+$('a2hs').addEventListener('click', async e => {
+  if (e.target.id === 'a2hs') show('a2hs', false);
+  if (e.target.id === 'a2Install' && deferredInstall) { deferredInstall.prompt(); try { await deferredInstall.userChoice; } catch (er) { } deferredInstall = null; show('a2hs', false); }
+});
+if (isStandalone()) $('a2hsBtn').textContent = '📲 已加到主畫面';
 
 // ====== 連線檢查 ======
 $('diagBtn').addEventListener('click', () => { hideAll(); show('diag', true); $('diagOut').textContent = ''; });
@@ -2063,7 +3715,14 @@ function doUpdate() { location.replace(location.pathname + '?v=' + encodeURIComp
 async function checkUpdate() {
   try {
     const r = await fetch(location.pathname + '?check=' + Date.now(), { cache: 'no-store' });
-    const m = (await r.text()).match(/const VERSION = '([^']+)'/);
+    let txt = '', m = null;
+    const re = /<meta name="game-ver" content="([^"]+)"|const VERSION = '([^']+)'/;
+    if (r.body && r.body.getReader) {   // 只讀到版本號就停，不用下載整個網頁（省流量）
+      const rd = r.body.getReader(), dec = new TextDecoder();
+      while (!m) { const { done, value } = await rd.read(); if (done) break; txt += dec.decode(value, { stream: true }); m = txt.match(re); }
+      try { rd.cancel(); } catch (e) { }
+    } else m = (await r.text()).match(re);
+    if (m) m = [m[0], m[1] || m[2]];
     if (!m || m[1] === VERSION) return;
     newVer = m[1];
     if (!inGame()) { doUpdate(); return; }   // 不在遊戲中就直接更新
