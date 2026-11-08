@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta name="game-ver" content="v45">
+<meta name="game-ver" content="v46">
 <meta charset="UTF-8">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
@@ -482,7 +482,7 @@
   <div id="stage"><canvas id="c"></canvas></div>
   <div id="chain"></div>
   <div id="toast"></div>
-  <div id="updBar" style="display:none;position:absolute;left:10px;right:10px;top:calc(env(safe-area-inset-top) + 8px);z-index:9;background:#3d9a5b;color:#fff;border-radius:12px;padding:10px 12px;font-weight:700;text-align:center;box-shadow:0 4px 0 #24663a;cursor:pointer"></div>
+  <div id="updBar" style="display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 6px);z-index:9;background:rgba(61,154,91,.92);color:#fff;border-radius:999px;padding:4px 12px;font-size:12px;font-weight:700;white-space:nowrap;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.2);cursor:pointer"></div>
   <div id="count"></div>
 
   <div class="modal on" id="start"><div class="card">
@@ -507,7 +507,7 @@
     <div class="drwWrap"><a href="#" class="drwBtn">🎁 單人今日榜每天 0 點結算，前 20 名有獎勵（點我看）</a><div class="drwTbl" style="display:none"></div></div>
     <ol class="board" id="board1"></ol>
     <div class="note" id="note1"></div>
-    <div class="ver">v45　<button id="diagBtn" style="font:inherit;font-size:12px;margin:0;background:none;border:none;color:#b85e0c;text-decoration:underline;cursor:pointer;opacity:1">🔧 連線檢查</button></div>
+    <div class="ver">v46　<button id="diagBtn" style="font:inherit;font-size:12px;margin:0;background:none;border:none;color:#b85e0c;text-decoration:underline;cursor:pointer;opacity:1">🔧 連線檢查</button></div>
   </div></div>
 
   <div class="modal" id="over"><div class="card">
@@ -609,9 +609,9 @@
       <li>速通中不能暫停，中途爆掉不算成績</li>
       <li>排行榜比<b>時間</b>，越快越前面（分今日和總榜）</li></ul></div>
     <div class="rsec"><h3>⚔️ 排位賽</h3><ul>
-      <li>需要登入（遊客也可以），限時 <b>3 分鐘</b></li>
-      <li>🎲 配對到對手後會<b>隨機抽出本場模式</b>：<b>⚔️ 對抗</b>或<b>🏁 競賽</b></li>
-      <li><b>🏁 競賽模式</b>：不互相攻擊，比分數；爆掉就出局、分數定格，對手分數超過你就輸</li>
+      <li>需要登入（遊客也可以）；對抗限時 <b>3 分鐘</b>、競速限時 <b>7 分鐘</b></li>
+      <li>🎲 配對到對手後會<b>隨機抽出本場模式</b>：<b>⚔️ 對抗</b>或<b>🏁 競速</b></li>
+      <li><b>🏁 競速模式</b>：跟速通一樣，不互相攻擊，<b>先合成出冰炫風的贏</b>；先爆掉的直接輸；時間到還沒人合出來就比分數</li>
       <li><b>⚔️ 對抗模式</b>：合成第 4 隻以上的狗狗會<b>攻擊</b>，把小狗砸到對手場上；連續合成、合出冰炫風攻擊更強</li>
       <li>對手的攻擊 2 秒後落下，這段時間內你的攻擊可以<b>抵銷</b>它</li>
       <li>對抗模式<b>先爆的輸</b>；時間到就比分數</li>
@@ -1136,7 +1136,7 @@ const firebaseConfig = {
   appId: "1:741734243486:web:62dbac94d9e9c4f51a2f8f"
 };
 const RTDB_URL = 'https://dogsteakkk-default-rtdb.asia-southeast1.firebasedatabase.app';   // Realtime Database 的網址
-const VERSION = 'v45';
+const VERSION = 'v46';
 const FB_VERSIONS = ['13.1.0', '11.0.2'];
 let fbVer = '';
 let fs = null, fdb = null, fbReady, am = null, auth = null, authUser = null, authKnown = false;
@@ -1565,10 +1565,11 @@ async function countdownAndStart() {
   hideAll(); setMode('match');
   P.reset(); running = false; oppView.clear();
   $('score').textContent = 0; $('oppScore').textContent = 0; $('incoming').textContent = ''; $('timer').textContent = '3:00';
-  $('matchKind').textContent = (match.kind === 'friend' ? '友誼賽' : (match.isAI ? '排位賽・電腦' : '排位賽')) + (match.rule === 'race' ? '・🏁競賽' : '・⚔️對抗');
+  $('matchKind').textContent = (match.kind === 'friend' ? '友誼賽' : (match.isAI ? '排位賽・電腦' : '排位賽')) + (match.rule === 'race' ? '・🏁競速' : '・⚔️對抗');
   $('oppName').textContent = match.oppName;
   $('oppMeta').innerHTML = match.isAI ? '🤖 電腦陪練' : (match.oppMeta || '');
   if (match.kind === 'ranked') { await rollRule(match); if (!match) return; }
+  match.secs = match.rule === 'race' ? 420 : MATCH_SECONDS; $('timer').textContent = match.secs === 420 ? '7:00' : '3:00';
   for (const n of ['3', '2', '1', '開始！']) { $('count').textContent = n; show('count', true); sfx('count', n === '開始！'); await sleep(700); }
   show('count', false);
   if (!match) return;
@@ -1579,7 +1580,7 @@ async function countdownAndStart() {
     match.chargeP = writeRecord(Math.max(0, myStars - 1), myWins, myLosses + 1);
   }
   $('next').src = dogSrc(P.nxt);
-  if (AI) { AI.reset(); AI.attackEnabled = isVs; AI.onAttack = n => P.receive(n); AI.onOver = () => isVs ? finishMatch('win', '電腦的狗狗爆出紅線了！') : raceCheck(match); P.onAttack = n => AI.receive(n); }
+  if (AI) { AI.reset(); AI.attackEnabled = isVs; AI.onAttack = n => P.receive(n); AI.onOver = () => finishMatch('win', '電腦的狗狗爆出紅線了！'); P.onAttack = n => AI.receive(n); }
   else P.onAttack = n => { if (match) { match.sent += n; flushMatch(true); } };
   match.startAt = performance.now(); match.oppSeenAt = Date.now();
   running = true;
@@ -1619,7 +1620,7 @@ async function joinRoom(roomId, kind) {
     if (match !== m || !v) return;
     m.oppJoined = true;
     if (v.t !== m.lastOppT) { m.lastOppT = v.t; m.oppSeenAt = Date.now(); }
-    m.opp = { score: +v.score || 0, alive: v.alive !== false, done: !!v.done, sent: +v.sent || 0, out: !!v.out };
+    m.opp = { score: +v.score || 0, alive: v.alive !== false, done: !!v.done, sent: +v.sent || 0, out: !!v.out, goal: !!v.goal };
     const add = m.opp.sent - m.received;
     if (add > 0 && m.rule !== 'race') { m.received = m.opp.sent; if (m.startAt) P.receive(add); else m.preload = (m.preload || 0) + add; }
     applyOppPack(v.b);
@@ -1654,9 +1655,9 @@ function matchTick() {
   const m = match;
   if (!m || m.finished || !m.startAt) return;
   const now = performance.now();
-  const left = Math.max(0, MATCH_SECONDS - (now - m.startAt) / 1000);
+  const left = Math.max(0, (m.secs || MATCH_SECONDS) - (now - m.startAt) / 1000);
   $('timer').textContent = Math.floor(left / 60) + ':' + String(Math.floor(left % 60)).padStart(2, '0');
-  $('incoming').textContent = m.rule === 'race' ? (P.gameOver ? '💥 你出局了，等對手結束…' : '🏁 競賽：比分數') : (P.pendingIn > 0 ? '⚠ 要掉 ' + P.pendingIn + ' 隻' : '');
+  $('incoming').textContent = m.rule === 'race' ? '🏁 先合出冰炫風就贏' : (P.pendingIn > 0 ? '⚠ 要掉 ' + P.pendingIn + ' 隻' : '');
   if (m.preload) { P.receive(m.preload); m.preload = 0; }
   if (m.isAI) {
     $('oppScore').textContent = AI.score;
@@ -1683,30 +1684,27 @@ function flushMatch(force) {
   const pack = P.pack(), sig = [m.sent, P.score, P.gameOver, m.timeUp, pack.map(n => n >> 2).join(',')].join('|');
   if (!force && sig === m.lastSig && now - m.lastWrite < 4000) return;   // 畫面沒變就少傳（最多 4 秒一次心跳）
   m.lastSig = sig; m.lastWrite = now;
-  rt.set(m.myRef, { sent: m.sent, score: Math.min(100000, P.score), alive: m.rule === 'race' || !P.gameOver, out: P.gameOver, b: pack, t: now, done: m.timeUp || P.gameOver }).catch(e => console.warn(e));
+  rt.set(m.myRef, { sent: m.sent, score: Math.min(100000, P.score), alive: !P.gameOver, goal: !!m.goal, b: pack, t: now, done: m.timeUp || P.gameOver }).catch(e => console.warn(e));
 }
 
 function myTopOut() {
   const m = match;
   if (!m || m.finished) return;
-  if (m.rule === 'race') {   // 競賽模式：爆掉只是出局，分數定格，等對手
-    P.dangerT = 0; sfx('thud');
-    if (!m.isAI && m.myRef) rt.set(m.myRef, { sent: m.sent, score: Math.min(100000, P.score), alive: true, out: true, b: P.pack(), t: Date.now(), done: true }).catch(() => {});
-    raceCheck(m);
-    return;
-  }
   if (!m.isAI && m.myRef) rt.set(m.myRef, { sent: m.sent, score: Math.min(100000, P.score), alive: false, b: P.pack(), t: Date.now(), done: true }).catch(() => {});
   finishMatch('lose', '你的狗狗爆出紅線了…');
 }
 function raceCheck(m) {
   if (!m || m.finished || m.rule !== 'race' || !m.startAt) return;
-  const me = P.score, meOut = P.gameOver;
-  const opOut = m.isAI ? !!(AI && AI.gameOver) : !!m.opp.out, op = m.isAI ? AI.score : m.opp.score;
-  if (meOut && opOut) return judgeByScore();
-  if (opOut && me > op) { flushMatch(true); return finishMatch('win', '對手出局了，你的分數超越對手！'); }
-  if (meOut && op > me) return finishMatch('lose', '你出局了，對手的分數超越你…');
+  if (m.isAI && AI && AI.bodies.some(b => b.level === HIDDEN)) return finishMatch('lose', '電腦先合成出冰炫風了…');
+  if (!m.isAI && m.opp.goal) return finishMatch('lose', '對手先合成出冰炫風了…');
 }
-const RULE_INFO = { vs: ['⚔️ 對抗模式', '合成會把小狗砸到對手場上，先爆的輸'], race: ['🏁 競賽模式', '不互相攻擊，3 分鐘比分數<br>爆掉就出局、分數定格'] };
+function raceGoal() {
+  const m = match;
+  if (!m || m.finished || m.rule !== 'race' || !m.startAt) return;
+  m.goal = true; flushMatch(true);
+  finishMatch('win', '🍦 你先合成出冰炫風了！');
+}
+const RULE_INFO = { vs: ['⚔️ 對抗模式', '合成會把小狗砸到對手場上，先爆的輸'], race: ['🏁 競速模式', '跟速通一樣，先合成出冰炫風的贏！<br>先爆掉的直接輸（限時 7 分鐘）'] };
 async function rollRule(m) {
   const el = $('count'); el.classList.add('rollRule'); show('count', true);
   const n = 14, other = m.rule === 'vs' ? 'race' : 'vs';
@@ -1726,7 +1724,7 @@ function judgeByScore() {
   const m = match;
   if (!m || m.finished) return;
   const me = P.score, op = m.isAI ? AI.score : m.opp.score;
-  finishMatch(me > op ? 'win' : me < op ? 'lose' : 'draw', m.rule === 'race' && (P.gameOver || (m.isAI ? AI.gameOver : m.opp.out)) && !m.timeUp ? '兩邊都出局了！比分數' : '時間到！比分數');
+  finishMatch(me > op ? 'win' : me < op ? 'lose' : 'draw', m.rule === 'race' ? '時間到！都沒合出冰炫風，比分數' : '時間到！比分數');
 }
 
 async function finishMatch(res, why) {
@@ -3224,7 +3222,7 @@ tiers('s', '單人', '💯', n => `單人一場 ${n} 分`, () => st('best'), [[5
 for (let d = 4; d <= 9; d++) A('d' + d, '狗狗', ['', '', '', '', '🐶', '🐕', '🐩', '🦮', '🐕', '🐕‍🦺'][d], `合成出第 ${d} 隻狗狗`, () => st('maxDog') + 1, d, { bone: d * 15 + (d >= 8 ? 50 : 0), tk: d >= 8 ? 1 : 0 });
 tiers('h', '狗狗', '🍦', n => n === 1 ? '合成出隱藏版冰炫風' : `合成出冰炫風 ${n} 次`, () => st('hidden'), [[1, 200, { tk: 2 }], [3, 250], [5, 350, { tk: 2 }], [10, 500], [20, 800, { tk: 3, title: '冰炫風大師' }]]);
 tiers('sr', '速通', '⏱', n => `完成 ${n} 次速通`, () => st('sruns'), [[1, 150, { tk: 1 }], [3, 200], [5, 250], [10, 400, { tk: 2 }], [25, 700, { tk: 3 }]]);
-[[420, 100], [390, 150], [360, 200], [330, 250, { tk: 1 }], [300, 300], [270, 400, { tk: 1 }], [240, 500], [210, 650, { tk: 2 }], [180, 800, { tk: 2 }], [150, 1200, { tk: 3, title: '速通之神' }]].forEach(([sec, b, ex]) =>
+[[420, 100], [390, 150], [360, 200], [330, 250, { tk: 1 }], [300, 300], [270, 400, { tk: 1 }], [240, 500], [210, 650, { tk: 2 }], [180, 800, { tk: 2 }], [150, 1200, { tk: 3, title: '速通之神' }], [120, 1600, { tk: 4 }]].forEach(([sec, b, ex]) =>
   A('spt' + sec, '速通', '🏁', `速通 ${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')} 內完成`, () => st('spBest') ? Math.round(st('spBest') / 1000) : 0, sec, Object.assign({ bone: b }, ex || {}), true));
 tiers('vs', '對戰', '⚔️', n => `打 ${n} 場對戰`, () => st('matches'), [[3, 40], [10, 80], [25, 150, { tk: 1 }], [50, 250], [100, 400, { tk: 2 }], [200, 700, { tk: 3 }]]);
 tiers('w', '對戰', '🏆', n => `排位贏 ${n} 場`, () => st('wins'), [[1, 50], [5, 100], [15, 200, { tk: 1 }], [30, 350], [60, 550, { tk: 2 }], [100, 900, { tk: 3, title: '對戰之王' }]]);
@@ -3717,7 +3715,7 @@ function annGiftHTML() {
 var ANN_NEW = {
   gift: 'gift-v45', title: '🆕 小更新來了！',
   items: [
-    ['🎲', '排位賽隨機模式', '配對到對手後會抽出本場模式：⚔️ 對抗（把狗狗砸到對手場上，先爆的輸）或 🏁 競賽（不互相攻擊，比分數，爆掉就出局）'],
+    ['🎲', '排位賽隨機模式', '配對到對手後會抽出本場模式：⚔️ 對抗（把狗狗砸到對手場上，先爆的輸）或 🏁 競速（跟速通一樣，比誰先合成出冰炫風，先爆的直接輸）'],
     ['🎀', '狗狗裝扮更清楚', '裝扮和外框不會再被場地背景吃掉，外框也加粗了'],
     ['🏠', '回主畫面更好找', '檔案、衣櫃、明信片等頁面右上角的「遊戲」改成「🏠 主畫面」'],
   ],
@@ -4077,6 +4075,13 @@ nameCell = function (e, isRank) {
   return el;
 };
 
+// v46：排位競速模式，合出冰炫風就贏
+const _onPlayerMerge3 = onPlayerMerge;
+onPlayerMerge = function (n) {
+  _onPlayerMerge3(n);
+  if (n === HIDDEN && mode === 'match') raceGoal();
+};
+
 // ====== 連線檢查 ======
 $('diagBtn').addEventListener('click', () => { hideAll(); show('diag', true); $('diagOut').textContent = ''; });
 $('diagBack').addEventListener('click', goHome);
@@ -4145,7 +4150,7 @@ async function checkUpdate() {
     if (!m || m[1] === VERSION) return;
     newVer = m[1];
     if (!inGame()) { doUpdate(); return; }   // 不在遊戲中就直接更新
-    const bar = $('updBar'); bar.textContent = '🔄 有新版本 ' + newVer + '，這局結束後會自動更新（點這裡立刻更新）'; bar.style.display = '';
+    const bar = $('updBar'); bar.textContent = '🔄 新版 ' + newVer + '：這局結束後更新（點我立刻更新）'; bar.style.display = '';
   } catch (e) { console.warn(e); }
 }
 $('updBar').addEventListener('click', doUpdate);
