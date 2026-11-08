@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta name="game-ver" content="v44">
+<meta name="game-ver" content="v45">
 <meta charset="UTF-8">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
@@ -443,6 +443,16 @@
   @keyframes pop { 0% { opacity: 0; transform: translate(-50%,-50%) scale(.6); } 12% { opacity: 1; transform: translate(-50%,-50%) scale(1.05); } 20% { transform: translate(-50%,-50%) scale(1); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%,-60%) scale(1); } }
   #count { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; font-size: 90px; font-weight: 900; color: #fff; text-shadow: 0 6px 0 #b85e0c; z-index: 6; pointer-events: none; }
   #count.on { display: flex; }
+  #count.rollRule { flex-direction: column; gap: 6px; font-size: 20px; text-shadow: 0 3px 0 #b85e0c; background: rgba(60,30,5,.35); text-align: center; }
+  #count .rrT { font-size: 22px; font-weight: 800; }
+  #count .rrM { font-size: 46px; font-weight: 900; padding: 6px 22px; border-radius: 20px; background: rgba(255,255,255,.18); }
+  #count .rrM.on { background: linear-gradient(135deg, #ff9a1f, #e8322f); animation: rrPop .45s cubic-bezier(.3,1.6,.5,1); }
+  #count .rrD { font-size: 17px; font-weight: 700; line-height: 1.5; max-width: 300px; }
+  @keyframes rrPop { from { transform: scale(.5); } to { transform: scale(1); } }
+  .annSep { text-align: center; color: #9a6a35; font-weight: 800; font-size: 13px; margin: 16px 0 4px; border-top: 2px dashed #e6cfa6; padding-top: 10px; }
+  .annCard h2.annOld { font-size: 18px; margin-top: 0; }
+  .annNew { background: #fff7e6; border: 2px solid #ffc861; border-radius: 14px; padding: 8px; }
+  .annNew .annTag { display: inline-block; background: #e8322f; color: #fff; font-size: 11px; font-weight: 800; border-radius: 8px; padding: 1px 7px; margin-bottom: 6px; }
 </style>
 </head>
 <body>
@@ -497,7 +507,7 @@
     <div class="drwWrap"><a href="#" class="drwBtn">🎁 單人今日榜每天 0 點結算，前 20 名有獎勵（點我看）</a><div class="drwTbl" style="display:none"></div></div>
     <ol class="board" id="board1"></ol>
     <div class="note" id="note1"></div>
-    <div class="ver">v44　<button id="diagBtn" style="font:inherit;font-size:12px;margin:0;background:none;border:none;color:#b85e0c;text-decoration:underline;cursor:pointer;opacity:1">🔧 連線檢查</button></div>
+    <div class="ver">v45　<button id="diagBtn" style="font:inherit;font-size:12px;margin:0;background:none;border:none;color:#b85e0c;text-decoration:underline;cursor:pointer;opacity:1">🔧 連線檢查</button></div>
   </div></div>
 
   <div class="modal" id="over"><div class="card">
@@ -571,7 +581,7 @@
   </div></div>
 
   <div class="modal" id="prof"><div class="card">
-    <div class="tabs ptabs"><button data-p="me" class="on">👤 檔案</button><button data-p="check">📅 簽到</button><button data-p="task">🎯 任務</button><button data-p="ach">🏆 成就</button><button data-p="gacha">🎰 扭蛋</button><button data-p="ward">🎒 衣櫃</button><button data-p="album">📮 明信片</button><button data-p="game" class="gameTab">🎮 遊戲</button></div>
+    <div class="tabs ptabs"><button data-p="me" class="on">👤 檔案</button><button data-p="check">📅 簽到</button><button data-p="task">🎯 任務</button><button data-p="ach">🏆 成就</button><button data-p="gacha">🎰 扭蛋</button><button data-p="ward">🎒 衣櫃</button><button data-p="album">📮 明信片</button><button data-p="game" class="gameTab">🏠 主畫面</button></div>
     <div id="profBody"></div>
     <button class="main gray" id="profBack">返回</button>
   </div></div>
@@ -600,15 +610,17 @@
       <li>排行榜比<b>時間</b>，越快越前面（分今日和總榜）</li></ul></div>
     <div class="rsec"><h3>⚔️ 排位賽</h3><ul>
       <li>需要登入（遊客也可以），限時 <b>3 分鐘</b></li>
-      <li>合成第 4 隻以上的狗狗會<b>攻擊</b>，把小狗砸到對手場上；連續合成、合出冰炫風攻擊更強</li>
+      <li>🎲 配對到對手後會<b>隨機抽出本場模式</b>：<b>⚔️ 對抗</b>或<b>🏁 競賽</b></li>
+      <li><b>🏁 競賽模式</b>：不互相攻擊，比分數；爆掉就出局、分數定格，對手分數超過你就輸</li>
+      <li><b>⚔️ 對抗模式</b>：合成第 4 隻以上的狗狗會<b>攻擊</b>，把小狗砸到對手場上；連續合成、合出冰炫風攻擊更強</li>
       <li>對手的攻擊 2 秒後落下，這段時間內你的攻擊可以<b>抵銷</b>它</li>
-      <li><b>先爆的輸</b>；時間到就比分數</li>
+      <li>對抗模式<b>先爆的輸</b>；時間到就比分數</li>
       <li>贏 <b>+1 星</b>、輸 <b>−1 星</b>、平手不變，星星集滿升段：<br>青銅 → 白銀 → 黃金 → 白金 → 鑽石 → 大師 → 王者牛排</li>
       <li>2 分鐘配不到人會派電腦陪練（不計星）</li>
       <li>防掛機：4 秒不投會自動投下；離開畫面 15 秒直接判輸</li></ul></div>
     <div class="rsec"><h3>👫 友誼賽</h3><ul>
       <li>開房間後把<b>房號</b>給朋友輸入就能對戰</li>
-      <li>規則跟排位一樣，但不計星</li></ul></div>
+      <li>固定是⚔️ 對抗模式，不計星</li></ul></div>
     <button class="main" id="rulesClose">知道了</button>
   </div></div>
   <div class="modal" id="gachaFx"></div>
@@ -955,7 +967,9 @@ function drawDog(c, b, level, x, y, ang, s = 1, alpha = 1, detail = true, mine =
   else if (mine && GLOW_FRAMES[prof.frame]) { c.shadowColor = GLOW_FRAMES[prof.frame]; c.shadowBlur = 10; }
   c.beginPath(); c.arc(0, 0, r, 0, Math.PI * 2); c.fillStyle = (b && b.overT > 0) ? '#e8322f' : mine ? (prof.frame === 'f-rainbow' ? rainbowFill(c, r, b) : frameColor(b, f.c)) : f.c; c.fill();
   c.shadowBlur = 0;
-  const bw = Math.max(2.5, r * 0.07);
+  const fancy = mine && prof.frame && prof.frame !== 'f-default' && !(b && b.overT > 0);
+  const bw = fancy ? Math.max(3.5, r * 0.12) : Math.max(2.5, r * 0.07);
+  if (fancy) { c.lineWidth = Math.max(1.2, r * 0.035); c.strokeStyle = 'rgba(50,25,0,.4)'; c.beginPath(); c.arc(0, 0, r, 0, Math.PI * 2); c.stroke(); }
   c.save(); c.beginPath(); c.arc(0, 0, r - bw, 0, Math.PI * 2); c.clip();
   const im = (mine && skinImg(level)) || (mine && prof.flt && filteredImg(level)) || f.img;
   if (im.complete !== false) c.drawImage(im, -r + bw, -r + bw, (r - bw) * 2, (r - bw) * 2);
@@ -1122,7 +1136,7 @@ const firebaseConfig = {
   appId: "1:741734243486:web:62dbac94d9e9c4f51a2f8f"
 };
 const RTDB_URL = 'https://dogsteakkk-default-rtdb.asia-southeast1.firebasedatabase.app';   // Realtime Database 的網址
-const VERSION = 'v44';
+const VERSION = 'v45';
 const FB_VERSIONS = ['13.1.0', '11.0.2'];
 let fbVer = '';
 let fs = null, fdb = null, fbReady, am = null, auth = null, authUser = null, authKnown = false;
@@ -1452,7 +1466,7 @@ async function findOpponent() {
   const [oppId, ov] = opp;
   const roomId = rt.push(rref('rooms')).key;
   try {
-    await rt.set(rref('rooms/' + roomId), { p: { [pid]: true, [oppId]: true }, names: { [pid]: playerName, [oppId]: String(ov.name).slice(0, 12) }, kind: 'ranked', at: rt.serverTimestamp() });
+    await rt.set(rref('rooms/' + roomId), { p: { [pid]: true, [oppId]: true }, names: { [pid]: playerName, [oppId]: String(ov.name).slice(0, 12) }, kind: 'ranked', rule: Math.random() < 0.5 ? 'race' : 'vs', at: rt.serverTimestamp() });
     // 搶這位對手：用交易確保同一個人不會同時被兩個人配走
     const r = await rt.runTransaction(rref('queue/' + oppId + '/room'), cur => cur ? undefined : roomId);
     if (r.committed && mm === my) { my.done = true; stopMatchmaking(true); joinRoom(roomId, 'ranked'); return; }
@@ -1542,7 +1556,7 @@ $('joinRoomBtn').addEventListener('click', async () => {
 // ====== 對戰（真人或電腦共用）======
 function newMatch(kind, oppName) {
   return {
-    kind, oppName, isAI: false, startAt: 0, finished: false, timeUp: false, timeUpAt: 0,
+    kind, oppName, rule: 'vs', isAI: false, startAt: 0, finished: false, timeUp: false, timeUpAt: 0,
     sent: 0, received: 0, opp: { score: 0, alive: true, done: false, sent: 0 },
     oppSeenAt: Date.now(), lastWrite: 0, writing: false, unsub: null, myRef: null
   };
@@ -1551,19 +1565,21 @@ async function countdownAndStart() {
   hideAll(); setMode('match');
   P.reset(); running = false; oppView.clear();
   $('score').textContent = 0; $('oppScore').textContent = 0; $('incoming').textContent = ''; $('timer').textContent = '3:00';
-  $('matchKind').textContent = match.kind === 'friend' ? '友誼賽' : (match.isAI ? '排位賽・電腦對手' : '排位賽');
+  $('matchKind').textContent = (match.kind === 'friend' ? '友誼賽' : (match.isAI ? '排位賽・電腦' : '排位賽')) + (match.rule === 'race' ? '・🏁競賽' : '・⚔️對抗');
   $('oppName').textContent = match.oppName;
   $('oppMeta').innerHTML = match.isAI ? '🤖 電腦陪練' : (match.oppMeta || '');
+  if (match.kind === 'ranked') { await rollRule(match); if (!match) return; }
   for (const n of ['3', '2', '1', '開始！']) { $('count').textContent = n; show('count', true); sfx('count', n === '開始！'); await sleep(700); }
   show('count', false);
   if (!match) return;
-  P.attackEnabled = true; P.autoDrop = true; P.onOver = () => myTopOut();
+  const isVs = match.rule !== 'race';
+  P.attackEnabled = isVs; P.autoDrop = true; P.onOver = () => myTopOut();
   if (match.kind === 'ranked' && !match.isAI) {   // 先記一敗、扣一星，中途跑掉就算輸
     match.base = { s: myStars, w: myWins, l: myLosses };
     match.chargeP = writeRecord(Math.max(0, myStars - 1), myWins, myLosses + 1);
   }
   $('next').src = dogSrc(P.nxt);
-  if (AI) { AI.reset(); AI.attackEnabled = true; AI.onAttack = n => P.receive(n); AI.onOver = () => finishMatch('win', '電腦的狗狗爆出紅線了！'); P.onAttack = n => AI.receive(n); }
+  if (AI) { AI.reset(); AI.attackEnabled = isVs; AI.onAttack = n => P.receive(n); AI.onOver = () => isVs ? finishMatch('win', '電腦的狗狗爆出紅線了！') : raceCheck(match); P.onAttack = n => AI.receive(n); }
   else P.onAttack = n => { if (match) { match.sent += n; flushMatch(true); } };
   match.startAt = performance.now(); match.oppSeenAt = Date.now();
   running = true;
@@ -1574,7 +1590,7 @@ function startAIMatch() {
   lastKind = 'ranked';
   AI = new World(false);
   match = newMatch('ranked', '🤖 狗狗電腦（不計星）');
-  match.isAI = true;
+  match.isAI = true; match.rule = Math.random() < 0.5 ? 'race' : 'vs';
   countdownAndStart();
 }
 
@@ -1591,7 +1607,7 @@ async function joinRoom(roomId, kind) {
   const oppId = Object.keys(room.p || {}).find(x => x !== pid);
   match = newMatch(kind, (room.names && room.names[oppId]) || '對手');
   const m = match;
-  m.online = true; m.roomId = roomId;
+  m.online = true; m.roomId = roomId; m.rule = kind === 'ranked' && room.rule === 'race' ? 'race' : 'vs';
   m.myRef = rref('rooms/' + roomId + '/players/' + pid);
   m.oppRef = rref('rooms/' + roomId + '/players/' + oppId);
   loadOppInfo(m, oppId);
@@ -1603,14 +1619,15 @@ async function joinRoom(roomId, kind) {
     if (match !== m || !v) return;
     m.oppJoined = true;
     if (v.t !== m.lastOppT) { m.lastOppT = v.t; m.oppSeenAt = Date.now(); }
-    m.opp = { score: +v.score || 0, alive: v.alive !== false, done: !!v.done, sent: +v.sent || 0 };
+    m.opp = { score: +v.score || 0, alive: v.alive !== false, done: !!v.done, sent: +v.sent || 0, out: !!v.out };
     const add = m.opp.sent - m.received;
-    if (add > 0) { m.received = m.opp.sent; if (m.startAt) P.receive(add); else m.preload = (m.preload || 0) + add; }
+    if (add > 0 && m.rule !== 'race') { m.received = m.opp.sent; if (m.startAt) P.receive(add); else m.preload = (m.preload || 0) + add; }
     applyOppPack(v.b);
     $('oppScore').textContent = m.opp.score;
     if (!m.opp.alive) finishMatch('win', '對手的狗狗爆出紅線了！');
     else if (v.off && m.startAt) finishMatch(rtConnected ? 'win' : 'void', rtConnected ? '對手離開遊戲了' : '連線不穩定，這場不計分');
     else if (m.timeUp && m.opp.done) judgeByScore();
+    if (m.rule === 'race') raceCheck(m);
   };
   m.unsub = rt.onValue(m.oppRef, s => m.applyOpp(s.val()), e => console.warn(e));
   // 等對手也進房（最多 12 秒），沒來就回去重排
@@ -1639,10 +1656,11 @@ function matchTick() {
   const now = performance.now();
   const left = Math.max(0, MATCH_SECONDS - (now - m.startAt) / 1000);
   $('timer').textContent = Math.floor(left / 60) + ':' + String(Math.floor(left % 60)).padStart(2, '0');
-  $('incoming').textContent = P.pendingIn > 0 ? '⚠ 要掉 ' + P.pendingIn + ' 隻' : '';
+  $('incoming').textContent = m.rule === 'race' ? (P.gameOver ? '💥 你出局了，等對手結束…' : '🏁 競賽：比分數') : (P.pendingIn > 0 ? '⚠ 要掉 ' + P.pendingIn + ' 隻' : '');
   if (m.preload) { P.receive(m.preload); m.preload = 0; }
   if (m.isAI) {
     $('oppScore').textContent = AI.score;
+    raceCheck(m);
     if (left <= 0) judgeByScore();
     return;
   }
@@ -1653,6 +1671,7 @@ function matchTick() {
   if (m.timeUp && now - m.timeUpAt > 8000) judgeByScore();
   // 對手 20 秒沒動靜：自己有連線 → 對手斷了；自己也沒連線 → 不計分
   if (Date.now() - m.oppSeenAt > 20000) finishMatch(rtConnected ? 'win' : 'void', rtConnected ? '對手斷線了' : '連線不穩定，這場不計分');
+  raceCheck(m);
   flushMatch(false);
 }
 
@@ -1664,20 +1683,50 @@ function flushMatch(force) {
   const pack = P.pack(), sig = [m.sent, P.score, P.gameOver, m.timeUp, pack.map(n => n >> 2).join(',')].join('|');
   if (!force && sig === m.lastSig && now - m.lastWrite < 4000) return;   // 畫面沒變就少傳（最多 4 秒一次心跳）
   m.lastSig = sig; m.lastWrite = now;
-  rt.set(m.myRef, { sent: m.sent, score: Math.min(100000, P.score), alive: !P.gameOver, b: pack, t: now, done: m.timeUp || P.gameOver }).catch(e => console.warn(e));
+  rt.set(m.myRef, { sent: m.sent, score: Math.min(100000, P.score), alive: m.rule === 'race' || !P.gameOver, out: P.gameOver, b: pack, t: now, done: m.timeUp || P.gameOver }).catch(e => console.warn(e));
 }
 
 function myTopOut() {
   const m = match;
   if (!m || m.finished) return;
+  if (m.rule === 'race') {   // 競賽模式：爆掉只是出局，分數定格，等對手
+    P.dangerT = 0; sfx('thud');
+    if (!m.isAI && m.myRef) rt.set(m.myRef, { sent: m.sent, score: Math.min(100000, P.score), alive: true, out: true, b: P.pack(), t: Date.now(), done: true }).catch(() => {});
+    raceCheck(m);
+    return;
+  }
   if (!m.isAI && m.myRef) rt.set(m.myRef, { sent: m.sent, score: Math.min(100000, P.score), alive: false, b: P.pack(), t: Date.now(), done: true }).catch(() => {});
   finishMatch('lose', '你的狗狗爆出紅線了…');
+}
+function raceCheck(m) {
+  if (!m || m.finished || m.rule !== 'race' || !m.startAt) return;
+  const me = P.score, meOut = P.gameOver;
+  const opOut = m.isAI ? !!(AI && AI.gameOver) : !!m.opp.out, op = m.isAI ? AI.score : m.opp.score;
+  if (meOut && opOut) return judgeByScore();
+  if (opOut && me > op) { flushMatch(true); return finishMatch('win', '對手出局了，你的分數超越對手！'); }
+  if (meOut && op > me) return finishMatch('lose', '你出局了，對手的分數超越你…');
+}
+const RULE_INFO = { vs: ['⚔️ 對抗模式', '合成會把小狗砸到對手場上，先爆的輸'], race: ['🏁 競賽模式', '不互相攻擊，3 分鐘比分數<br>爆掉就出局、分數定格'] };
+async function rollRule(m) {
+  const el = $('count'); el.classList.add('rollRule'); show('count', true);
+  const n = 14, other = m.rule === 'vs' ? 'race' : 'vs';
+  for (let i = 0; i < n; i++) {
+    const k = (n - 1 - i) % 2 === 0 ? m.rule : other;
+    el.innerHTML = `<div class="rrT">🎲 抽本場模式…</div><div class="rrM">${RULE_INFO[k][0]}</div>`;
+    if (!gMute) beep(520 + (i % 2) * 140, 0.04, 'triangle', 0.035);
+    await sleep(50 + i * i * 1.1);
+    if (match !== m) { el.classList.remove('rollRule'); el.innerHTML = ''; show('count', false); return; }
+  }
+  el.innerHTML = `<div class="rrT">本場模式</div><div class="rrM on">${RULE_INFO[m.rule][0]}</div><div class="rrD">${RULE_INFO[m.rule][1]}</div>`;
+  if (!gMute) fanfare(2);
+  await sleep(2000);
+  el.classList.remove('rollRule'); el.innerHTML = ''; show('count', false);
 }
 function judgeByScore() {
   const m = match;
   if (!m || m.finished) return;
   const me = P.score, op = m.isAI ? AI.score : m.opp.score;
-  finishMatch(me > op ? 'win' : me < op ? 'lose' : 'draw', '時間到！比分數');
+  finishMatch(me > op ? 'win' : me < op ? 'lose' : 'draw', m.rule === 'race' && (P.gameOver || (m.isAI ? AI.gameOver : m.opp.out)) && !m.timeUp ? '兩邊都出局了！比分數' : '時間到！比分數');
 }
 
 async function finishMatch(res, why) {
@@ -2215,7 +2264,7 @@ function filteredImg(level) {
 // 裝扮（畫在玩家自己的狗狗頭上）
 function drawHat(c, x, y, r) {
   const h = prof.hat; if (!h) return;
-  c.save();
+  c.save(); c.globalAlpha = 1; c.fillStyle = '#000'; c.globalCompositeOperation = 'source-over';
   if (h === 'hat-halo') {
     c.strokeStyle = '#ffe066'; c.lineWidth = Math.max(2, r * 0.1); c.shadowColor = '#fff6a8'; c.shadowBlur = 8;
     c.beginPath(); c.ellipse(x, y - r * 1.02, r * 0.55, r * 0.16, 0, 0, Math.PI * 2); c.stroke();
@@ -2223,6 +2272,7 @@ function drawHat(c, x, y, r) {
     const e = HAT_EMOJI[h]; if (!e) { c.restore(); return; }
     const sz = Math.max(12, r * (h === 'hat-shades' ? 0.62 : 0.8));
     c.font = `${sz}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.shadowColor = 'rgba(0,0,0,.45)'; c.shadowBlur = 4; c.shadowOffsetY = 1;
     c.fillText(e, x + (h === 'hat-flower' ? r * 0.45 : 0), h === 'hat-shades' ? y - r * 0.18 : y - r * 0.82);
   }
   c.restore();
@@ -3664,9 +3714,23 @@ function annGiftHTML() {
   return prof.ach.includes(ANN.gift) ? '<div class="giftBox"><b>🎁 免費十連抽</b>✅ 已經領過了</div>'
     : '<div class="giftBox"><b>🎁 慶祝改版，送你一次免費十連抽！</b><button class="main vs" id="annGiftBtn">立刻抽！</button></div>';
 }
+var ANN_NEW = {
+  gift: 'gift-v45', title: '🆕 小更新來了！',
+  items: [
+    ['🎲', '排位賽隨機模式', '配對到對手後會抽出本場模式：⚔️ 對抗（把狗狗砸到對手場上，先爆的輸）或 🏁 競賽（不互相攻擊，比分數，爆掉就出局）'],
+    ['🎀', '狗狗裝扮更清楚', '裝扮和外框不會再被場地背景吃掉，外框也加粗了'],
+    ['🏠', '回主畫面更好找', '檔案、衣櫃、明信片等頁面右上角的「遊戲」改成「🏠 主畫面」'],
+  ],
+};
+function newGiftHTML() {
+  return prof.ach.includes(ANN_NEW.gift) ? '<div class="giftBox"><b>🎁 🦴 500 骨頭</b>✅ 已經領過了</div>'
+    : '<div class="giftBox"><b>🎁 小更新禮物：🦴 500 骨頭！</b><button class="main vs" id="annGiftBtn2">領取</button></div>';
+}
 function openAnn() {
-  $('annTitle').textContent = ANN.title;
-  $('annBody').innerHTML = ANN.items.map(([i, t, d]) => `<div class="annItem"><span>${i}</span><div><b>${t}</b>${d}</div></div>`).join('');
+  const li = a => a.map(([i, t, d]) => `<div class="annItem"><span>${i}</span><div><b>${t}</b>${d}</div></div>`).join('');
+  $('annTitle').textContent = ANN_NEW.title;
+  $('annBody').innerHTML = `<div class="annNew"><span class="annTag">NEW・${VERSION}</span>${li(ANN_NEW.items)}${newGiftHTML()}</div>` +
+    `<div class="annSep">📜 之前的公告</div><h2 class="annOld">${ANN.title}</h2>` + li(ANN.items);
   $('annGift').innerHTML = annGiftHTML();
   show('ann', true);
 }
@@ -3675,6 +3739,13 @@ $('annBtn').addEventListener('click', openAnn);
 $('annClose').addEventListener('click', closeAnn);
 $('ann').addEventListener('click', e => {
   if (e.target.id === 'ann') closeAnn();
+  if (e.target.id === 'annGiftBtn2') {
+    if (prof.ach.includes(ANN_NEW.gift)) return;
+    prof.ach.push(ANN_NEW.gift); prof.bone += 500; saveProf();
+    openAnn(); fanfare(3); toast('🎁 小更新禮物<br><span style="font-size:16px">🦴 +500</span>');
+    try { renderLvLine(); updDots(); } catch (er) { }
+    return;
+  }
   if (e.target.id === 'annGiftBtn') {
     if (prof.ach.includes(ANN.gift)) return;
     prof.ach.push(ANN.gift); saveProf();
@@ -3682,7 +3753,7 @@ $('ann').addEventListener('click', e => {
   }
 });
 // 還沒領十連抽才會自動跳出；領完就不再自動顯示（主畫面的「📢 公告」還是可以看）
-setTimeout(() => { if (!prof.ach.includes(ANN.gift) && $('start').classList.contains('on')) openAnn(); }, 700);
+setTimeout(() => { if ((!prof.ach.includes(ANN.gift) || !prof.ach.includes(ANN_NEW.gift)) && $('start').classList.contains('on')) openAnn(); }, 700);
 
 
 // ====== v26：加到主畫面教學 ======
