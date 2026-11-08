@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta name="game-ver" content="v62">
+<meta name="game-ver" content="v63">
 <meta charset="UTF-8">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
@@ -612,7 +612,7 @@
     <div class="drwWrap"><a href="#" class="drwBtn">🎁 單人今日榜每天 0 點結算，前 20 名有獎勵（點我看）</a><div class="drwTbl" style="display:none"></div></div>
     <ol class="board" id="board1"></ol>
     <div class="note" id="note1"></div>
-    <div class="ver">v62　<button id="diagBtn" style="font:inherit;font-size:12px;margin:0;background:none;border:none;color:#b85e0c;text-decoration:underline;cursor:pointer;opacity:1">🔧 連線檢查</button></div>
+    <div class="ver">v63　<button id="diagBtn" style="font:inherit;font-size:12px;margin:0;background:none;border:none;color:#b85e0c;text-decoration:underline;cursor:pointer;opacity:1">🔧 連線檢查</button></div>
   </div></div>
 
   <div class="modal" id="over"><div class="card">
@@ -1242,7 +1242,7 @@ const firebaseConfig = {
   appId: "1:741734243486:web:62dbac94d9e9c4f51a2f8f"
 };
 const RTDB_URL = 'https://dogsteakkk-default-rtdb.asia-southeast1.firebasedatabase.app';   // Realtime Database 的網址
-const VERSION = 'v62';
+const VERSION = 'v63';
 const FB_VERSIONS = ['13.1.0', '11.0.2'];
 let fbVer = '';
 let fs = null, fdb = null, fbReady, am = null, auth = null, authUser = null, authKnown = false;
@@ -2629,8 +2629,9 @@ function gxLoop() {
 }
 function centerOf(el) { const b = el.getBoundingClientRect(); return [b.left + b.width / 2, b.top + b.height / 2]; }
 function flash(color = '#fff', dur = 450) {
-  const f = document.createElement('div'); f.className = 'gflash'; f.style.background = color; $('gachaFx').appendChild(f);
-  f.animate([{ opacity: 0.95 }, { opacity: 0 }], { duration: dur, easing: 'ease-out' }).onfinish = () => f.remove();
+  if (/^#[0-9a-f]{3}$/i.test(color)) color = '#' + color.slice(1).split('').map(x => x + x).join('');
+  const f = document.createElement('div'); f.className = 'gflash'; f.style.background = `radial-gradient(circle at 50% 45%, ${color} 0%, ${color}88 30%, transparent 75%)`; $('gachaFx').appendChild(f);
+  f.animate([{ opacity: 0 }, { opacity: 0.38, offset: 0.25 }, { opacity: 0 }], { duration: dur + 250, easing: 'ease-in-out' }).onfinish = () => f.remove();
 }
 function shakeScreen(px = 8, dur = 400) {
   const st = $('gachaFx').querySelector('.gstage'); if (!st) return;
@@ -5072,13 +5073,12 @@ function premIntro(box) {
   let h = '<b>💎 高級扭蛋</b><small>必出稀有以上</small>';
   for (let i = 0; i < 16; i++) { const a = i / 16 * Math.PI * 2, r = 140 + Math.random() * 80; h += `<i style="--dx:${Math.cos(a) * r}px;--dy:${Math.sin(a) * r}px;animation-delay:${Math.random() * .3}s">${['✨', '💎', '⭐', '🌟'][i % 4]}</i>`; }
   d.innerHTML = h; box.appendChild(d); box.classList.add('prem');
-  try { flash('#ffd84a', 500); } catch (e) { }
   if (!gMute) [523, 659, 784, 1047, 1319].forEach((f, i) => beep(f, 0.25, 'triangle', 0.06, i * 0.08));
   setTimeout(() => d.remove(), 2200);
 }
 function premBoom(cx, cy, R) {
   const W = innerWidth, H = innerHeight;
-  try { flash(R >= 4 ? RAR[R].color : '#ffd84a', 800); shakeScreen(10 + R * 2, 700); } catch (e) { }
+  try { shakeScreen(6 + R, 600); } catch (e) { }
   GX.rain = Math.max(GX.rain || 0, R >= 5 ? 4 : 3); GX.rainR = Math.max(R, 4);
   for (let i = 0; i < 6; i++) setTimeout(() => { try { gxBurst(W * (0.15 + Math.random() * 0.7), H * (0.15 + Math.random() * 0.5), Math.max(R, 3), 0.8); if (!gMute) beep(700 + Math.random() * 600, 0.12, 'square', 0.035); } catch (e) { } }, 150 + i * 160);
   if (!gMute) [784, 988, 1175, 1568].forEach((f, i) => beep(f, 0.35, 'sine', 0.06, 0.2 + i * 0.1));
