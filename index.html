@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta name="game-ver" content="v87">
+<meta name="game-ver" content="v90">
 <meta charset="UTF-8">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
@@ -920,6 +920,7 @@
   .rhRw span { background: #fff7e6; color: #7a4a1c; font-weight: 900; font-size: 14px; border-radius: 12px; padding: 5px 12px; box-shadow: 0 3px 0 rgba(0,0,0,.2); }
   .rhCard .btns { margin-top: 6px; }
   #jump { background: #17142a !important; }
+  #goRule, #homeDmod { display: none !important; }
 </style>
 </head>
 <body>
@@ -1014,7 +1015,7 @@
         <div><span>🟩</span><div>一般木板　🟦 會移動　🟫 有裂痕一踩就碎　☁️ 踩一次就消失　🔴 彈簧跳超高</div></div>
         <div><span>🐶</span><div>碰到<b>一樣的狗狗就合成</b>，越大隻跳越高；合到冰炫風會<b>無敵衝刺 5 秒</b></div></div>
         <div><span>🥩</span><div>牛排彈超高　🧲 磁鐵吸骨頭　🎈 氣球慢慢飄　🎀 項圈救你一次（很少見，一局最多 2 個）</div></div>
-        <div><span>😼</span><div><b>貓咪</b>（150 公尺後出現）：<b>從上面踩</b>會踩扁牠：連升 2 級、+10 m、+5 🦴；從旁邊或下面撞到就結束。😾 有翅膀的會在空中飄</div></div>
+        <div><span>😼</span><div><b>貓咪</b>（150 公尺後出現）：<b>從上面踩</b>會踩扁牠：連升 2 級、+10 m、+5 🦴；從旁邊或下面撞到就結束。😾 有翅膀的會在空中飄。<b>彈簧、牛排、金色平台起飛時、氣球、FEVER 期間都是無敵</b>（有藍色光圈），冰炫風衝刺結束後也有 1.5 秒無敵</div></div>
         <div><span>🌀</span><div><b>黑洞會從下面追上來</b>，越高追得越快，停在原地會被吃掉</div></div>
         <div><span>⭐</span><div>金色平台彈更高還噴骨頭；<b>20 連擊進入 FEVER</b>，6 秒內高度加成 ×2、自動吸骨頭</div></div>
         <div><span>🔥</span><div>一直踩到更高的新平台會累積<b>連擊</b>，連擊會<b>加高度分數</b>：5 連擊每跳 <b>+1 m</b>、10 連擊 <b>+2 m</b>、30 連擊 <b>+4 m</b></div></div>
@@ -1063,7 +1064,7 @@
     <div class="drwWrap"><a href="#" class="drwBtn">🎁 單人今日榜每天 0 點結算，前 20 名有獎勵（點我看）</a><div class="drwTbl" style="display:none"></div></div>
     <ol class="board" id="board1"></ol>
     <div class="note" id="note1"></div>
-    <div class="ver">v87　<button id="diagBtn" style="font:inherit;font-size:12px;margin:0;background:none;border:none;color:#b85e0c;text-decoration:underline;cursor:pointer;opacity:1">🔧 連線檢查</button></div>
+    <div class="ver">v90　<button id="diagBtn" style="font:inherit;font-size:12px;margin:0;background:none;border:none;color:#b85e0c;text-decoration:underline;cursor:pointer;opacity:1">🔧 連線檢查</button></div>
   </div></div>
 
   <div class="modal" id="ruleM"><div class="card" id="ruleCard"></div></div>
@@ -1195,7 +1196,7 @@
       <li>🐶 碰到<b>一樣的狗狗就合成</b>，變成下一隻、跳更高；合到<b>冰炫風</b>會無敵衝刺 5 秒（+20🦴），然後從第 1 隻重新合</li>
       <li>道具：🥩 牛排彈超高、🧲 磁鐵吸骨頭、🎈 氣球慢慢飄上去、🎀 項圈護盾救你一次（很少見，一局最多 2 個）</li>
       <li>🌀 <b>黑洞</b>會從下面追上來，越高追得越快；⭐ 金色平台彈更高還噴骨頭；每 500 公尺送 🦴10</li>
-      <li>😼 <b>貓咪</b>：150 公尺後平台上會有巡邏的貓、350 公尺後有空中飄的貓；從上面踩到會踩扁牠：<b>連升 2 級、高度 +10 m、骨頭 +5</b>，從旁邊或下面撞到就結束（項圈可以擋一次，冰炫風衝刺中直接撞飛）</li>
+      <li>😼 <b>貓咪</b>：150 公尺後平台上會有巡邏的貓、350 公尺後有空中飄的貓；從上面踩到會踩扁牠：<b>連升 2 級、高度 +10 m、骨頭 +5</b>，從旁邊或下面撞到就結束（項圈可以擋一次，冰炫風衝刺中直接撞飛）；彈簧、牛排、金色平台起飛的時候、氣球和 FEVER 期間都是<b>無敵</b>，冰炫風衝刺結束後還有 1.5 秒無敵</li>
       <li>🔥 <b>FEVER</b>：每 20 連擊進入 6 秒 FEVER，連擊的高度加成 ×2 而且自動吸骨頭</li>
       <li>🔥 <b>連擊</b>：一直踩到更高的新平台會累積連擊，連擊會<b>加高度分數</b>：5 連擊每跳 +1 m、10 連擊 +2 m、30 連擊 +4 m，踩回原地或更低就歸零</li>
       <li>🌬️ 強風區會把狗狗吹向左邊或右邊（每次隨機）；🌧️ 下雨時比較難控制，落地還會滑一下</li>
@@ -1723,7 +1724,7 @@ const firebaseConfig = {
   appId: "1:741734243486:web:62dbac94d9e9c4f51a2f8f"
 };
 const RTDB_URL = 'https://dogsteakkk-default-rtdb.asia-southeast1.firebasedatabase.app';   // Realtime Database 的網址
-const VERSION = 'v87';
+const VERSION = 'v90';
 const FB_VERSIONS = ['13.1.0', '11.0.2'];
 let fbVer = '';
 let fs = null, fdb = null, fbReady, am = null, auth = null, authUser = null, authKnown = false;
@@ -4323,7 +4324,9 @@ function newGiftHTML() {
   return prof.ach.includes(ANN_NEW.gift) ? '<div class="giftBox"><b>🎁 🦴 500 骨頭</b>✅ 已經領過了</div>'
     : '<div class="giftBox"><b>🎁 小更新禮物：🦴 500 骨頭！</b><button class="main vs" id="annGiftBtn2">領取</button></div>';
 }
-var ANN_47 = { id: 'dog-ann85', n: 3, title: '😼 貓咪來搗亂！', items: [
+var ANN_47 = { id: 'dog-ann90', n: 3, title: '😼 貓咪來搗亂！', items: [
+  ['🏆', '跳跳今日榜也重新開始', '因為規則改了（連擊加高度、貓咪），今日榜和總榜都從零開始，舊規則的成績不再顯示'],
+  ['🛡', '起飛時無敵', '狗狗跳跳踩到彈簧、牛排、金色平台起飛的時候，還有氣球、FEVER 期間，撞到貓咪會直接把牠撞飛；冰炫風衝刺結束後也多 1.5 秒無敵'],
   ['😼', '狗狗跳跳出現貓咪', '150 公尺後平台上會有來回巡邏的貓咪，350 公尺後還有長翅膀在空中飄的。從上面踩到會踩扁牠：狗狗連升 2 級、高度 +10 m、骨頭 +5；從旁邊或下面撞到就結束。項圈可以擋一次，冰炫風衝刺中會直接撞飛'],
   ['🔥', '跳跳連擊改成加高度', '狗狗跳跳的連擊不再加骨頭，改成直接加高度分數：5 連擊每跳 +1 m、10 連擊 +2 m、30 連擊 +4 m；FEVER 期間加成 ×2。連擊越穩，排行榜分數越高'],
   ['🏅', '節奏結算畫面翻新', '狗狗節奏打完會有大大的評價徽章、分數跳動、完美／不錯／漏掉的長條，還有 FULL COMBO、ALL PERFECT 標章'],
@@ -4893,6 +4896,7 @@ function jGen(J) {
     J.top = y;
   }
 }
+function jInv(J) { return J.inv > 0 || J.fever > 0 || J.balloon > 0 || J.dog.vy < -jJump(J) * 1.12; }
 function jCats(J, dt) {
   const d = J.dog, W = J.W, bottom = J.cam + J.H;
   if (J.inv > 0) J.inv -= dt;
@@ -4916,13 +4920,14 @@ function jCats(J, dt) {
       jBeep(300, 0.08, 'square', 0.06); jBeep(900, 0.12, 'sine', 0.06); jBeep(1350, 0.16, 'sine', 0.06);
       continue;
     }
-    if (J.inv > 0) continue;
+    if (jInv(J)) { kill('💨 撞飛！'); jBeep(700, 0.08, 'square', 0.04); continue; }
     if (J.shield) { J.shield = false; J.inv = 1; kill('🎀 項圈擋住了！'); d.vy = Math.min(d.vy, -500); jBeep(520, 0.1, 'sine', 0.06); jBeep(1040, 0.2, 'sine', 0.06); continue; }
     J.deadBy = 'cat'; jBurst(J, d.x, d.y, 18, ['#ff5a5a', '#fff']); jDie(J); return;
   }
   J.cats = (J.cats || []).filter(c => !c.dead && c.y < bottom + 80);
 }
 function jCatsDraw(J, c) {
+  if (!J.over && !(J.rocket > 0) && jInv(J) && (J.cats || []).length) { const d = J.dog; c.save(); c.strokeStyle = `rgba(120,220,255,${0.55 + 0.3 * Math.sin(J.t * 14)})`; c.lineWidth = 3; c.beginPath(); c.arc(d.x, d.y, d.r + 7, 0, 7); c.stroke(); c.restore(); }
   for (const k of J.cats || []) {
     const fly = k.k === 'fly', wob = Math.sin(J.t * 10 + k.x) * 1.5;
     c.save(); c.translate(k.x, k.y + (fly ? 0 : wob * 0.4));
@@ -4990,6 +4995,7 @@ function jUpdate(J, dt) {
   if (J.rocket > 0) {
     J.rocket -= dt; d.vy = -1150;
     if (Math.random() < .9) J.parts.push({ x: d.x + (Math.random() - .5) * 14, y: d.y + d.r + 6, vx: (Math.random() - .5) * 80, vy: 180 + Math.random() * 120, l: .5, c: ['#9fe9ff', '#ffffff', '#ffd6f2'][Math.floor(Math.random() * 3)] });
+    if (J.rocket <= 0) J.inv = Math.max(J.inv || 0, 1.5);
     if (J.rocket <= 0 && J.lv >= HIDDEN) { J.lv = 0; d.r = jRad(J); jText(J, d.x, d.y - 30, '從頭再合成一次！', 1.2); }
   } else if (J.balloon > 0) { J.balloon -= dt; d.vy += (-430 - d.vy) * Math.min(1, dt * 6); }
   else d.vy += JG * dt;
@@ -5348,7 +5354,7 @@ function subscribeJump() {
   if (jpDayKey !== todayKey()) {
     if (jpDayUnsub) jpDayUnsub();
     jpDayKey = todayKey(); jpDay = [];
-    jpDayUnsub = fs.onSnapshot(fs.query(fs.collection(fdb, 'daily', jpDayKey, 'jump'), fs.orderBy('m', 'desc'), fs.limit(20)), snap => { jpDay = snap.docs.map(mapJump); jpErr = ''; renderBoards(); updJumpMsg(); }, onErr);
+    jpDayUnsub = fs.onSnapshot(fs.query(fs.collection(fdb, 'daily', jpDayKey, 'jump2'), fs.orderBy('m', 'desc'), fs.limit(20)), snap => { jpDay = snap.docs.map(mapJump); jpErr = ''; renderBoards(); updJumpMsg(); }, onErr);
   }
 }
 function renderJumpBoard(ol) {
@@ -5379,7 +5385,7 @@ async function submitJump(h) {
     const key = myKey(), t = todayKey();
     const body = { name: (playerName || '玩家').slice(0, 12), m: Math.min(100000, Math.floor(h)), lv: prof.lv, at: fs.serverTimestamp() };
     const a = await writeBest(fs.doc(fdb, 'lb', 'run', 'scores', key), body, 'ja2', old => body.m > old);
-    const d = await writeBest(fs.doc(fdb, 'daily', t, 'jump', key), body, 'jd:' + t, old => body.m > old);
+    const d = await writeBest(fs.doc(fdb, 'daily', t, 'jump2', key), body, 'jd2:' + t, old => body.m > old);
     myIds.add(key); jpLast = key; rememberMine(key);
     el.textContent = a ? '🎉 打破自己的跳跳總榜紀錄！' : d ? '🎉 打破自己今天的紀錄！' : '沒有超過自己今天的最高，排行榜維持原本的紀錄。';
     subscribeJump(); setTimeout(updJumpMsg, 1500);
@@ -5404,7 +5410,8 @@ async function checkJumpReward() {
   const yd = ydayKey(); if (prof.stats.jdl === yd) return;
   jpRwBusy = true;
   try {
-    const snap = await fs.getDocs(fs.query(fs.collection(fdb, 'daily', yd, 'jump'), fs.orderBy('m', 'desc'), fs.limit(20)));
+    let snap = await fs.getDocs(fs.query(fs.collection(fdb, 'daily', yd, 'jump2'), fs.orderBy('m', 'desc'), fs.limit(20)));
+    if (!snap.docs.length) snap = await fs.getDocs(fs.query(fs.collection(fdb, 'daily', yd, 'jump'), fs.orderBy('m', 'desc'), fs.limit(20)));   // 改版前一天的榜照舊發獎
     const L = uniqTop(snap.docs.map(d => { const v = d.data() || {}; return { id: d.id, name: String(v.name || '匿名').slice(0, 12), uid: typeof v.uid === 'string' ? v.uid : '' }; }));
     let best = 0;
     L.forEach((e, i) => { if (!best && (myIds.has(e.id) || e.id === 'd_' + cid || (pid && (e.uid === pid || e.id === 'u_' + pid)))) best = i + 1; });
@@ -7524,13 +7531,13 @@ Object.assign(LB, { run: ['🏃 狗狗跑酷', ' m'], rhythm: ['🥁 狗狗節�
 var POWER = [
   ['🐶', '單人最高分', () => st('best'), 8000, v => v + ' 分'],
   ['⏱', '速通', () => st('spBest') ? Math.round(st('spBest') / 1000) : 0, 0, v => v ? fmtT(st('spBest')) : '還沒完成'],
-  ['🐾', '狗狗跳跳（新賽季）', () => st('jBest2'), 3000, v => v + ' m'],
+  ['🐾', '狗狗跳跳（新賽季）', () => st('jBest2'), 10000, v => v + ' m'],
   ['⏱', '60 秒衝分', () => st('blitzBest'), 2000, v => v + ' 分'],
   ['🎉', '派對模式', () => st('partyBest'), 4000, v => v + ' 分'],
   ['🧩', '消消樂星星', () => m3TotalStars(), 150, v => v + ' ⭐'],
   ['🫧', '泡泡射擊', () => Math.round(bbTotalStars() * 30 + st('bbBest') / 2), 6000, v => bbTotalStars() + ' ⭐・' + st('bbBest') + ' 分'],
   ['🏃', '狗狗跑酷', () => st('runBest'), 3000, v => v + ' m'],
-  ['🥁', '狗狗節奏', () => st('rhBest'), 20000, v => v + ' 分'],
+  ['🥁', '狗狗節奏', () => st('rhBest'), 60000, v => v + ' 分'],
   ['🗼', '疊狗狗', () => st('stBest'), 60, v => v + ' 層'],
 ];
 var P_TIERS = [[0, '🥉', '銅牌', '#c98a4b'], [1000, '🥈', '銀牌', '#9aa3ad'], [2500, '🥇', '金牌', '#f5c542'], [4500, '💎', '鑽石', '#5bc8ff'], [6500, '👑', '大師', '#b07bff'], [8500, '🌟', '傳說', '#ff7ad9']];
